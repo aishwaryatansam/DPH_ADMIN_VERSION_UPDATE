@@ -571,6 +571,11 @@
                     <span class="sub-item">HSC</span>
                   </a>
                 </li>
+                    <li>
+                  <a href="{{url('/tags')}}">
+                    <span class="sub-item">Tags</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </li>

@@ -130,6 +130,7 @@ Route::middleware(['privilege'])->group(function () {
 	Route::get('/phc/destroy-document/{block}', 'Admin\PhcController@destroyDocument');
 
 	Route::resource('/hsc','Admin\HscController');
+	Route::resource('/tags','Admin\TagController');
 	Route::get('/hsc/destroy-document/{block}', 'Admin\HscController@destroyDocument');
 	// Route::get('/hsc-export','Admin\HscController@export')->name('hsc.export');
 	Route::get('/hsc/export', 'Admin\HscController@export')->name('hsc.export');
