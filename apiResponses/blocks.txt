@@ -1,0 +1,32 @@
+URL : https://portal.tndphpm.com/api/blocks
+Headers : {
+    Authorization : $2y$10$b7ni4jXzyml/VwoFtGpG/OaWOoJT.g2UVW9sHbCEJFO7gH0Lcp5rq
+}
+Input Params : {
+    hud_id : Optional | Only active ids
+}
+Response : {
+    "status": true,
+    "message": "OK",
+    "data": [
+        {
+            "id": 1,
+            "name": "Aranthangi",
+            "hud_id": 1,
+            "image_url": null,
+            "contact": {
+                "contact_id": 1,
+                "name": "Deputy Director of Health Services,",
+                "phone_number": "9999999999999",
+                "email_address": "dummy@gmail.com",
+                "landline_number": "04222522156",
+                "designation": "Deputy Director",
+                "fax": null,
+                "image_url": null,
+                "location_url": null
+            }
+        }
+    ],
+    "errors": [],
+    "code": 200
+}

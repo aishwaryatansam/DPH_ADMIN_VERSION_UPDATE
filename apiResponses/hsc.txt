@@ -1,0 +1,33 @@
+URL : https://portal.tndphpm.com/api/hsc
+Headers : {
+    Authorization : $2y$10$b7ni4jXzyml/VwoFtGpG/OaWOoJT.g2UVW9sHbCEJFO7gH0Lcp5rq
+}
+Input Params : {
+    phc_id : Optional | Only active ids
+}
+Response : {
+    "status": true,
+    "message": "OK",
+    "data": [
+        {
+            "id": 1,
+            "name": "Trial",
+            "phc_id": "1",
+            "image_url": "http://127.0.0.1:8000/tndphpmfiles/1674206738_spidy1.jpg",
+            "contact": {
+                "contact_id": 1,
+                "name": "Deputy Director of Health Services,",
+                "phone_number": "9999999999999",
+                "email_address": "dummy@gmail.com",
+                "landline_number": "04222522156",
+                "designation": "Deputy Director",
+                "fax": null,
+                "image_url": null,
+                "location_url": null,
+                "facility_type": "dummy"
+            }
+        }
+    ],
+    "errors": [],
+    "code": 200
+}

@@ -1,0 +1,272 @@
+URL : https://portal.tndphpm.com/api/districts
+Headers : {
+    Authorization : $2y$10$b7ni4jXzyml/VwoFtGpG/OaWOoJT.g2UVW9sHbCEJFO7gH0Lcp5rq
+}
+Input Data : None
+Response : {
+    "status": true,
+    "message": "OK",
+    "data": [
+        {
+            "id": 2,
+            "name": "Ariyalur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 4,
+            "name": "Chengalpet",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 6,
+            "name": "Coimbatore",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 7,
+            "name": "Cuddalore",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 8,
+            "name": "Dharmapuri",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 9,
+            "name": "Dindugal",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 10,
+            "name": "Erode",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 11,
+            "name": "Kallakurichi",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 12,
+            "name": "Kancheepuram",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 13,
+            "name": "Karur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 15,
+            "name": "Krishnagiri",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 16,
+            "name": "Madurai",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 17,
+            "name": "Mayiladuthurai",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 18,
+            "name": "Nagapattinam",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 19,
+            "name": "Nagercoil",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 20,
+            "name": "Namakkal",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 22,
+            "name": "Perambalur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 1,
+            "name": "Pudukottai",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 21,
+            "name": "Ramanathapuram",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 24,
+            "name": "Ranipet",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 3,
+            "name": "Salem",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 25,
+            "name": "Sivagangai",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 27,
+            "name": "Tenkasi",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 28,
+            "name": "Thanjavur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 29,
+            "name": "The Nilgiris",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 30,
+            "name": "Theni",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 31,
+            "name": "Thiruchirapalli",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 32,
+            "name": "Tirunelveli",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 33,
+            "name": "Tirupattur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 34,
+            "name": "Tiruppur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 23,
+            "name": "Tiruvallur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 5,
+            "name": "Tiruvannamalai",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 35,
+            "name": "Tiruvarur",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 14,
+            "name": "Tuticorin",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 36,
+            "name": "Vellore",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 37,
+            "name": "Villupuram",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 26,
+            "name": "Virudhunagar",
+            "status": 1,
+            "created_at": null,
+            "updated_at": null
+        }
+    ],
+    "errors": [],
+    "code": 200
+}

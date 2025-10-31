@@ -1,0 +1,29 @@
+URL : https://portal.tndphpm.com/api/contacts
+Headers : {
+    Authorization : $2y$10$b7ni4jXzyml/VwoFtGpG/OaWOoJT.g2UVW9sHbCEJFO7gH0Lcp5rq
+}
+Input Params : None
+Response : {
+ 
+     "status": true,
+    "message": "OK",
+    "data": [
+        {
+            "id": 1,
+            "name": "Deputy Director of Health Services",
+            "designation": 1,
+            "email_address": "--",
+            "landline_number": "--",
+            "image_url": null,
+            "location_url": "--",
+            "phone_number": "--",
+            "fax": "--",
+            "contact_type": 0
+        }
+    ],
+    "errors": [],
+    "code": 200
+   
+}
+
+    

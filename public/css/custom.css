@@ -1,0 +1,93 @@
+.required:after { content:" * "; color: red; }
+
+#register-form{height:400px;overflow-y:auto}
+
+label.error {
+   float: none;
+   color: red;
+   padding-left: .5em;
+   vertical-align: top;
+   display: block;
+}​
+#maincontent {
+   margin-top: 95px;
+}
+.sizeoftextred {
+   color: red;
+   font-size: 11px;
+ }
+ .remove-button {
+   position: absolute;
+   top: 5px;
+   right: 5px;
+   background-color: #dc3545;
+   color: white;
+   border-radius: 50%;
+   padding: 2px 6px;
+   cursor: pointer;
+   font-weight: bold;
+}
+
+.bg-purple {
+  background-color: purple; /* Or any desired color */
+  color: white; /* Ensure text is readable */
+}
+
+/* css for content width in director message list start */
+@media (max-width: 1280px) {
+   .arrow {
+     right: 15px;
+   }
+ }
+
+ @media (max-width: 1024px) {
+   #maincontent {
+     margin-top: 120px;
+   }
+
+   .arrow {
+     right: 15px;
+   }
+ }
+
+ /* Custom styles to control the grid layout */
+ @media (min-width: 992px) {
+
+   /* Large devices */
+   .grid-3 {
+     grid-template-columns: repeat(3, 1fr);
+   }
+ }
+
+ @media (max-width: 991px) {
+
+   /* Medium devices */
+   .grid-2 {
+     grid-template-columns: repeat(2, 1fr);
+   }
+ }
+
+ /* css for content width in director message list start */
+ @media (max-width: 768px) {
+
+   #maincontent {
+     margin-top: 70px;
+   }
+
+   .arrow {
+     right: 15px;
+     /* Slightly adjust for smaller screens */
+   }
+
+   .grid-2 {
+     grid-template-columns: repeat(2, 1fr);
+   }
+ }
+
+ @media (max-width: 767px) {
+
+   /* Small devices */
+   .grid-1 {
+     grid-template-columns: 1fr;
+   }
+ }

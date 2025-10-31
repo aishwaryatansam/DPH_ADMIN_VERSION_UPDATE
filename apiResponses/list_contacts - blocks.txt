@@ -1,0 +1,31 @@
+URL : https://portal.tndphpm.com/api/contacts
+Headers : {
+    Authorization : $2y$10$b7ni4jXzyml/VwoFtGpG/OaWOoJT.g2UVW9sHbCEJFO7gH0Lcp5rq
+}
+Input Params : {
+
+  contact_type:block
+  contact_sub_type:hud_id
+    
+}
+Response : {
+  
+    "status": true,
+    "message": "OK",
+    "data": [
+        {
+            "id": 46,
+            "name": "test",
+            "designation": "Block Designation",
+            "email_address": "dph@gmail.com",
+            "landline_number": null,
+            "image_url": "",
+            "location_url": null,
+            "phone_number": "2534676567",
+            "fax": null,
+            "contact_type": 8
+        }
+    ],
+    "errors": [],
+    "code": 200
+}
