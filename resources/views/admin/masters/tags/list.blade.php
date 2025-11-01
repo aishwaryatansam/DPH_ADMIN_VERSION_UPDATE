@@ -48,8 +48,10 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
+                                        
                                         <h4 class="card-title mb-4 text-primary">All tags</h4>
                                         <!-- Button to add employees if needed -->
+                                        
                                         <button class="btn btn-primary btn-round ms-auto"
                                             onclick="window.location.href='{{route('tags.create')}}';">
                                             <i class="fa fa-plus"></i> Add Tags
@@ -67,6 +69,18 @@
                                        <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
             <thead>
+                  <div class="col-sm-12 col-md-6">
+                                                <div class="dataTables_length" id="myTable_length">
+                                                   <label>Show </label>
+                                                      <select name="pageLength" id="pageLength" aria-controls="myTable" on-change="searchFun()">
+                                                        @foreach(getPageLenthArr() as $pageLenght)
+                                              <option value="{{$pageLenght}}" {{SELECT($pageLenght,request('pageLength'))}}>{{$pageLenght}}</option>
+                                              @endforeach   
+                                                      </select>
+                                                </div>
+                                             </div>
+                                             
+                                        </div>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
