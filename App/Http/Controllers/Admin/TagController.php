@@ -50,7 +50,7 @@ public function store(Request $request)
   
     $request->validate([
         'name' => 'required|min:2|max:99',
-         'status' => 'required|boolean',
+         
     ]);
 
    

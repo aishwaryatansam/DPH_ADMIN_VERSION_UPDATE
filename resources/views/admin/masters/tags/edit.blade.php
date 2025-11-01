@@ -34,14 +34,14 @@
                                 <!-- Heading -->
                                 <h4 class="card-title mb-4 text-primary">Edit tags Details</h4>
 
-                                <form action="{{route('blocks.update',$result->id)}}" enctype="multipart/form-data" method="post">
+                                <form action="{{route('tags.update',$result->id)}}" enctype="multipart/form-data" method="post">
                                     {{csrf_field()}}
                                     @method('PUT')
                                     <!-- Name -->
                                     <div class="row mb-3 p-3">
                                         <div class="col-md-10">
                                             <div class="font-weight-bold text-secondary">Name:</div>
-                                            <input type="text" class="form-control" id="blockName" value="{{old('name',$result->name)}}"
+                                            <input type="text" class="form-control" id="tagName" value="{{old('name',$result->name)}}"
                                                 name="name">
                                         </div>
 
