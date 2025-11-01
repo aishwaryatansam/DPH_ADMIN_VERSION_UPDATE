@@ -34,10 +34,7 @@
                                 </div>
 
                                 <!-- District -->
-                                <div class="col-md-9">
-                                    <div class="font-weight-bold text-secondary">Status:</div>
-                                    <div class="border p-3 rounded bg-light">{{$result->hud->name ?? '--'}}</div>
-                                </div>
+                               
                                   
                             </div>
                         

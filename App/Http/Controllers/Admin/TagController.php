@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Block;
-use App\Models\HUD;
+use App\Models\FetchTag;
 use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\BlockResource as DDBlockResource;
@@ -17,12 +16,15 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = Block::getQueriedResult();
-        $huds = HUD::where('status', _active())->orderBy('name')->get();
-        return view('admin.masters.tags.list',compact('results','huds'));
-    }
+   public function index()
+{
+    // Fetch all tags from the database
+    $results = FetchTag::orderBy('id', 'desc')->get();
+
+    // Return view with results
+    return view('admin.masters.tags.list', compact('results'));
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -32,9 +34,9 @@ class TagController extends Controller
     public function create()
     {
         $statuses = _getGlobalStatus();
-        $huds = HUD::collectHudData();
-        $is_urban = _isUrban();
-        return view('admin.masters.tags.create',compact('huds','statuses', 'is_urban'));
+      
+       
+        return view('admin.masters.tags.create',compact('statuses'));
     }
 
     /**
@@ -43,49 +45,24 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(),$this->rules(),$this->messages(),$this->attributes());
+public function store(Request $request)
+{
+  
+    $request->validate([
+        'name' => 'required|min:2|max:99',
+         'status' => 'required|boolean',
+    ]);
 
-        if($validator->fails()) {
-            return redirect()->back()->withErrors($validator)
-                        ->withInput();
-        }
+   
+    FetchTag::create([
+        'name' => $request->name,
+        'status' => $request->status,
+    ]);
 
-        $input = [
-                'name' => $request->name,
-                'hud_id' => $request->hud_id,
-                // 'location_url' => $request->location_url,
-                // 'video_url' => $request->video_url,
-                // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
-            ];
+    
+    return redirect()->route('tags.index')->with('success', 'Tag created successfully!');
+}
 
-
-        if($request->hasFile('block_image') && $file = $request->file('block_image')) {
-
-            if($file->isValid()) {
-                $storedFileArray = FileService::storeFile($file);
-
-                $input['image_url'] = $storedFileArray['stored_file_path'] ?? '';
-            }
-        }
-
-        if($request->hasFile('property_document') && $file = $request->file('property_document')) {
-
-            if($file->isValid()) {
-                $storedFileArray = FileService::storeFile($file);
-
-                $input['property_document_url'] = $storedFileArray['stored_file_path'] ?? '';
-            }
-        }
-
-        $result = Block::create($input);
-
-        createdResponse("Block Created Successfully");
-
-        return redirect()->route('blocks.index');
-    }
 
     /**
      * Display the specified resource.
@@ -95,7 +72,7 @@ class TagController extends Controller
      */
      public function show($id)
     {
-        $result = Block::with(['hud'])->find($id);
+     $result = FetchTag::findOrFail($id);
         return view('admin.masters.tags.show',compact('result'));
     }
 
@@ -105,14 +82,37 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $result = Block::with(['hud'])->find($id);
-        $statuses = _getGlobalStatus();
-        $huds = Hud::collectHudData();
-        $is_urban = _isUrban();
-        return view('admin.masters.tags.edit',compact('result','huds','statuses', 'is_urban'));
-    }
+public function edit($id)
+{
+  
+    $result = FetchTag::findOrFail($id);
+
+   
+    $statuses = _getGlobalStatus();
+    $is_urban = _isUrban();
+
+ 
+    return view('admin.masters.tags.edit', compact('result', 'statuses'));
+}
+public function update(Request $request, $id)
+{
+    
+    $request->validate([
+        'name' => 'required|min:2|max:99',
+     
+    ]);
+
+    $result = FetchTag::findOrFail($id);
+
+    
+    $result->update([
+        'name' => $request->name,
+        'status' => $request->status ?? 1,
+    ]);
+
+    
+    return redirect()->route('tags.index')->with('success', 'Tag updated successfully!');
+}
 
     /**
      * Update the specified resource in storage.
@@ -121,50 +121,7 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(),$this->rules($id),$this->messages(),$this->attributes());
-
-        if($validator->fails()) {
-            return redirect()->back()->withErrors($validator)
-                        ->withInput();
-        }
-
-        $block = Block::find($id);
-
-        $input = array();
-        $input = [
-                'name' => $request->name,
-                'hud_id' => $request->hud_id,
-                // 'location_url' => $request->location_url,
-                // 'video_url' => $request->video_url,
-                // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
-            ];
-
-             
-
-        if($request->hasFile('block_image') && $file = $request->file('block_image')) {
-            if($file->isValid()) {
-                $storedFileArray = FileService::updateAndStoreFile($file,'/',$block->image_url);
-                $input['image_url'] = $storedFileArray['stored_file_path'] ?? '';
-            }
-        }
-
-        if($request->hasFile('property_document') && $file = $request->file('property_document')) {
-            if($file->isValid()) {
-                $storedFileArray = FileService::updateAndStoreFile($file,'/',$block->property_document_url);
-                $input['property_document_url'] = $storedFileArray['stored_file_path'] ?? '';
-            }
-        }
-
-        $result = $block->update($input);
-
-        updatedResponse("Tags Updated Successfully");
-
-        return redirect()->route('tags.index');
-    }
-
+    
 
     /**
      * Remove the specified resource from storage.
@@ -178,17 +135,17 @@ class TagController extends Controller
     }
 
    
-    public function destroyDocument($id)
-    {        
-        $block = Block::find($id);
+    // public function destroyDocument($id)
+    // {        
+    //     $block = Block::find($id);
 
-        // Delete the property document
-        if ($block->property_document_url) {
-            $block->update(['property_document_url' => null]);
-        }
+    //     // Delete the property document
+    //     if ($block->property_document_url) {
+    //         $block->update(['property_document_url' => null]);
+    //     }
 
-        return redirect()->back()->with('success', 'Land Document deleted successfully.');
-    }
+    //     return redirect()->back()->with('success', 'Land Document deleted successfully.');
+    // }
 
 
     public function rules($id="") {
@@ -196,18 +153,11 @@ class TagController extends Controller
         $rules = array();
 
         if($id) {
-            $rules['name'] = "required|unique:blocks,name,{$id},id,hud_id,{request('hud_id')}|min:2|max:99";
+            $rules['name'] = "required|unique:blocks,name,{$id},id,|min:2|max:99";
         } else {
-            $rules['name'] = "required|unique:blocks,name,null,id,hud_id,{request('hud_id')}|min:2|max:99";
+            $rules['name'] = "required|unique:blocks,name,null,id,|min:2|max:99";
         }
 
-        $rules['hud_id'] = 'required';
-        $rules['block_image'] = 'sometimes|mimes:png,jpg,jpeg|max:4096';
-        $rules['location_url'] = 'sometimes|nullable|url';
-        $rules['video_url'] = 'sometimes|nullable|url';
-        // $rules['status'] = 'required|boolean';
-        // $rules['is_urban'] = 'required';
-        $rules['property_document'] = 'sometimes|mimes:pdf|max:8192';
         
         return $rules;
     }
@@ -220,17 +170,7 @@ class TagController extends Controller
         return [];
     }
 
-     public function listBlock(Request $request) {
-        $validator = Validator::make($request->all(),[
-            'hud_id' => 'sometimes|exists:huds,id,status,'._active(),
-        ]);
 
-        if($validator->fails()) {
-            return sendError($validator->errors());
-        }
-        $blocks = Block::collectBlockData($request->hud_id);
-        return sendResponse(DDBlockResource::collection($blocks));
-    }
     public function export(Request $request){
     	$filename = 'blocks'.date('d-m-Y').'.xlsx';
     	return Excel::download(new CustomersExport, $filename);

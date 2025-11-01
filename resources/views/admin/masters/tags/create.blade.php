@@ -30,45 +30,33 @@
                 <div class="container-fluid mt-2">
                     <div class="row">
                         <div class="col-lg-5 py-5 px-5" style="background-color: #ffffff; border-radius: 10px;">
-                            <form id="urbanForm" action="{{route('tags.store')}}" enctype="multipart/form-data" method="post">
-                                {{csrf_field()}}
-                                <div class="container">
-                                    <h4 class="card-title mb-4 text-primary">Tags</h4>
+                          <form action="{{ route('tags.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
-                                   
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-md-3">
-                                            <label for="blockname" class="form-label">Name</label>
-                                        </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="text" class="form-control" name="name" id="tagname"
-                                                placeholder="Enter name">
-                                        </div>
-                                    </div>
+    <div class="mb-3">
+        <label for="tagname" class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" id="tagname" placeholder="Enter tag name" required>
+    </div>
 
-                                    <!-- District Row as Dropdown -->
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-md-3">
-                                            <label for="district" class="form-label">Tags<span
-                                                    style="color: red;">*</span></label>
+     <div class="row mb-3">
+                                        <div class="col-12 mt-2 col-md-3">
+                                            <label for="status" class="form-label">Status</label>
                                         </div>
-                                        <div class="col-12 col-md-10">
-                                            <input type="text" class="form-control" name="name" id="status"
-                                                placeholder="Enter status">
+                                        <div class="col-12 col-md-5">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" name="status" type="checkbox"
+                                                    id="toggleStatus" value="1" {{ CHECKBOX('document_status') }}
+                                                    onchange="toggleStatusText('statusLabel', this)">
+                                                <label class="form-check-label" for="toggleStatus"
+                                                    id="statusLabel">In-Active</label>
+                                            </div>
                                         </div>
                                     </div>
 
-                              
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="{{ route('tags.index') }}" class="btn btn-danger">Cancel</a>
+</form>
 
-                                    <!-- Buttons -->
-                                    <div class="d-flex mt-2">
-                                        <button type="submit" class="btn btn-primary"
-                                            onclick="validateForm()">Submit</button>
-                                        <button onclick="window.location.href='{{url('/tags')}}';" type="button" style="margin-left: 10px;"
-                                            class="btn btn-danger">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
 
                             <!-- Confirmation Modal -->
                             <div class="modal fade" id="confirmationModal" tabindex="-1"

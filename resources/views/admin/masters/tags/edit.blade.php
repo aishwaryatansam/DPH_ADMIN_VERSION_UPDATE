@@ -4,10 +4,10 @@
     <div class="container" style="margin-top: 90px;">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
             <div class="d-flex justify-content-between align-items-center" style="padding-left: 20px; padding-right: 20px;">
-                <h5 class="mb-0">Block</h5>
+                <h5 class="mb-0">Tags</h5>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0" style="background-color: #f2f2f2;">
-                        <li class="breadcrumb-item"><a href="#">Block</a></li>
+                        <li class="breadcrumb-item"><a href="#">Tags</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Edit</li>
                     </ol>
                 </nav>
@@ -53,14 +53,7 @@
                                             <label for="district" class="form-label">Tags<span
                                                     style="color: red;">*</span></label>
                                         </div>
-                                        <div class="col-12 col-md-10">
-                                            <select name="hud_id" id="section" class="form-control">
-                                                <option value="" >-- Select Tags -- </option>
-                                                @foreach($huds as $key => $value)
-                                                    <option value="{{$value->id}}" {{SELECT($value->id,old('hud_id',$result->hud_id))}}>{{$value->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    
                                     </div>
 
 

@@ -23,18 +23,7 @@
                         <form>
                             <div class="row">
                                 <div class="col col-md-4">
-                                    <div class="form-group">
-                                        <label>HUD</label>
-                                        <select name="hud_id" class="form-control form-control-line searchable"
-                                            onchange="searchFun()">
-                                            <option value="">-- Select Tags -- </option>
-                                            @foreach ($huds as $hud)
-
-                                                <option value="{{ $hud->id }}"
-                                                    {{ SELECT($hud->id, request('hud_id')) }}>{{ $hud->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                  
                                 </div>
                                 <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
@@ -75,49 +64,46 @@
                                 <!-- Table Card -->
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table id="add-row" class="display table table-striped table-hover"
+                                       <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
-                                            <thead>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($results as $tag)
+                 <tr>
+    <td>{{ $tag->id }}</td>
+    <td>{{ $tag->name }}</td>
+    <td>{{ $tag->status ? 'Active' : 'Inactive' }}</td>
+    <td>
+        <div class="form-button-action">
+            <button type="button"
+                class="btn btn-link btn-primary btn-lg"
+                onclick="window.location.href='{{ route('tags.edit', $tag->id) }}'"
+                data-bs-toggle="tooltip" title="Edit Tags">
+                <i class="fa fa-edit"></i>
+            </button>
+            <button type="button" class="btn btn-link btn-danger"
+                onclick="window.location.href='{{ route('tags.show', $tag->id) }}'"
+                data-bs-toggle="tooltip" title="View Tags">
+                <i class="fa fa-eye"></i>
+            </button>
+        </div>
+    </td>
+</tr>
 
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>HUD</th>
-                                                    <th>Status</th>
-                                                    <th class="text-center" style="width: 10%">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($results as $result)
-                                                    <tr>
-                                                        <td>{{ $result->name ?? '' }}</td>
-                                                        <td>{{ $result->hud->name ?? '' }}</td>
-                                                        <td style="font-weight: bold;">
-                                                            @if (isset($result->status) && $result->status == 1)
-                                                                <span class="text-success">Active</span>
-                                                            @else
-                                                                <span class="text-danger">In-Active</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <div class="form-button-action">
-                                                                <button type="button"
-                                                                    class="btn btn-link btn-primary btn-lg"
-                                                                    onclick="window.location.href='{{route('blocks.edit',$result->id)}}'"
-                                                                    data-bs-toggle="tooltip" title="Edit Block">
-                                                                    <i class="fa fa-edit"></i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-link btn-danger"
-                                                                    onclick="window.location.href='{{route('blocks.show',$result->id)}}'"
-                                                                    data-bs-toggle="tooltip" title="View Block">
-                                                                    <i class="fa fa-eye"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                    <!-- Additional rows as needed -->
-                                            </tbody>
-                                        </table>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center">No tags found</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +156,7 @@
             tableData.forEach(function (row) {
                 exportData.push([
                     row.name ?? '', // Block Name
-                    row.hud ? row.hud.name : '', // HUD Name
+                     // HUD Name
                     row.status == 1 ? 'Active' : 'In-Active' // Status
                 ]);
             });
