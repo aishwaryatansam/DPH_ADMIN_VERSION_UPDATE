@@ -27,7 +27,7 @@
                                         <label>HUD</label>
                                         <select name="hud_id" class="form-control form-control-line searchable"
                                             onchange="searchFun()">
-                                            <option value="">-- Select HUD -- </option>
+                                            <option value="">-- Select Tags -- </option>
                                             @foreach ($huds as $hud)
 
                                                 <option value="{{ $hud->id }}"
@@ -62,7 +62,7 @@
                                         <h4 class="card-title mb-4 text-primary">All tags</h4>
                                         <!-- Button to add employees if needed -->
                                         <button class="btn btn-primary btn-round ms-auto"
-                                            onclick="window.location.href='{{route('blocks.create')}}';">
+                                            onclick="window.location.href='{{route('tags.create')}}';">
                                             <i class="fa fa-plus"></i> Add Tags
                                         </button>
                                         <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
@@ -196,7 +196,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            setPageUrl('/blocks?');
+            setPageUrl('/tags?');
         });
     </script>
 @endsection
