@@ -135,6 +135,7 @@ Route::middleware(['privilege'])->group(function () {
 	// Route::get('/hsc-export','Admin\HscController@export')->name('hsc.export');
 	Route::get('/hsc/export', 'Admin\HscController@export')->name('hsc.export');
 
+Route::get('/hsc/get-phc/{blockId}', 'Admin\HscController@getPhcByBlock')->name('hsc.getPhcByBlock');
 
 	Route::get('/hw-location','Admin\HealthWalkLocationController@index');
 	Route::post('/hw-location-submit','Admin\HealthWalkLocationController@store');

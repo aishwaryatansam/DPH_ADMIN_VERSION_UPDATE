@@ -213,4 +213,28 @@
     </div>
     <script src="{{ asset('packa/custom/hierarchy.js') }}"></script>
 
+<script>
+document.getElementById('block_id').addEventListener('change', function() {
+    const blockId = this.value;
+    const phcSelect = document.getElementById('phc_id');
+    phcSelect.innerHTML = '<option value="">Loading...</option>';
+
+    if (blockId) {
+        fetch(`/hsc/get-phc/${blockId}`)
+            .then(res => res.json())
+            .then(data => {
+                phcSelect.innerHTML = '<option value="">-- Select PHC --</option>';
+                data.forEach(phc => {
+                    phcSelect.innerHTML += `<option value="${phc.id}">${phc.name}</option>`;
+                });
+            })
+            .catch(() => {
+                phcSelect.innerHTML = '<option value="">Error loading PHCs</option>';
+            });
+    } else {
+        phcSelect.innerHTML = '<option value="">-- Select PHC --</option>';
+    }
+});
+</script>
+
 @endsection

@@ -134,7 +134,14 @@ public function index(Request $request)
         return view('admin.masters.hsc.show',compact('result'));
     }
 
-
+public function getPhcByBlock($blockId)
+{
+    $phcs = PHC::where('block_id', $blockId)
+        ->where('status', _active())
+        ->orderBy('name')
+        ->get(['id', 'name']);
+    return response()->json($phcs);
+}
     /**
      * Show the form for editing the specified resource.
      *
