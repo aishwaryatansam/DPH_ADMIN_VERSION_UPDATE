@@ -64,23 +64,23 @@
                                 </div>
 
                                 <!-- Table Card -->
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                       <table id="add-row" class="display table table-striped table-hover"
-                                            style="width:100%">
+             <div class="card-body">
+    <form method="GET" action="{{ url('/tags') }}" class="mb-3">
+        <div class="d-flex align-items-center">
+            <label for="pageLength" class="me-2 mb-0">Show</label>
+            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover" style="width:100%">
             <thead>
-                  <div class="col-sm-12 col-md-6">
-                                                <div class="dataTables_length" id="myTable_length">
-                                                   <label>Show </label>
-                                                      <select name="pageLength" id="pageLength" aria-controls="myTable" on-change="searchFun()">
-                                                        @foreach(getPageLenthArr() as $pageLenght)
-                                              <option value="{{$pageLenght}}" {{SELECT($pageLenght,request('pageLength'))}}>{{$pageLenght}}</option>
-                                              @endforeach   
-                                                      </select>
-                                                </div>
-                                             </div>
-                                             
-                                        </div>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -90,50 +90,38 @@
             </thead>
             <tbody>
                 @forelse ($results as $tag)
-                 <tr>
-    <td>{{ $tag->id }}</td>
-    <td>{{ $tag->name }}</td>
-    <td>{{ $tag->status ? 'Active' : 'Inactive' }}</td>
-    <td>
-        <div class="form-button-action">
-            <button type="button"
-                class="btn btn-link btn-primary btn-lg"
-                onclick="window.location.href='{{ route('tags.edit', $tag->id) }}'"
-                data-bs-toggle="tooltip" title="Edit Tags">
-                <i class="fa fa-edit"></i>
-            </button>
-            <button type="button" class="btn btn-link btn-danger"
-                onclick="window.location.href='{{ route('tags.show', $tag->id) }}'"
-                data-bs-toggle="tooltip" title="View Tags">
-                <i class="fa fa-eye"></i>
-            </button>
-        </div>
-    </td>
-</tr>
-
-                @empty
                     <tr>
-                        <td colspan="4" class="text-center">No tags found</td>
+                        <td>{{ $tag->id }}</td>
+                        <td>{{ $tag->name }}</td>
+                        <td>{{ $tag->status ? 'Active' : 'Inactive' }}</td>
+                        <td>
+                            <div class="form-button-action">
+                                <button type="button"
+                                    class="btn btn-link btn-primary btn-lg"
+                                    onclick="window.location.href='{{ route('tags.edit', $tag->id) }}'"
+                                    title="Edit Tags">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-link btn-danger"
+                                    onclick="window.location.href='{{ route('tags.show', $tag->id) }}'"
+                                    title="View Tags">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
+                @empty
+                    <tr><td colspan="4" class="text-center">No tags found</td></tr>
                 @endforelse
             </tbody>
         </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DataTable End -->
-
-
-                    <!-- insert the contents Here end -->
-                </div>
-            </div>
-        </div>
-        <!-- content end here -->
-        <!-- main panel end -->
     </div>
+
+    <div class="mt-3">
+        {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+    </div>
+</div>
+
    <!-- Include Libraries -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -142,26 +130,7 @@
         var tableData = @json($results);
 
         // Initialize DataTable
-        if (tableData.length > 0) {
-            $('#add-row').DataTable({
-                "paging": true,
-                "searching": true,
-                "lengthChange": true,
-                "pageLength": 10,
-                "info": true,
-                "autoWidth": false,
-            });
-        } else {
-            $('#add-row').DataTable({
-                "data": [],
-                "paging": true,
-                "searching": true,
-                "lengthChange": true,
-                "pageLength": 10,
-                "info": true,
-                "autoWidth": false,
-            });
-        }
+      
 
         // Handle the download button click
         $('#downloadBtn').on('click', function () {

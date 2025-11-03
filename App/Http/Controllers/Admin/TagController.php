@@ -16,14 +16,15 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   public function index()
+public function index(Request $request)
 {
-    // Fetch all tags from the database
-    $results = FetchTag::orderBy('id', 'desc')->get();
+    $perPage = $request->get('pageLength', 10); // default 10
+    $results = FetchTag::orderBy('id', 'asc')->paginate($perPage);
 
-    // Return view with results
     return view('admin.masters.tags.list', compact('results'));
 }
+
+
 
 
     /**
