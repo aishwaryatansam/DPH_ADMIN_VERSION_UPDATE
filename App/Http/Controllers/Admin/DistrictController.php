@@ -16,12 +16,24 @@ class DistrictController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = District::getQueriedResult();
+public function index(Request $request)
+{
+    // Start query with optional relationships
+    $query = District::orderBy('name');
 
-        return view('admin.masters.districts.list', compact('results'));
+    // ✅ Keyword search
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where('name', 'like', "%{$keyword}%");
     }
+
+    // ✅ Pagination (default 10 per page, customizable via dropdown)
+    $results = $query->paginate($request->get('pageLength', 10))
+                     ->appends($request->query());
+
+    return view('admin.masters.districts.list', compact('results'));
+}
+
 
     /**
      * Show the form for creating a new resource.
