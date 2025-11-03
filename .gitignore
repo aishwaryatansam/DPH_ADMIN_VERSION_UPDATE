@@ -16,10 +16,10 @@ public_html/storage
 public_html/hot
 /storage/
 storage/*.key
-.env
+/.env
 Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
 public/tndphpmfiles
-
+/database/migrations/
