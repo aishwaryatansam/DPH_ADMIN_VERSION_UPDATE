@@ -25,7 +25,7 @@
                                 <div class="col col-md-4">
                                   
                                 </div>
-                                <div class="col d-flex justify-content-end align-items-center mt-2">
+                                {{-- <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
                                         <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch"
                                             style="border-radius: 10px;">
@@ -33,7 +33,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </form>
                     </div>
@@ -65,8 +65,9 @@
 
                                 <!-- Table Card -->
              <div class="card-body">
-    <form method="GET" action="{{ url('/tags') }}" class="mb-3">
-        <div class="d-flex align-items-center">
+ <form method="GET" action="{{ url('/tags') }}" class="mb-3">
+    <div class="row align-items-center">
+        <div class="col-auto">
             <label for="pageLength" class="me-2 mb-0">Show</label>
             <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
                 @foreach(getPageLenthArr() as $pageLength)
@@ -76,7 +77,16 @@
                 @endforeach
             </select>
         </div>
-    </form>
+        <div class="col-auto ms-auto">
+             <label for="keyword">Search:</label>
+    <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">
+    <button type="submit">Go</button>
+        </div>
+    </div>
+</form>
+
+
+                           
 
     <div class="table-responsive">
         <table class="table table-striped table-hover" style="width:100%">

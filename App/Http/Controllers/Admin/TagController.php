@@ -16,16 +16,22 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+
 public function index(Request $request)
 {
-    $perPage = $request->get('pageLength', 10); // default 10
-    $results = FetchTag::orderBy('id', 'asc')->paginate($perPage);
+    $keyword = $request->input('keyword');
+
+    // Basic search only by 'name'
+    if ($keyword) {
+        $results = FetchTag::where('name', 'like', "%{$keyword}%")->paginate($request->input('pageLength', 10));
+    } else {
+        $results = FetchTag::paginate($request->input('pageLength', 10));
+    }
 
     return view('admin.masters.tags.list', compact('results'));
 }
-
-
-
 
     /**
      * Show the form for creating a new resource.
