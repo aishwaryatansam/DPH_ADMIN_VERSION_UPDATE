@@ -22,6 +22,7 @@
                 <div class="container-fluid mt-2">
                     <div class="col-md-12 col-lg-12 mt-lg-5 mt-md-3">
                         <div class="card">
+   
                             <div class="card-header">
                                 <div class="d-flex align-items-center">
                                     <h4 class="card-title mb-4 text-primary">All District</h4>
@@ -39,6 +40,25 @@
 
                             <!-- Table Card -->
                             <div class="card-body">
+                                                      <form method="GET" action="{{ url('/districts') }}" class="mb-3">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <label for="pageLength" class="me-2 mb-0">Show</label>
+            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto ms-auto">
+            <label for="keyword">Search:</label>
+            <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">
+            <button type="submit">Go</button>
+        </div>
+    </div>
+</form>
                                 <div class="table-responsive">
                                     <table id="add-row" class="display table table-striped table-hover"
                                         style="width:100%">
