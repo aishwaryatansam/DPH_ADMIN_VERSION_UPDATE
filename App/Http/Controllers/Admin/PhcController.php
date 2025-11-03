@@ -20,12 +20,54 @@ class PhcController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = PHC::getQueriedResult();
-        $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
-        return view('admin.masters.phc.list',compact('results', 'huds'));
+//   public function index()
+// {
+//     // You can specify per page, e.g., 10 or use request('pageLength', 10)
+//     $results = PHC::getQueriedResult()->paginate(10); // If getQueriedResult is a query builder
+
+//     $huds = HUD::with(['blocks:id,name,hud_id'])
+//         ->filter()
+//         ->where('status', _active())
+//         ->orderBy('name')
+//         ->get();
+
+//     return view('admin.masters.phc.list', compact('results', 'huds'));
+// }
+
+public function index(Request $request)
+{
+    // Default per-page value (from dropdown)
+    $perPage = $request->get('pageLength', 10);
+
+    $query = PHC::with('block');
+
+    // Filter by block_id
+    if ($request->filled('block_id')) {
+        $query->where('block_id', $request->block_id);
     }
+
+    // Search by name or block name
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhereHas('block', function ($b) use ($search) {
+                  $b->where('name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    // Pagination with dynamic per-page
+    $results = $query->paginate($perPage)->appends($request->query());
+
+    // Load HUDs + Blocks for filter dropdown
+    $huds = HUD::with(['blocks:id,name,hud_id'])
+        ->where('status', _active())
+        ->orderBy('name')
+        ->get();
+
+    return view('admin.masters.phc.list', compact('results', 'huds'));
+}
 
     /**
      * Show the form for creating a new resource.

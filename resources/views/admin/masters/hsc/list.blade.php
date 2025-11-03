@@ -21,36 +21,36 @@
                         <form method="GET" action="{{ url('/hsc') }}">
                             <div class="row">
                                 <div class="col col-md-4">
-                                    <div class="form-group">
-                                        <label>Block</label>
-                                        <select name="block_id" class="form-control searchable" onchange="searchFun()">
-                                            <option value="">-- Select Block -- </option>
-                                            @foreach ($huds as $hud)
-                                                <optgroup label="{{ $hud->name }}">
-                                                    @foreach ($hud->blocks as $block)
-                                                        <option value="{{ $block->id }}"
-                                                            {{ SELECT($block->id, request('block_id')) }}>
-                                                            {{ $block->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </optgroup>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col col-md-4">
-                                    <div class="form-group">
-                                        <label>PHC</label>
-                                        <select name="phc_id" class="form-control searchable" onchange="searchFun()">
-                                            <option value="">-- Select PHC -- </option>
-                                            @foreach ($phcs as $phc)
-                                                <option value="{{ $phc->id }}"
-                                                    {{ SELECT($phc->id, request('phc_id')) }}>{{ $phc->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col d-flex justify-content-end align-items-center mt-2">
+                                
+          <div>
+             <label>Block</label>
+              <select name="block_id" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Select Block --</option>
+            @foreach ($huds as $hud)
+                <optgroup label="{{ $hud->name }}">
+                    @foreach ($hud->blocks as $block)
+                        <option value="{{ $block->id }}" {{ request('block_id') == $block->id ? 'selected' : '' }}>
+                            {{ $block->name }}
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endforeach
+             </select>
+    </div>
+
+
+        <label>PHC</label>
+        <select name="phc_id" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Select PHC --</option>
+            @foreach ($phcs as $phc)
+                <option value="{{ $phc->id }}" {{ request('phc_id') == $phc->id ? 'selected' : '' }}>
+                    {{ $phc->name }}
+                </option>
+            @endforeach
+        </select>
+    
+    
+ <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
                                         <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch"
                                             style="border-radius: 10px;">
@@ -58,10 +58,12 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                </div>
+                              
                             </div>
 
-                        </form>
-                    </div>
+                    </div></form> 
                 </div>
                 <!-- Filter Card end-->
                 <div>
@@ -220,9 +222,24 @@ $('#downloadBtn').on('click', function () {
 });
 
 </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            setPageUrl('/hsc?');
-        });
-    </script>
+<script>
+function searchFun() {
+    // Get selected values
+    var blockId = document.querySelector('select[name="block_id"]').value;
+    var phcId = document.querySelector('select[name="phc_id"]').value;
+
+    // Build query string
+    var query = '?';
+    if (blockId) query += 'block_id=' + blockId + '&';
+    if (phcId) query += 'phc_id=' + phcId + '&';
+
+    // Redirect to URL with filters applied
+    window.location.href = '/hsc' + query;
+}
+
+function resetSearch() {
+    window.location.href = '/hsc';
+}
+</script>
+
 @endsection

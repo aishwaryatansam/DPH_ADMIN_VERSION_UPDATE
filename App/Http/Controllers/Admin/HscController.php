@@ -32,25 +32,25 @@ class HscController extends Controller
 
     //     return view('admin.masters.hsc.list',compact('results', 'huds','phcs'));
     // }
+
 public function index(Request $request)
 {
-    $query = HSC::query();
+    $query = HSC::query()->with('phc');
 
-    if ($request->filled('block_id')) {
-        $query->where('block_id', $request->block_id);
+    if ($request->has('block_id') && $request->block_id != '') {
+        $query->whereHas('phc', function ($q) use ($request) {
+            $q->where('block_id', $request->block_id);
+        });
     }
-    if ($request->filled('phc_id')) {
+
+    if ($request->has('phc_id') && $request->phc_id != '') {
         $query->where('phc_id', $request->phc_id);
     }
-    if ($request->filled('keyword')) {
-        $query->where('name', 'LIKE', '%' . $request->keyword . '%');
-    }
 
-    // Use requested pageLength
-    $results = $query->paginate($request->input('pageLength', 10))->withQueryString();
+    $results = $query->paginate($request->get('pageLength', 10));
 
-    $phcs = PHC::where('status', _active())->orderBy('name')->get();
-    $huds = HUD::with(['blocks:id,name,hud_id'])->where('status', _active())->orderBy('name')->get();
+    $huds = HUD::with('blocks')->get();
+    $phcs = PHC::all();
 
     return view('admin.masters.hsc.list', compact('results', 'huds', 'phcs'));
 }

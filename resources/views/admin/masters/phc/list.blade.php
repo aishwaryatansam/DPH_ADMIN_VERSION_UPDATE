@@ -20,36 +20,34 @@
 
                 <div class="card mb-0 mt-2">
                     <div class="card-body">
-                        <form>
-                            <div class="row">
-                                <div class="col col-md-4">
-                                    <div class="form-group">
-                                        <label>Block</label>
-                                        <select name="block_id" class="form-control searchable" onchange="searchFun()">
-                                            <option value="">-- Select Block -- </option>
-                                            @foreach ($huds as $hud)
-                                                <optgroup label="{{ $hud->name }}">
-                                                    @foreach ($hud->blocks as $block)
-                                                        <option value="{{ $block->id }}"
-                                                            {{ SELECT($block->id, request('block_id')) }}>
-                                                            {{ $block->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </optgroup>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col d-flex justify-content-end align-items-center mt-2">
-                                    <div class="form-group d-flex">
-                                        <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch" style="border-radius: 10px;">
-                                            <i class="fas fa-redo"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                      <form method="GET" action="{{ route('phc.index') }}">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Block</label>
+                <select name="block_id" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Select Block --</option>
+                    @foreach ($huds as $hud)
+                        <optgroup label="{{ $hud->name }}">
+                            @foreach ($hud->blocks as $block)
+                                <option value="{{ $block->id }}" {{ request('block_id') == $block->id ? 'selected' : '' }}>
+                                    {{ $block->name }}
+                                </option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
+            </div>
+        </div>
 
-                        </form>
+        <div class="col-md-2 d-flex align-items-end">
+            <a href="{{ route('phc.index') }}" class="btn btn-secondary" style="border-radius: 10px;">
+                <i class="fas fa-redo"></i>
+            </a>
+        </div>
+    </div>
+</form>
+
                     </div>
                 </div>
 
@@ -75,9 +73,43 @@
 
                                     </div>
                                 </div>
-
-                                <!-- Table Card -->
+       <!-- Table Card -->
                                 <div class="card-body">
+                                     {{-- <form method="GET" action="{{ url('/phc') }}" class="mb-3"></form>
+        <div class="col-md-4">
+            <label>Search</label>
+            <input type="text" name="search" value="{{ request('search') }}" class="form-control"
+                   placeholder="Search by PHC or Block" onkeyup="if(event.key==='Enter') this.form.submit()">
+        </div>
+
+        <div class="col-md-2">
+            <label>Show</label>
+            <select name="pageLength" class="form-control" onchange="this.form.submit()">
+                @foreach([10, 25, 50, 100] as $len)
+                    <option value="{{ $len }}" {{ request('pageLength', 10) == $len ? 'selected' : '' }}>{{ $len }}</option>
+                @endforeach
+            </select>
+        </div>
+</div></div></form> --}}
+ <form method="GET" action="{{ url('/phc') }}" class="mb-3">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <label for="pageLength" class="me-2 mb-0">Show</label>
+            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto ms-auto">
+             <label for="keyword">Search:</label>
+    <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">
+    <button type="submit">Go</button>
+        </div>
+    </div>
+</form>              
                                     <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
@@ -123,7 +155,10 @@
                                                 <!-- Additional rows as needed -->
                                             </tbody>
                                         </table>
+  <div class="mt-3">
+       {{ $results->links('pagination::bootstrap-5') }}
 
+    </div>
                                     </div>
                                 </div>
                             </div>
@@ -149,26 +184,26 @@
         var tableData = @json($results);
 
         // Initialize DataTable
-        if (tableData.length > 0) {
-            $('#add-row').DataTable({
-                "paging": true,
-                "searching": true,
-                "lengthChange": true,
-                "pageLength": 10,
-                "info": true,
-                "autoWidth": false,
-            });
-        } else {
-            $('#add-row').DataTable({
-                "data": [],
-                "paging": true,
-                "searching": true,
-                "lengthChange": true,
-                "pageLength": 10,
-                "info": true,
-                "autoWidth": false,
-            });
-        }
+        // if (tableData.length > 0) {
+        //     $('#add-row').DataTable({
+        //         "paging": true,
+        //         "searching": true,
+        //         "lengthChange": true,
+        //         "pageLength": 10,
+        //         "info": true,
+        //         "autoWidth": false,
+        //     });
+        // } else {
+        //     $('#add-row').DataTable({
+        //         "data": [],
+        //         "paging": true,
+        //         "searching": true,
+        //         "lengthChange": true,
+        //         "pageLength": 10,
+        //         "info": true,
+        //         "autoWidth": false,
+        //     });
+        // }
 
         // Handle the download button click
         $('#downloadBtn').on('click', function () {
