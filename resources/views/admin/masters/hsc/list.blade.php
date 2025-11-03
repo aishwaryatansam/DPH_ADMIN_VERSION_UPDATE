@@ -18,7 +18,7 @@
                 <!-- insert the contents Here start -->
                 <div class="card mb-0 mt-2">
                     <div class="card-body">
-                        <form>
+                        <form method="GET" action="{{ url('/hsc') }}">
                             <div class="row">
                                 <div class="col col-md-4">
                                     <div class="form-group">
@@ -89,14 +89,19 @@
                                     <div class="table-responsive">
                                         <div class="row m-b-40">
                                             <div class="col-sm-12 col-md-6">
-                                                <div class="dataTables_length" id="myTable_length">
-                                                   <label>Show </label>
-                                                      <select name="pageLength" id="pageLength" aria-controls="myTable" on-change="searchFun()">
-                                                        @foreach(getPageLenthArr() as $pageLenght)
-                                              <option value="{{$pageLenght}}" {{SELECT($pageLenght,request('pageLength'))}}>{{$pageLenght}}</option>
-                                              @endforeach   
-                                                      </select>
-                                                </div>
+                                              <div class="col-auto">
+                                                <form method="GET" action="{{ url('/hsc' ) }}" class="mb-3">
+            <!-- #region -->                    <label for="pageLength" class="me-2 mb-0">Show</label>
+          
+          
+                                                   <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+                                                     @foreach(getPageLenthArr() as $pageLength)
+                                                 <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                                          {{ $pageLength }}
+                                              </option>
+                                                                   @endforeach
+                                                         </select></form>
+                                             </div>
                                              </div>
                                              <div class="col-sm-12 col-md-6">
                                                 <div class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="myTable" id="keyword" value=""></label></div>
@@ -150,8 +155,14 @@
                                             </tbody>
                                         </table>
                                         <!-- Pagination Links -->
-                                        @include('admin.common.table-footer')
+                                       
                                     </div>
+                                     @if(method_exists($results, 'links'))
+                                    <div class="mt-3">
+                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+
+                                    </div>
+                                @endif
                                 </div>
                             </div>
                         </div>
@@ -159,6 +170,9 @@
 
                     <!-- DataTable End -->
 
+
+
+    
 
                     <!-- insert the contents Here end -->
                 </div>

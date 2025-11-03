@@ -20,18 +20,40 @@ class HscController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = HSC::getQueriedResult();
-        $phcs = array();
+    // public function index()
+    // {
+    //     $results = HSC::getQueriedResult();
+    //     $phcs = array();
 
-        $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
-        if($block_id = request('block_id')) {
-            $phcs = PHC::filter()->where('status', _active())->orderBy('name')->get();
-        }
+    //     $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
+    //     if($block_id = request('block_id')) {
+    //         $phcs = PHC::filter()->where('status', _active())->orderBy('name')->get();
+    //     }
 
-        return view('admin.masters.hsc.list',compact('results', 'huds','phcs'));
+    //     return view('admin.masters.hsc.list',compact('results', 'huds','phcs'));
+    // }
+public function index(Request $request)
+{
+    $query = HSC::query();
+
+    if ($request->filled('block_id')) {
+        $query->where('block_id', $request->block_id);
     }
+    if ($request->filled('phc_id')) {
+        $query->where('phc_id', $request->phc_id);
+    }
+    if ($request->filled('keyword')) {
+        $query->where('name', 'LIKE', '%' . $request->keyword . '%');
+    }
+
+    // Use requested pageLength
+    $results = $query->paginate($request->input('pageLength', 10))->withQueryString();
+
+    $phcs = PHC::where('status', _active())->orderBy('name')->get();
+    $huds = HUD::with(['blocks:id,name,hud_id'])->where('status', _active())->orderBy('name')->get();
+
+    return view('admin.masters.hsc.list', compact('results', 'huds', 'phcs'));
+}
 
     /**
      * Show the form for creating a new resource.
