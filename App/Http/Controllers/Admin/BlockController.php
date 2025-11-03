@@ -17,12 +17,14 @@ class BlockController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = Block::getQueriedResult();
-        $huds = HUD::where('status', _active())->orderBy('name')->get();
-        return view('admin.masters.blocks.list',compact('results','huds'));
-    }
+public function index()
+{
+    $results = Block::with('hud')->orderBy('name')->paginate(10);
+    $huds = HUD::where('status', _active())->orderBy('name')->get();
+    return view('admin.masters.blocks.list', compact('results', 'huds'));
+}
+
+
 
     /**
      * Show the form for creating a new resource.
