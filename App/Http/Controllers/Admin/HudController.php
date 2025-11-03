@@ -24,12 +24,34 @@ class HudController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = HUD::getQueriedResult();
-        $districts = District::where('status', _active())->orderBy('name')->get();
-        return view('admin.masters.huds.list',compact('results', 'districts'));
+public function index(Request $request)
+{
+    $query = HUD::with('district')->orderBy('name');
+
+    // Filter by District (dropdown)
+    if ($request->filled('district_id')) {
+        $query->where('district_id', $request->district_id);
     }
+
+    // Keyword search
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where('name', 'like', "%{$keyword}%")
+              ->orWhereHas('district', function ($q) use ($keyword) {
+                  $q->where('name', 'like', "%{$keyword}%");
+              });
+    }
+
+    // Pagination with user-selected length
+    $results = $query->paginate($request->get('pageLength', 10))
+                     ->appends($request->query());
+
+    $districts = District::where('status', _active())
+                        ->orderBy('name')
+                        ->get();
+
+    return view('admin.masters.huds.list', compact('results', 'districts'));
+}
 
     /**
      * Show the form for creating a new resource.
