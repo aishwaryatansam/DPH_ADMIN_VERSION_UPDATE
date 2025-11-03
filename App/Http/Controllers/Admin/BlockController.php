@@ -17,13 +17,58 @@ class BlockController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-public function index()
+// public function index(Request $request)
+// {
+//     $perPage = (int) $request->get('pageLength', 10);
+//     if ($perPage <= 0) $perPage = 10;
+
+//     $keyword = $request->get('keyword');
+
+//     $query = Block::with('hud')->orderBy('name');
+
+//     // 🔍 Search filter
+//     if (!empty($keyword)) {
+//         $query->where(function ($q) use ($keyword) {
+//             $q->where('name', 'like', "%{$keyword}%")
+//               ->orWhereHas('hud', function ($q2) use ($keyword) {
+//                   $q2->where('name', 'like', "%{$keyword}%");
+//               });
+//         });
+//     }
+
+//     $results = $query->paginate($perPage)->appends($request->query());
+
+//     $huds = HUD::where('status', _active())->orderBy('name')->get();
+
+//     return view('admin.masters.blocks.list', compact('results', 'huds'));
+// }
+
+public function index(Request $request)
 {
-    $results = Block::with('hud')->orderBy('name')->paginate(10);
+    $query = Block::with('hud')->orderBy('name');
+
+    // Keyword search (if you have a search box)
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where('name', 'like', "%{$keyword}%")
+              ->orWhereHas('hud', function ($q) use ($keyword) {
+                  $q->where('name', 'like', "%{$keyword}%");
+              });
+    }
+
+    // ✅ HUD filter
+    if ($request->filled('hud_id')) {
+        $query->where('hud_id', $request->hud_id);
+    }
+
+    // ✅ Pagination
+    $results = $query->paginate($request->get('pageLength', 10))->appends($request->query());
+
+    // HUD dropdown data
     $huds = HUD::where('status', _active())->orderBy('name')->get();
+
     return view('admin.masters.blocks.list', compact('results', 'huds'));
 }
-
 
 
     /**
