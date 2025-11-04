@@ -25,31 +25,49 @@ class ProgramDetailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        if (isState()){
-            $programs_id = auth()->user()->programs_id;
-            $sections_id = auth()->user()->sections_id;
-            if ($programs_id) {
-                $results = ProgramDetail::where('programs_id', $programs_id)->get();
-            } elseif ($sections_id) {
-                $section = Section::find($sections_id);
-                if ($section) {
-                    $results = ProgramDetail::where('programs_id', $section->programs_id)->get();
-                } else {
-                    $results = collect();
-                }
-            } else {
-                $results = collect();
-            }
+public function index(Request $request)
+{
+    $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10);
+
+    // start the query
+    if (isState()) {
+        $programs_id = auth()->user()->programs_id;
+        $sections_id = auth()->user()->sections_id;
+
+        if ($programs_id) {
+            $query = ProgramDetail::where('programs_id', $programs_id);
+        } elseif ($sections_id) {
+            $section = Section::find($sections_id);
+            $query = $section
+                ? ProgramDetail::where('programs_id', $section->programs_id)
+                : ProgramDetail::query()->whereRaw('1=0');
+        } else {
+            $query = ProgramDetail::query()->whereRaw('1=0');
         }
-        else{
-            $results = ProgramDetail::getQueriedResult();
-        }
-        
-        $programofficers = ProgramOfficer::getQueriedResult();
-        return view('admin.program-details.list', compact('results', 'programofficers'));
+    } else {
+        $query = ProgramDetail::query();
     }
+
+    // ✅ apply search filter if user typed something
+    if (!empty($search)) {
+        $query->where(function ($q) use ($search) {
+            $q->where('description', 'like', "%{$search}%")
+  ->orWhereHas('program', function ($p) use ($search) {
+      $p->where('name', 'like', "%{$search}%");
+  });
+
+        });
+    }
+
+    // ✅ paginate with query parameters retained
+    $results = $query->paginate($perPage)->appends($request->all());
+    $programofficers = ProgramOfficer::getQueriedResult();
+
+    return view('admin.program-details.list', compact('results', 'programofficers'));
+}
+
+
 
     /**
      * Show the form for creating a new resource.
