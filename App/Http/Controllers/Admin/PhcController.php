@@ -11,7 +11,8 @@ use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\PHCResource as DDPHCResource;
 
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PHCExport;
 
 class PhcController extends Controller
 {
@@ -279,4 +280,9 @@ public function index(Request $request)
         // dd($phcs);
         return sendResponse(DDPHCResource::collection($phcs));
     }
+    public function export(Request $request)
+{
+    $blockId = $request->get('block_id');
+    return Excel::download(new PHCExport($blockId), 'phc-list.xlsx');
+}
 }

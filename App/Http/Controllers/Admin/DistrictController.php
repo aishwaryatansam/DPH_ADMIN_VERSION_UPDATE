@@ -8,6 +8,8 @@ use App\Models\HUD;
 use App\Models\District;
 use Validator;
 use App\Services\FileService;
+use App\Exports\DistrictExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DistrictController extends Controller
 {
@@ -95,6 +97,7 @@ public function index(Request $request)
         $district = new District();
         return view('admin.masters.districts.show', compact('result'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -197,41 +200,9 @@ public function index(Request $request)
         return sendResponse($districts);
     }
 
-    public function export()
-    {
-        $fileName = 'Districts_' . date('Y-m-d') . '.xlsx';
-
-        // Fetch data for districts
-        $districts = District::select('id', 'name', 'status')->get();
-
-        // Convert status to readable format
-        $districts = $districts->map(function ($district) {
-            $district->status = $district->status ? 'Active' : 'Inactive';
-            return $district;
-        });
-
-        // Create and return the Excel file
-        return Excel::download(new class($districts) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            private $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'ID',
-                    'Name',
-                    'Status',
-                ];
-            }
-        }, $fileName);
-    }
+public function export()
+{
+    $fileName = 'Districts_' . date('Y-m-d') . '.xlsx';
+    return Excel::download(new DistrictExport, $fileName);
+}
 }

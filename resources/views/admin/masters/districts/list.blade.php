@@ -31,9 +31,10 @@
                                         onclick="window.location.href='{{route('districts.create')}}';">
                                         <i class="fa fa-plus"></i> Add District
                                     </button>
-                                    <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
-                                        <i class="fa fa-download"></i> Download
-                                    </button>
+ 
+<a href="{{ route('districts.export') }}" class="btn btn-success btn-sm">
+    <i class="fa fa-download"></i> Download Excel
+</a>
 
                                 </div>
                             </div>

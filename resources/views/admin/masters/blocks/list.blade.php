@@ -55,9 +55,10 @@
                                     <button class="btn btn-primary btn-round ms-auto" onclick="window.location.href='{{ route('blocks.create') }}';">
                                         <i class="fa fa-plus"></i> Add Block
                                     </button>
-                                    <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
-                                        <i class="fa fa-download"></i> Download
-                                    </button>
+                                    <a href="{{ route('blocks.export') }}" class="btn btn-secondary btn-round ms-2">
+    <i class="fa fa-download"></i> Download
+</a>
+
                                 </div>
                             </div>
 <div class="card-body">

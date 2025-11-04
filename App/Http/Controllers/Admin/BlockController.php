@@ -9,6 +9,8 @@ use App\Models\HUD;
 use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\BlockResource as DDBlockResource;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BlockExport;
 
 class BlockController extends Controller
 {
@@ -278,9 +280,10 @@ public function index(Request $request)
         $blocks = Block::collectBlockData($request->hud_id);
         return sendResponse(DDBlockResource::collection($blocks));
     }
-    public function export(Request $request){
-    	$filename = 'blocks'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
-    }
+    public function export(Request $request)
+{
+    $filename = 'blocks-' . date('d-m-Y') . '.xlsx';
+    return Excel::download(new BlockExport, $filename);
+}
+
 }

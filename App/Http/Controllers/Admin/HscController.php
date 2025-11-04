@@ -273,9 +273,10 @@ public function getPhcByBlock($blockId)
         return sendResponse(DDHSCResource::collection($hscs));
     }
 
-    public function export(Request $request){
-    	$filename = 'hscs'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
-    }
+  public function export(Request $request)
+{
+    $phcId = $request->get('phc_id');
+    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\HSCExport($phcId), 'hsc-list.xlsx');
+}
+
 }

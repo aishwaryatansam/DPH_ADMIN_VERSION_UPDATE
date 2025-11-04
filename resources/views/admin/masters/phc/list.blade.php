@@ -67,9 +67,9 @@
                                             <i class="fa fa-plus"></i> Add PHC
                                         </button>
 
-                                        <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
-                                            <i class="fa fa-download"></i> Download
-                                        </button>
+                                        <a href="{{ route('phc.export', ['block_id' => request('block_id')]) }}" class="btn btn-secondary btn-round ms-2">
+    <i class="fa fa-download"></i> Download
+</a>
 
                                     </div>
                                 </div>
@@ -206,33 +206,9 @@
         // }
 
         // Handle the download button click
-        $('#downloadBtn').on('click', function () {
-            // Prepare data for export
-            var exportData = [];
-            tableData.forEach(function (row) {
-                exportData.push([
-                    row.name ?? '', // Block Name
-                    row.block ? row.block.name : '', // HUD Name
-                    row.status == 1 ? 'Active' : 'In-Active' // Status
-                ]);
-            });
-
+    
             // Define the headers
-            var headers = ['PHC Name', 'Block Name', 'Status'];
-
-            // Create worksheet
-            var ws = XLSX.utils.aoa_to_sheet([headers].concat(exportData));
-
-            // Create workbook and add the worksheet
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'phc');
-
-            // Set filename
-            var filename = 'phc-list-' + new Date().toLocaleDateString('en-GB').replace(/\//g, '-') + '.xlsx';
-
-            // Trigger download
-            XLSX.writeFile(wb, filename);
-        });
+     
     });
 </script>
     <script type="text/javascript">

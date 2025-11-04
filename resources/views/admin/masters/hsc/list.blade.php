@@ -79,10 +79,10 @@
                                             onclick="window.location.href='{{route('hsc.create')}}';">
                                             <i class="fa fa-plus"></i> Add HSC
                                         </button>
+<a href="{{ route('hsc.export', request()->all()) }}" class="btn btn-success">
+    Download Excel
+</a>
 
-                                        <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
-                                            <i class="fa fa-download"></i> Download
-                                        </button>
 
                                     </div>
                                 </div>
