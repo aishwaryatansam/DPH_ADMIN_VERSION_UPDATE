@@ -50,7 +50,7 @@
         </select>
     
     
- <div class="col d-flex justify-content-end align-items-center mt-2">
+                    <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
                                         <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch"
                                             style="border-radius: 10px;">

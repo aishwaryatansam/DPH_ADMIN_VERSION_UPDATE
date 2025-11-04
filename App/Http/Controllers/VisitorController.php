@@ -12,24 +12,20 @@ class VisitorController extends Controller
         $ip = $request->ip();
         $pageUrl = $request->input('page_url');
 
+        // Insert the visitor data into the database
         DB::table('visitors')->insert([
             'ip_address' => $ip,
             'page_url' => $pageUrl,
             'visited_at' => now()
         ]);
 
-        $totalVisitors = DB::table('visitors')
-            ->distinct('ip_address')
-            ->count('ip_address');
+        return response()->json(['message' => 'Visitor tracked successfully']);
+    }
 
-        $pageVisitors = DB::table('visitors')
-            ->where('page_url', $pageUrl)
-            ->distinct('ip_address')
-            ->count('ip_address');
-
-        return response()->json([
-            'totalVisitors' => $totalVisitors,
-            'pageVisitors' => $pageVisitors
-        ]);
+    public function getVisitorCount()
+    {
+        // Get the total count of visitors
+        $count = DB::table('visitors')->count();
+        return response()->json(['total_visitors' => $count]);
     }
 }
