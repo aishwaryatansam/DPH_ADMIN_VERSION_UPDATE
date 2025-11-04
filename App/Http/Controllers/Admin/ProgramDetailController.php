@@ -13,7 +13,7 @@ use App\Models\Section;
 use Illuminate\Support\Facades\Validator;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\FetchTag;
 class ProgramDetailController extends Controller
 {
     private $program_details_image_path = '/program_details/images';
@@ -83,7 +83,8 @@ class ProgramDetailController extends Controller
             $programs = Program::getProgramData();
         }
         $designations = Designation::where('status', _active())->get();
-        return view('admin.program-details.create', compact('statuses', 'programs', 'designations'));
+        $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.program-details.create', compact('statuses', 'programs', 'designations', 'tags'));
     }
 
     /**
@@ -95,7 +96,7 @@ class ProgramDetailController extends Controller
     public function store(Request $request)
     {
         // dd($request->toArray());
-
+//   dd($request->all());
         $validator = Validator::make($request->all(), $this->rules(), $this->messages(), $this->attributes());
 
         if ($validator->fails()) {
@@ -108,6 +109,8 @@ class ProgramDetailController extends Controller
             'programs_id' => $request->program_id,
             'status' => $request->status ?? 0,
             'user_id' => Auth::user()->id,
+        'tags' => json_encode($request->tags),
+
             // 'visible_to_public' => $request->visible_to_public ?? 0,
         ];
 

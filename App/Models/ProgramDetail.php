@@ -20,6 +20,8 @@ class ProgramDetail extends Model
         'status',
         'visible_to_public',
         'user_id',
+            'tag_id',
+    'tags',
         'approval_stage',
         'reamrks',
         'verified_at',

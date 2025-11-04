@@ -179,7 +179,7 @@ public function update(Request $request, $id)
 
 
     public function export(Request $request){
-    	$filename = 'blocks'.date('d-m-Y').'.xlsx';
+    	$filename = 'tags'.date('d-m-Y').'.xlsx';
     	return Excel::download(new CustomersExport, $filename);
     	
     }

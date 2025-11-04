@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PHC;
 use App\Models\HUD;
 use App\Models\Block;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\PHCResource as DDPHCResource;
 
