@@ -9,12 +9,16 @@ class VisitorController extends Controller
 {
     public function trackVisitor(Request $request)
     {
-        $ip = $request->ip();
+        // $ip = $request->ip();
+        $ip = $request->header('X-Forwarded-For') ?? $request->ip();
+
         $pageUrl = $request->input('page_url');
 
         // Insert the visitor data into the database
         DB::table('visitors')->insert([
+            
             'ip_address' => $ip,
+            
             'page_url' => $pageUrl,
             'visited_at' => now()
         ]);

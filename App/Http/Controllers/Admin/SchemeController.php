@@ -64,8 +64,7 @@ public function create(Request $request)
         $validator = Validator::make($request->all(), $this->rules(), $this->messages(), $this->attributes());
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator) ->withInput();
         }
 
         $input = [
