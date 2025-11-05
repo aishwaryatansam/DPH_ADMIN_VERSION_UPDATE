@@ -27,7 +27,6 @@
                 <!-- Filter Card -->
                 <div>
                     <div class="card mb-0 mt-2">
-                        
                         <div class="card-body">
                             <form>
                                 <div class="row">
@@ -122,7 +121,6 @@
                     <div class="container-fluid mt-2">
                         <div class="col-md-12 col-lg-12 mt-lg-5 mt-md-3">
                             <div class="card">
-                                
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">
@@ -146,25 +144,6 @@
 
                                 <!-- Table Card -->
                                 <div class="card-body">
-                                                         <form method="GET" action="{{ url('/new-documents?document_type=id') }}" class="mb-3">
-    <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
-                @foreach(getPageLenthArr() as $pageLength)
-                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
-                        {{ $pageLength }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-auto ms-auto">
-            <label for="search">Search:</label>
-            <input type="search" name="search" id="search" value="{{ request('search') }}">
-            <button type="submit">Go</button>
-        </div>
-    </div>
-</form>
                                     <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
@@ -220,13 +199,10 @@
                                                 <!-- More rows as needed -->
                                             </tbody>
                                         </table>
-      @if(method_exists($results, 'links'))
-                                    <div class="mt-3">
-                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+                                                                        <div class="mt-3">
+       {{ $results->links('pagination::bootstrap-5') }}
 
-                                    </div>
-                                @endif
-
+    </div>
                                     </div>
                                 </div>
                             </div>

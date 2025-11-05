@@ -30,22 +30,26 @@ class NewDocumentController extends Controller
      */
 public function index(Request $request)
 {
-    $perPage = (int) $request->get('pageLength', 10);
+    $perPage = $request->get('per_page', 10);
 
-    // Start query
-    $query = NewDocument::query(); // remove non-existent relationships
+    $results = NewDocument::getQueriedResult(); 
 
-    // Optional: filter by uploaded_by if employee
-    if (auth()->user()->user_type_id == _employeeUserTypeId()) {
-        $query->where('uploaded_by', auth()->user()->id);
+    // If $results is a query builder:
+    if (method_exists($results, 'paginate')) {
+        $results = $results->paginate($perPage);
+    } 
+    // Otherwise, if $results is a collection, wrap it with paginator:
+    else if ($results instanceof \Illuminate\Support\Collection) {
+        $page = $request->get('page', 1);
+        $results = new \Illuminate\Pagination\LengthAwarePaginator(
+            $results->forPage($page, $perPage), 
+            $results->count(), 
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
     }
 
-    // Paginate
-    $results = $query->orderBy('id', 'desc')
-                     ->paginate($perPage)
-                     ->appends($request->all());
-
-    // Dropdowns
     $sections = Section::where('status', _active())->get();
     $document_types = DocumentType::where('status', _active())->get();
     $statuses = _getGlobalStatus();
