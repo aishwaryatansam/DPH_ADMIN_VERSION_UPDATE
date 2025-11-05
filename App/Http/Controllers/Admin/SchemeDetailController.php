@@ -15,7 +15,7 @@ use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-
+use App\Models\FetchTag;
 class SchemeDetailController extends Controller
 {
     private $scheme_details_image_path = '/scheme_details/images';
@@ -59,6 +59,7 @@ class SchemeDetailController extends Controller
         }
         // dd($results->toArray());
         $schemes = Scheme::getSchemeData();
+        
         return view('admin.scheme-details.list', compact('results', 'schemes'));
     }
 
@@ -73,6 +74,7 @@ class SchemeDetailController extends Controller
         $programs_id = auth()->user()->programs_id;
         $sections_id = auth()->user()->sections_id;
         $section = Section::find($sections_id);
+   
         // dd($section->programs_id);
         $programs = collect();
         if (isState()) {
@@ -89,7 +91,8 @@ class SchemeDetailController extends Controller
             $schemes = Scheme::getSchemeData();
             $programs = Program::getProgramData();
         }
-        return view('admin.scheme-details.create', compact('statuses', 'schemes', 'programs'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.scheme-details.create', compact('statuses', 'schemes', 'programs',  'tags'));
     }
 
     /**
@@ -112,6 +115,7 @@ class SchemeDetailController extends Controller
             'description' => $request->description,
             'schemes_id' => $request->scheme_id,
             'status' => $request->status ?? 0,
+            'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
             'visible_to_public' => $request->visible_to_public ?? 0,
             'user_id' => Auth::user()->id,
         ];
@@ -172,7 +176,8 @@ class SchemeDetailController extends Controller
             }
         }
 
-        $result = SchemeDetail::create($input);
+           $result = SchemeDetail::create($input);
+             
 
         $approvalData = getApprovalData();
 

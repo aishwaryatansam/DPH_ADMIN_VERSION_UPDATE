@@ -181,7 +181,7 @@
   @foreach($tags as $tag)
     <option value="{{ $tag->id }}">{{ $tag->name }}</option>
   @endforeach
-</select>
+ </select>
 
         <small class="text-muted">Select one or more tags</small>
     </div>

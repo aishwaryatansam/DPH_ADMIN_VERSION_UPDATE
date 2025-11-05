@@ -1,6 +1,15 @@
 @extends('admin.layouts.layout')
 @section('title', 'Create Scheme Details')
 @section('content')
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <style>
         .drag-drop-container {
             border: 2px dashed #6c757d;
@@ -73,7 +82,17 @@
             vertical-align: middle;
             z-index: 10;
         }
-    </style>
+
+        
+    </style><script>
+    $(document).ready(function() {
+        $('#tags').select2({
+            placeholder: "Select tags",
+            width: '100%',
+            allowClear: true
+        });
+    });
+</script>
     <div class="container" style="margin-top: 90px;">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
             <div class="d-flex justify-content-between align-items-center" style="padding-left: 20px; padding-right: 20px;">
@@ -193,6 +212,25 @@
                                             <small class="sizeoftextred">Accepted formats: .pdf, Max size: 5MB</small>
                                         </div>
                                     </div>
+                                    <div class="row mb-3">
+                                  <div class="col-12 col-md-3">
+                              
+                         </div>
+<div class="row mb-3">
+    <div class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags</label>
+    </div>
+    <div class="col-12 col-md-8">
+        <select name="tags[]" id="tags" class="form-control" multiple>
+            @foreach($tags as $tag)
+                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+            @endforeach
+        </select>
+        <small class="text-muted">Select one or more tags</small>
+    </div>
+</div>
+
+                        </div>
 
                                     <!-- Upload Icon Row -->
                                     <div class="row mb-3">
