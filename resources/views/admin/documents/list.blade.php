@@ -199,6 +199,13 @@
                                                 <!-- More rows as needed -->
                                             </tbody>
                                         </table>
+      @if(method_exists($results, 'links'))
+                                    <div class="mt-3">
+                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+
+                                    </div>
+                                @endif
+
                                     </div>
                                 </div>
                             </div>

@@ -28,17 +28,32 @@ class NewDocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = NewDocument::getQueriedResult();
+public function index(Request $request)
+{
+    $perPage = (int) $request->get('pageLength', 10);
 
+    // Start query
+    $query = NewDocument::query(); // remove non-existent relationships
 
-        $sections = Section::where('status', _active())->get();
-        $document_types = DocumentType::where('status', _active())->get();
-        $statuses = _getGlobalStatus();
-
-        return view('admin.documents.list', compact('results', 'sections', 'document_types', 'statuses'));
+    // Optional: filter by uploaded_by if employee
+    if (auth()->user()->user_type_id == _employeeUserTypeId()) {
+        $query->where('uploaded_by', auth()->user()->id);
     }
+
+    // Paginate
+    $results = $query->orderBy('id', 'desc')
+                     ->paginate($perPage)
+                     ->appends($request->all());
+
+    // Dropdowns
+    $sections = Section::where('status', _active())->get();
+    $document_types = DocumentType::where('status', _active())->get();
+    $statuses = _getGlobalStatus();
+
+    return view('admin.documents.list', compact('results', 'sections', 'document_types', 'statuses'));
+}
+
+
 
     /**
      * Show the form for creating a new resource.
