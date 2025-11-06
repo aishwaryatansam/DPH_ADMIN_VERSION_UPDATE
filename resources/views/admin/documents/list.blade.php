@@ -149,28 +149,35 @@
                                     <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
-                                                               <form method="GET" action="{{ url('/new-documents') }}" class="mb-3">
+                                                            <form method="GET" action="{{ url('/new-documents') }}" class="mb-3"> 
+<form method="GET" action="{{ url('/new-documents') }}" class="mb-3">
     <input type="hidden" name="document_type" value="{{ request('document_type') }}">
-    <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
                 @foreach(getPageLenthArr() as $pageLength)
                     <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
                         {{ $pageLength }}
                     </option>
                 @endforeach
             </select>
+            <span>entries</span>
         </div>
-        <div class="col-auto ms-auto">
-            <label for="search">Search:</label>
-            <input type="search" name="search" id="search" 
-       value="{{ request('search') }}" 
-       onkeyup="this.form.submit()" placeholder="Search...">
-            <button type="submit">Go</button>
-        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
     </div>
 </form>
+
+
+
 
                                             <thead>
                                                 <tr>
