@@ -189,7 +189,7 @@
                                                     <th class="text-center" style="width: 10%">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody> @if ($results->count())
                                                 @foreach ($results as $result)
                                                     <tr>
                                                         <td>{{ $result->document_type->name ?? '--' }}</td>
@@ -228,6 +228,10 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
+                                                @else
+        <tr>
+            <td colspan="6" class="text-center text-muted">No matching records found</td>
+        </tr>@endif
                                                 <!-- More rows as needed -->
                                             </tbody>
                                         </table>
