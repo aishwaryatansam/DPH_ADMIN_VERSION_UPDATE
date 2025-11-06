@@ -182,16 +182,15 @@
                                                         <td class="col-12 col-md-9">
                                                             <div class="position-relative">
                                                                 <div class="select-wrapper">
-                                                                    <select class="form-select select-dropdown"
-                                                                        id="programDivisions">
-                                                                        <option> -- Select --</option>
-                                                                        @foreach ($programs as $key => $value)
-                                                                            <option value="{{ $key }}"
-                                                                                {{ SELECT($key, old('programs')) }}>
-                                                                                {{ $value }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
+                                                              <select name="programs_id" id="programs_id" class="form-control" >
+    <option value="">-- Select Program -- </option>
+   @foreach ($programs as $id => $name)
+    <option value="{{ $id }}">
+        {{ $name }}
+    </option>
+@endforeach
+
+</select>
                                                                 </div>
                                                         </td>
                                                     </tr>
@@ -205,16 +204,15 @@
                                                     <td class="col-12 col-md-9">
                                                         <div class="position-relative">
                                                             <div class="select-wrapper">
-                                                                <select class="form-select select-dropdown" id="schemes"
-                                                                    name="scheme_id" required>
-                                                                    <option> -- Select --</option>
-                                                                    @foreach ($schemes as $key => $value)
-                                                                        <option value="{{ $key }}"
-                                                                            {{ SELECT($key, old('schemes')) }}>
-                                                                            {{ $value }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
+                                                               <select name="scheme_id" id="scheme_id" class="form-control">
+    <option value="">-- Select Scheme -- </option>
+@foreach ($schemes as $id => $name)
+    <option value="{{ $id }}"
+        {{ old('scheme_id') == $id ? 'selected' : '' }}>
+        {{ $name }}
+    </option>
+@endforeach
+</select>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -748,6 +746,38 @@
             }
         });
     </script>
+    <script>
+     
+const programSelect = document.getElementById('programs_id');
+const schemeSelect = document.getElementById('scheme_id');
+
+programSelect.addEventListener('change', () => {
+    const programId = programSelect.value;
+    schemeSelect.innerHTML = '<option value="">-- Select Scheme --</option>';
+
+    if (!programId) return;
+
+    fetch('{{ route('list-scheme') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ program_id: programId }),
+    })
+    .then(res => res.json())
+    .then(data => {
+        data.data.forEach(scheme => {
+            const option = document.createElement('option');
+            option.value = scheme.id;
+            option.textContent = scheme.name;
+            schemeSelect.appendChild(option);
+        });
+    })
+    .catch(console.error);
+});
+</script>
+    
     <script>
         document.getElementById('typeofdoc').classList.add('readonly');
     </script>
