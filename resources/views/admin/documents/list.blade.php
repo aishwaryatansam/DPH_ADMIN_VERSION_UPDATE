@@ -164,7 +164,9 @@
         </div>
         <div class="col-auto ms-auto">
             <label for="search">Search:</label>
-            <input type="search" name="search" id="search" value="{{ request('search') }}">
+            <input type="search" name="search" id="search" 
+       value="{{ request('search') }}" 
+       onkeyup="this.form.submit()" placeholder="Search...">
             <button type="submit">Go</button>
         </div>
     </div>
