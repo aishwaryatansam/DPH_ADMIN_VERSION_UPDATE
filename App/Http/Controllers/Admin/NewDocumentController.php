@@ -227,21 +227,27 @@ public function index(Request $request)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $result = NewDocument::with('document_type')->find($id);
-        //dd($result->toArray());
-        $statuses = _getGlobalStatus();
-        $programs = Program::where('status', _active())->orderBy('name')->pluck('name', 'id');
-        $languages = Master::getLanguagesData();
-        $publications = Master::getPublicationsData();
-        $notifications = Master::getNotifacationsData();
-        $sections = Section::where('status', _active())->orderBy('name')->pluck('name', 'id');
-        $documents_type = DocumentType::where('status', _active())->orderBy('order_no')->get();
-        $events_type = Master::getEventsData();
-        $schemes = Scheme::where('status', _active())->orderBy('name')->pluck('name', 'id');
-        return view('admin.documents.edit', compact('result', 'statuses', 'documents_type', 'schemes', 'programs', 'languages', 'publications', 'sections', 'notifications', 'events_type'));
-    }
+  public function edit($id)
+{
+    // Load the document along with the tags relationship
+      $result = NewDocument::with('document_type')->findOrFail($id);
+    // Other code...
+
+
+    $statuses = _getGlobalStatus();
+    $programs = Program::where('status', _active())->orderBy('name')->pluck('name', 'id');
+    $languages = Master::getLanguagesData();
+    $publications = Master::getPublicationsData();
+    $notifications = Master::getNotifacationsData();
+    $sections = Section::where('status', _active())->orderBy('name')->pluck('name', 'id');
+    $documents_type = DocumentType::where('status', _active())->orderBy('order_no')->get();
+    $events_type = Master::getEventsData();
+    $schemes = Scheme::where('status', _active())->orderBy('name')->pluck('name', 'id');
+   $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+    return view('admin.documents.edit', compact('result', 'statuses', 'documents_type', 'schemes', 'programs', 'languages', 'publications', 'sections', 'notifications', 'events_type', 'tags', 'selectedTags'));
+}
+
 
     /**
      * Update the specified resource in storage.
