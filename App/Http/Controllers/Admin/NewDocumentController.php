@@ -30,16 +30,31 @@ class NewDocumentController extends Controller
      */
 public function index(Request $request)
 {
-    $perPage = $request->get('per_page', 10);
+    // New: get search and per-page inputs
+    $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10); // match your HTML select name
 
-    $results = NewDocument::getQueriedResult(); 
+    // Get existing query result (your existing code)
+    $results = NewDocument::getQueriedResult();
 
-    // If $results is a query builder:
+    // 🔍 Apply search filter if available
+    if ($search) {
+        // If $results is a query builder, apply where
+        if (method_exists($results, 'where')) {
+            $results = $results->where('name_of_document', 'like', "%{$search}%");
+        } 
+        // If $results is a collection, filter manually
+        else if ($results instanceof \Illuminate\Support\Collection) {
+            $results = $results->filter(function ($item) use ($search) {
+                return stripos($item->name_of_document, $search) !== false;
+            });
+        }
+    }
+
+    // 🧾 Pagination logic (keep your original code)
     if (method_exists($results, 'paginate')) {
         $results = $results->paginate($perPage);
-    } 
-    // Otherwise, if $results is a collection, wrap it with paginator:
-    else if ($results instanceof \Illuminate\Support\Collection) {
+    } else if ($results instanceof \Illuminate\Support\Collection) {
         $page = $request->get('page', 1);
         $results = new \Illuminate\Pagination\LengthAwarePaginator(
             $results->forPage($page, $perPage), 
@@ -50,12 +65,14 @@ public function index(Request $request)
         );
     }
 
+    // Your existing code (unchanged)
     $sections = Section::where('status', _active())->get();
     $document_types = DocumentType::where('status', _active())->get();
     $statuses = _getGlobalStatus();
 
     return view('admin.documents.list', compact('results', 'sections', 'document_types', 'statuses'));
 }
+
 
 
 
