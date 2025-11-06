@@ -1,6 +1,22 @@
 @extends('admin.layouts.layout')
 @section('title', 'Upload Document')
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Select2 CSS & JS from CDN -->
+
+<script>
+$(document).ready(function() {
+    $('#tags').select2({
+        placeholder: "-- Select --",
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+
     <style>
         #typeofdoc.readonly {
             pointer-events: none;
@@ -11,6 +27,9 @@
             width: 100% !important;
             /* Or set a fixed width, e.g., 300px */
         }
+
+
+        
     </style>
     <div class="container" style="margin-top: 90px;">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
@@ -542,6 +561,7 @@
 
 
                                             @if (isAdmin())
+                                            
                                             <!-- Visible to public -->
                                             <tr>
                                                 <td>
@@ -559,7 +579,35 @@
                                                     </div>
                                                 </td>
                                             </tr>
+{{-- <tr>
+    <td class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags</label>
+    </td>
+    <td class="col-12 col-md-9">
+        <select class="form-select select-dropdown" id="tags" name="tags[]" >
+            <option value=""> -- Select --</option>
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+            @endforeach
+        </select>
+        
+    </td>
+</tr> --}}
+<tr>
+    <td class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags</label>
+    </td>
+    <td class="col-12 col-md-9">
+        {{-- FIX: Corrected the 'multiple' attribute syntax and name attribute --}}
+      <select class="form-select select-dropdown" id="tags" name="tags[]" multiple>
+    <option value=""> -- Select --</option>
+    @foreach ($tags as $tag)
+        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+    @endforeach
+</select>
 
+    </td>
+</tr>
                                             <!-- Status -->
                                             <tr>
                                                 <td>
@@ -777,7 +825,7 @@ programSelect.addEventListener('change', () => {
     .catch(console.error);
 });
 </script>
-    
+ 
     <script>
         document.getElementById('typeofdoc').classList.add('readonly');
     </script>

@@ -20,7 +20,7 @@ use App\Models\Scheme;
 use App\Models\Section;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToArray;
-
+use App\Models\FetchTag;
 class NewDocumentController extends Controller
 {
     /**
@@ -80,6 +80,7 @@ public function index(Request $request)
     {
         $statuses = _getGlobalStatus();
         $languages = Master::getLanguagesData();
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
         $document_types = DocumentType::where('status', _active())->orderBy('order_no')->get();
         if (isState()) {
             $programs_id = auth()->user()->programs_id;
@@ -103,7 +104,7 @@ public function index(Request $request)
         $notifications = Master::getNotifacationsData();
         $events_type = Master::getEventsData();
 
-        return view('admin.documents.create', compact('statuses', 'document_types', 'sections', 'programs', 'schemes', 'languages', 'publications', 'notifications', 'events_type'));
+        return view('admin.documents.create', compact('statuses', 'document_types', 'sections', 'programs', 'schemes', 'languages', 'publications', 'notifications', 'events_type', 'tags'));
     }
 
     /**
@@ -157,6 +158,7 @@ public function index(Request $request)
             'dated' => dateOf($request->dated, 'Y-m-d h:i:s'),
             'user_id' => Auth::user()->id,
             'language_id' => $request->language,
+            'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ];
 
         if ($request->hasFile('document') && $file = $request->file('document')) {
@@ -280,6 +282,7 @@ public function index(Request $request)
             'dated' => dateOf($request->dated, 'Y-m-d h:i:s'),
             'user_id' => Auth::user()->id,
             'language_id' => $request->language,
+              'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ];
 
         if ($request->hasFile('document') && $file = $request->file('document')) {
