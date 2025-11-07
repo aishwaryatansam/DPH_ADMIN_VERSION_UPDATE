@@ -183,6 +183,7 @@
                                                 <tr>
                                                     <th>Type Of Document</th>
                                                     <th>Name Of Document</th>
+                                                     <th>Tags</th>
                                                     <th>Dated</th>
                                                     <th>Approval Status</th>
                                                     <th>Public Status</th>
@@ -196,6 +197,8 @@
                                                         <td><a
                                                                 href="{{ fileLink($result->document_url) }}">{{ $result->name }}</a>
                                                         </td>
+                                                              <td>{{ $result->tag_names }}</td>
+
                                                         <td>{{ $result->dated ?? '--' }}</td>
                                                         <td>
                                                             {!! getStageBadge($result->approvalWorkflow->current_stage ?? '') !!}

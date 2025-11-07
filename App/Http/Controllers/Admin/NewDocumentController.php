@@ -59,6 +59,20 @@ public function index(Request $request)
             ['path' => $request->url(), 'query' => $request->query()]
         );
     }
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
+
 
     // Your existing code (unchanged)
     $sections = Section::where('status', _active())->get();
