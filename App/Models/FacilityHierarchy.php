@@ -21,6 +21,8 @@ class FacilityHierarchy extends Model
         'facility_name',
         'facility_code',
         'facility_level_id',
+        'latitude',
+        'longitude',
         'facility_type_id',
         'country_id',
         'state_id',

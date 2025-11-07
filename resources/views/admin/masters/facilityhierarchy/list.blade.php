@@ -21,6 +21,7 @@
                         <form>
                             <div class="row">
                                 <!-- Facility Level Field -->
+                                
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Facility Level</label>
@@ -133,6 +134,8 @@
                                             <th>Name</th>
                                             <th>Code</th>
                                             <th>Level</th>
+                                            <th>Latitude</th>
+                                              <th>Longitude</th>
                                             <th>District</th>
                                             <th>HUD</th>
                                             <th>Block</th>
@@ -153,6 +156,8 @@
                                                     <td><a href="#">{{ $result->facility_name ?? '' }}</a></td>
                                                     <td>{{ $result->facility_code ?? '--' }}</td>
                                                     <td>{{ $result->facility_level->name ?? '--' }}</td>
+                                                        <td>{{ $result->latitude ?? '--' }}</td>
+                                                        <td>{{ $result->latitude ?? '--' }}</td>
                                                     <td>{{ $result->district->name ?? '--' }}</td>
                                                     <td>{{ $result->hud->name ?? '--' }}</td>
                                                     <td>{{ $result->block->name ?? '--' }}</td>

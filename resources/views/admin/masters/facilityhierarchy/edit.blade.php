@@ -93,7 +93,24 @@
                                             </td>
                                             <td></td>
                                         </tr>
-                        
+                                         <tr>
+                                            <td>
+                                                <label for="latitude" class="form-label">Latitude</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="latitude" id="latitude" value="{{ $result->latitude }}" placeholder="Enter Latitude">
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                          <tr>
+                                            <td>
+                                                <label for="longitude" class="form-label">Longitude</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="longitude" id="longitude" value="{{ $result->longitude }}" placeholder="Enter Longitude">
+                                            </td>
+                                            <td></td>
+                                        </tr>
                                         <!-- District ID -->
                                         @if ($result->facility_level->name == 'District' || 
                                         $result->facility_level->name == 'HUD' || 

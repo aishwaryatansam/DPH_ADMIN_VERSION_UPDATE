@@ -202,6 +202,28 @@
                                                     </select>
                                                 </td>
                                             </tr>
+                                                 <tr>
+                                                <td>
+                                                    <label for="latitude" class="form-label"> Latitude<span
+                                                            style="color: red;">*</span></label>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control" name="latitude"
+                                                        id="latitude" placeholder="Enter Latitude" required>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+  <tr>
+                                                <td>
+                                                    <label for="longitude" class="form-label"> Longitude<span
+                                                            style="color: red;">*</span></label>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control" name="longitude"
+                                                        id="longitude" placeholder="Enter longitude" required>
+                                                </td>
+                                                <td></td>
+                                            </tr>
 
                                             <!-- Urban/Rural -->
                                             <tr>
