@@ -22,6 +22,8 @@ class SocialMediaPostController extends Controller
      */
 public function index(Request $request)
 {
+    //  $results = ConfigurationDetails::getConfigurationDetailsData($id = 28);
+       
     $query = ConfigurationDetails::where('configuration_content_type_id', 28);
 
     // Apply search by name or link if present
