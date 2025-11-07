@@ -16,6 +16,7 @@ class ConfigurationDetails extends Model
         'status',
         'coloreffect',
         'menu_to_show',
+        'tags',
         'configuration_content_type_id'
     ];
 

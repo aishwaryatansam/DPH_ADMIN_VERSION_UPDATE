@@ -58,6 +58,24 @@
                                                 </select>
                                             </div>
                                         </div>
+                                  <div class="row mb-3">
+    <!-- Label Column with reduced width -->
+    <div class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags<span class="sizeoftextred">*</span></label>
+    </div>
+    <!-- Input Column -->
+    <div class="col-12 col-md-7">
+        <select class="form-control" id="tags" name="tags[]">
+            <option value="" disabled selected>Select Tags</option>
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}">
+                    {{ $tag->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
 
                                         <!-- Menu to Show Row -->
                                         <div class="row mb-3">
