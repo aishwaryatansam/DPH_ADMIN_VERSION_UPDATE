@@ -36,6 +36,7 @@
                                         <tr>
                                             <th>Title</th>
                                             <th>Link</th>
+                                              <th>Tag</th>
                                             <th>Logo</th>
                                             <th>Status</th>
                                             <th class="text-center" style="width: 10%">Action</th>
@@ -50,6 +51,8 @@
                                                     <a href="{{ $result->link ?? '' }}"
                                                         target="_blank">{{ $result->link ?? '' }}</a>
                                                 </td>
+                                                <td>{{ $result->tag_names }}</td>
+
                                                 <td>
                                                     <!-- Assuming the Logo is an image, adjust the src attribute as needed -->
                                                     <img src="{{fileLink($result->image_url)}}" alt="Logo"
