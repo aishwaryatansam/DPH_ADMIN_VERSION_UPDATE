@@ -40,6 +40,7 @@
                                     <tr>
                                         <th>Sl.no</th>
                                         <th>Media Type</th>
+                                         <th>Tags</th>
                                         <th>Media Title</th>
                                         <th>Media Description</th>
                                         <th>Date</th>
@@ -52,6 +53,7 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ config('constant.media_gallery.' . $result->media_gallery) ?? 'Unknown' }}</td>
+                                         <td>{{ $result->tag_names }}</td>
                                         <td>{{ $result->title ?? '' }}</td>
                                         <td>{{ $result->description ?? '' }}</td>
                                         <td>{{ $result->date ? \Carbon\Carbon::parse($result->date)->format('d/m/Y') : '' }}</td>
