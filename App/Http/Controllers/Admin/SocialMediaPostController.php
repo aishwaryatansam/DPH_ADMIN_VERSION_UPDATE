@@ -20,27 +20,35 @@ class SocialMediaPostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = ConfigurationDetails::getConfigurationDetailsData($id = 28);
-        //$result = DB::table('configurations')->where('id', $id)->first();
-        $statuses = _getGlobalStatus();
-        foreach ($results as $result) {
-    // Fetch active tags (consistent with your existing code)
-    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
-    
-    // Get tag IDs (from the result)
-    $tagIds = explode(',', $result->tags);
+public function index(Request $request)
+{
+    $query = ConfigurationDetails::where('configuration_content_type_id', 28);
 
-    // Fetch tag names by matching the tag IDs
-    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
-
-    // Store the tag names as a comma-separated string
-    $result->tag_names = implode(', ', $tagNames);
-}
-
-        return view('admin.configurations.social-media-post.list', compact('results', 'statuses'));
+    // Apply search by name or link if present
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('link', 'like', "%{$search}%");
+        });
     }
+
+    // Always use paginate for effective server-side navigation
+    $perPage = 10;
+    $results = $query->paginate($perPage)->appends($request->query());
+
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    foreach ($results as $result) {
+        $tagIds = explode(',', $result->tags);
+        $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+        $result->tag_names = implode(', ', $tagNames);
+    }
+
+    $statuses = _getGlobalStatus();
+    $total = $results->total();
+
+    return view('admin.configurations.social-media-post.list', compact('results', 'statuses', 'total'));
+}
 
     /**
      * Show the form for creating a new resource.

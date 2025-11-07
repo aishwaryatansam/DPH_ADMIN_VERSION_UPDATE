@@ -31,6 +31,33 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+<form method="GET" action="{{ url('/social-media-post') }}" class="mb-3">
+    <input type="hidden" name="document_type" value="{{ request('document_type') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
+        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
+    </div>
+</form>
+
+
                                 <table id="add-row" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
@@ -84,7 +111,13 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                               <div class="mt-3">
+       {{ $results->links('pagination::bootstrap-5') }}
+
+    </div>
+
                             </div>
+                        
                         </div>
 
                     </div>
@@ -97,29 +130,30 @@
 
         <!-- main panel end -->
     </div>
-    <script>
-        $(document).ready(function() {
-            var tableData = @json($results);
-            if (tableData.length > 0) {
-                $('#add-row').DataTable({
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "info": true,
-                    "autoWidth": false,
-                });
-            } else {
-                $('#add-row').DataTable({
-                    "data": [],
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "info": true,
-                    "autoWidth": false
-                });
-            }
-        });
-    </script>
+   <script>
+    $(document).ready(function() {
+        var tableData = @json($results);
+        if (tableData.length > 0) {
+            $('#add-row').DataTable({
+                "paging": true,
+                "searching": true,
+                "lengthChange": true,
+                "pageLength": 10,
+                "info": true,
+                "autoWidth": false,
+            });
+        } else {
+            $('#add-row').DataTable({
+                "data": [],
+                "paging": true,
+                "searching": true,
+                "lengthChange": true,
+                "pageLength": 10,
+                "info": true,
+                "autoWidth": false
+            });
+        }
+    });
+</script>
+
 @endsection
