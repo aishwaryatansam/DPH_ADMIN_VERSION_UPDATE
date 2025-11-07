@@ -1,6 +1,21 @@
 @extends('admin.layouts.layout')
 @section('title', 'List Director Message')
 @section('content')
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+   <style>
+        .select2-container {
+            width: 100% !important;
+            /* Or set a fixed width, e.g., 300px */
+        }
+    </style>
+
     <div class="container" style="margin-top: 90px;">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
             <div class="d-flex justify-content-between align-items-center" style="padding-left: 20px; padding-right: 20px;">
@@ -81,6 +96,22 @@
                                                 </select>
                                             </div>
                                         </div>
+<!-- Tags Row -->
+<div class="row mb-3">
+    <div class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags <span class="sizeoftextred">*</span></label>
+    </div>
+    <div class="col-12 col-md-7">
+       <select class="form-control select2" id="tags" name="tags[]" multiple>
+    <option value="" disabled>Select Tags</option>
+    @foreach ($tags as $tagId => $tagName)
+        <option value="{{ $tagId }}" {{ in_array($tagId, $selectedTags) ? 'selected' : '' }}>
+            {{ $tagName }}
+        </option>
+    @endforeach
+</select>
+    </div>
+</div>
 
                                         <!-- Link Row -->
                                         <div class="row mb-3">
@@ -248,4 +279,11 @@
             imageModal.show();
         }
     </script>
+    <script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select Tags"
+        });
+    });
+</script>
 @endsection
