@@ -47,7 +47,7 @@
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
                                         
-                                       <form method="GET" action="{{ url('/masters') }}" class="mb-3"> 
+                                        
 <!-- <form method="GET" action="{{ url('/masters') }}" class="mb-3">
     <input type="hidden" name="masters" value="{{ request('masters') }}">
     <div class="d-flex justify-content-between align-items-center">
@@ -72,9 +72,9 @@
                style="width: 180px;"
                oninput="this.form.submit()">
     </div>
-</form>
+</form>-->
 
-                                            <thead> -->
+                                            <thead> 
                                                 <tr>
                                                     <th>Id</th>
                                                     <th>Name</th>
@@ -109,7 +109,7 @@
                                                     <!-- More rows as needed -->
                                             </tbody>
                                         </table>
-                                                                                                                    <div>
+                                                                                                                    
           <div>
         @if ($results->lastPage() > 1)
             {{ $results->links('pagination::bootstrap-5') }}

@@ -140,6 +140,7 @@ Route::get('/hsc/export', 'Admin\HscController@export')->name('hsc.export');
 
 	Route::resource('/hsc','Admin\HscController');
 	Route::resource('/tags','Admin\TagController');
+	Route::resource('/popular','Admin\PopularController');
 	Route::get('/hsc/destroy-document/{block}', 'Admin\HscController@destroyDocument');
 	// Route::get('/hsc-export','Admin\HscController@export')->name('hsc.export');
 	
