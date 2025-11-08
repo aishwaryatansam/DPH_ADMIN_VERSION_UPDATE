@@ -14,6 +14,7 @@ class Block extends Model
         'name',
         'status',
         'hud_id',
+        'tags',
         'image_url',
         'location_url',
         'video_url',
