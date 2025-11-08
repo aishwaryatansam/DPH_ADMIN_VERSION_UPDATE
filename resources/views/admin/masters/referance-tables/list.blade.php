@@ -46,7 +46,35 @@
                                     <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
-                                            <thead>
+                                        
+                                       <form method="GET" action="{{ url('/masters') }}" class="mb-3"> 
+<!-- <form method="GET" action="{{ url('/masters') }}" class="mb-3">
+    <input type="hidden" name="masters" value="{{ request('masters') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
+        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
+    </div>
+</form>
+
+                                            <thead> -->
                                                 <tr>
                                                     <th>Id</th>
                                                     <th>Name</th>
@@ -81,7 +109,22 @@
                                                     <!-- More rows as needed -->
                                             </tbody>
                                         </table>
-                                    </div>
+                                                                                                                    <div>
+          <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-5') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+</div>                              </div>
                                 </div>
                             </div>
                         </div>
