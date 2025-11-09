@@ -10,6 +10,7 @@ class District extends Model
      protected $fillable = [
         'name',
         'status',
+        'tags',
         'image_url',
         'location_url'
         

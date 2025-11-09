@@ -1,6 +1,10 @@
 @extends('admin.layouts.layout')
 @section('title', 'Create District')
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <div class="container" style="margin-top: 90px;">
     <div class="container-fluid p-2" style="background-color: #f2f2f2;">
         <div class="d-flex justify-content-between align-items-center"
@@ -49,7 +53,17 @@
                                         </div>
                                     </div>
                                 </div>
-                        
+                        <div class="row mb-3 p-3">
+    <div class="font-weight-bold text-secondary">Tags:</div>
+    <div class="col-md-10">
+        <select class="form-select select-dropdown" id="tags" name="tags[]" multiple>
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
                                 <!-- Buttons -->
                                 <div class="text-start mt-4">
                                     <button type="submit" class="btn btn-primary">Save</button>

@@ -115,7 +115,21 @@
                                             </div>
                                         </div>
                                     </div>
-
+<div class="row mb-3">
+    <div class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags <span class="sizeoftextred">*</span></label>
+    </div>
+    <div class="col-12 col-md-7">
+       <select class="form-control select2" id="tags" name="tags[]" multiple>
+    <option value="" disabled>Select Tags</option>
+    @foreach ($tags as $tagId => $tagName)
+        <option value="{{ $tagId }}" {{ in_array($tagId, $selectedTags) ? 'selected' : '' }}>
+            {{ $tagName }}
+        </option>
+    @endforeach
+</select>
+    </div>
+</div>        
                                     <!-- Select Image Row -->
                                     <!-- <div class="row mb-3">
                                                 <div class="col-12 col-md-3">

@@ -150,7 +150,7 @@
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
                                                             <form method="GET" action="{{ url('/new-documents') }}" class="mb-3"> 
-<form method="GET" action="{{ url('/new-documents') }}" class="mb-3">
+
     <input type="hidden" name="document_type" value="{{ request('document_type') }}">
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
