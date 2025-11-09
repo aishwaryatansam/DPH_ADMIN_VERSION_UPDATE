@@ -10,25 +10,61 @@ use App\Services\FileService;
 use App\Http\Resources\Dropdown\BlockResource as DDBlockResource;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CustomersExport;
-
+use App\Models\FetchTag;
 class PopularController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $keyword = $request->input('keyword');
+//     public function index(Request $request)
+//     {
+//         $keyword = $request->input('keyword');
 
-        if ($keyword) {
-            $results = Popular::where('name', 'like', "%{$keyword}%")
-                ->paginate($request->input('pageLength', 10));
-        } else {
-            $results = Popular::paginate($request->input('pageLength', 10));
-        }
+//         if ($keyword) {
+//             $results = Popular::where('name', 'like', "%{$keyword}%")
+//                 ->paginate($request->input('pageLength', 10));
+//         } else {
+//             $results = Popular::paginate($request->input('pageLength', 10));
+//         }
+// foreach ($results as $result) {
+//     // Fetch active tags (consistent with your existing code)
+//     $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+//     // Get tag IDs (from the result)
+//     $tagIds = explode(',', $result->tags);
 
-        return view('admin.masters.popular.list', compact('results'));
+//     // Fetch tag names by matching the tag IDs
+//     $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+//     // Store the tag names as a comma-separated string
+//     $result->tag_names = implode(', ', $tagNames);
+// }
+//         return view('admin.masters.popular.list', compact('results'));
+//     }
+public function index(Request $request)
+{
+    $query = Popular::query();
+
+    // ✅ Keyword search
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where('name', 'like', "%{$keyword}%");
     }
+
+    // ✅ Pagination
+    $results = $query->paginate($request->get('pageLength', 10))
+                     ->appends($request->query());
+
+    // ✅ Preload active tags only once
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+
+    foreach ($results as $result) {
+        $tagIds = explode(',', $result->tags ?? '');
+        $result->tag_names = $tags->whereIn('id', $tagIds)->pluck('name')->implode(', ');
+    }
+
+    return view('admin.masters.popular.list', compact('results'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -36,7 +72,8 @@ class PopularController extends Controller
     public function create()
     {
         $statuses = _getGlobalStatus();
-        return view('admin.masters.popular.create', compact('statuses'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.popular.create', compact('statuses','tags'));
     }
 
     /**
@@ -51,6 +88,7 @@ class PopularController extends Controller
         Popular::create([
             'name' => $request->name,
             'status' => $request->status,
+              'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ]);
 
         return redirect()->route('popular.index')->with('success', 'Popular item created successfully!');
@@ -72,8 +110,10 @@ class PopularController extends Controller
     {
         $result = Popular::findOrFail($id);
         $statuses = _getGlobalStatus();
-
-        return view('admin.masters.popular.edit', compact('result', 'statuses'));
+ $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+   
+        return view('admin.masters.popular.edit', compact('result','tags', 'selectedTags', 'statuses'));
     }
 
     /**
@@ -89,7 +129,9 @@ class PopularController extends Controller
 
         $result->update([
             'name' => $request->name,
-            'status' => $request->status ?? 1,
+             'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+            'status' => $request->status ?? 1
+            
         ]);
 
         return redirect()->route('popular.index')->with('success', 'Popular item updated successfully!');

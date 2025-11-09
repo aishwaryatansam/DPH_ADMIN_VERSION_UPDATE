@@ -147,9 +147,6 @@
     </div>
     </div>
 
-    <div class="mt-3">
-        {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
-    </div>
 </div>
 
    <!-- Include Libraries -->

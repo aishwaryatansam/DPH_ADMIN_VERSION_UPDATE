@@ -17,23 +17,7 @@
     <div class="container-fluid">
         <div class="page-inner">
 
-            <div class="card mb-0 mt-2">
-                <div class="card-body">
-                    <form>
-                        <div class="row">
-                            <div class="col col-md-4"></div>
-                            <div class="col d-flex justify-content-end align-items-center mt-2">
-                                <div class="form-group d-flex">
-                                    <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch"
-                                        style="border-radius: 10px;">
-                                        <i class="fas fa-redo"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+       
 
             <div>
                 <div class="container-fluid mt-2">
@@ -85,6 +69,7 @@
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Name</th>
+                                                 <th>Tags</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -94,6 +79,7 @@
                                                 <tr>
                                                     <td>{{ $popular->id }}</td>
                                                     <td>{{ $popular->name }}</td>
+                                                     <td>{{ $popular->tag_names }}</td>
                                                     <td>{{ $popular->status ? 'Active' : 'Inactive' }}</td>
                                                     <td>
                                                         <div class="form-button-action">
