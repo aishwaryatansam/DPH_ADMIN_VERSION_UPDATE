@@ -13,7 +13,7 @@ use App\Http\Resources\Dropdown\PHCResource as DDPHCResource;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PHCExport;
-
+use App\Models\FetchTag;
 class PhcController extends Controller
 {
     /**
@@ -60,6 +60,19 @@ public function index(Request $request)
 
     // Pagination with dynamic per-page
     $results = $query->paginate($perPage)->appends($request->query());
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
 
     // Load HUDs + Blocks for filter dropdown
     $huds = HUD::with(['blocks:id,name,hud_id'])
@@ -81,7 +94,8 @@ public function index(Request $request)
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.phc.create',compact('blocks','statuses', 'huds', 'is_urban'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.phc.create',compact('blocks','statuses', 'huds', 'is_urban', 'tags'));
     }
 
 
@@ -107,7 +121,8 @@ public function index(Request $request)
                 // 'location_url' => $request->location_url,
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                  'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
             
@@ -162,7 +177,10 @@ public function index(Request $request)
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.phc.edit',compact('result','blocks','statuses', 'huds', 'is_urban'));
+         $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+      
+        return view('admin.masters.phc.edit',compact('result','blocks','statuses','tags', 'selectedTags', 'huds', 'is_urban'));
     }
 
     /**
@@ -190,7 +208,8 @@ public function index(Request $request)
                 // 'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,           
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
           

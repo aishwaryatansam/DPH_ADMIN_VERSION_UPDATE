@@ -116,6 +116,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
+                                                     <th>Tags</th>
                                                     <th>Block</th> <!-- New Block Column -->
                                                     <th>Status</th>
                                                     <th class="text-center" style="width: 10%">Action</th>
@@ -125,6 +126,7 @@
                                                 @foreach ($results as $result)
                                                     <tr>
                                                         <td>{{ $result->name ?? '' }}</td>
+                                                         <td>{{ $result->tag_names }}</td>
                                                         <td>{{ $result->block->name ?? '' }}</td>
                                                         <td>
                                                             @if (isset($result->status) && $result->status == 1)
