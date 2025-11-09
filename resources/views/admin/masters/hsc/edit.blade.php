@@ -135,8 +135,12 @@
                                             </div>
                                         </div>
                                     </div>
-<div>
-    <div class="font-weight-bold text-secondary">Tags</div>
+ <div class="row mb-3 px-3">
+    <div class="col-md-10">
+   <label for="phc" class="form-label">Tags<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                           <div class="col-12 col-md-10">
     <select class="form-control select2" id="tags" name="tags[]" multiple>
         @foreach ($tags as $id => $name)
             <option value="{{ $id }}" {{ in_array($id, $selectedTags) ? 'selected' : '' }}>
@@ -145,6 +149,7 @@
         @endforeach
     </select>
 </div>
+ </div>
 
                                     <!-- Buttons -->
                                     <div class="text-start mt-4 px-3">
