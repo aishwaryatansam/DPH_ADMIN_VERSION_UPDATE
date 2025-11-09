@@ -88,32 +88,47 @@
                                 </div>
                                 <!-- Table Card -->
                                 <div class="card-body">
+<form method="GET" action="{{ url('/hsc') }}" class="mb-3"> 
+
+    <input type="hidden" name="hsc" value="{{ request('hsc') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
+        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
+    </div>
+</form>
+
                                     <div class="table-responsive">
                                         <div class="row m-b-40">
                                             <div class="col-sm-12 col-md-6">
-                                              <div class="col-auto">
-                                                <form method="GET" action="{{ url('/hsc' ) }}" class="mb-3">
-            <!-- #region -->                    <label for="pageLength" class="me-2 mb-0">Show</label>
-          
-          
-                                                   <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
-                                                     @foreach(getPageLenthArr() as $pageLength)
-                                                 <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
-                                          {{ $pageLength }}
-                                              </option>
-                                                                   @endforeach
-                                                         </select></form>
+                                               <div class="row align-items-center">
+   
                                              </div>
-                                             </div>
-                                             <div class="col-sm-12 col-md-6">
-                                                <div class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="myTable" id="keyword" value=""></label></div>
-                                             </div>
+                                        
                                         </div>
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
+                                                      <th>Tags</th>
                                                     <th>PHC</th>
                                                     <th>Status</th>
                                                     <th class="text-center" style="width: 10%">Action</th>
@@ -128,6 +143,7 @@
                                                 @foreach ($results as $result)
                                                     <tr>
                                                         <td>{{ $result->name ?? '' }}</td>
+                                                        <td>{{ $result->tag_names }}</td>
                                                         <td>{{ $result->phc->name ?? '' }}</td>
                                                         <td style="font-weight: bold;">
                                                             @if (isset($result->status) && $result->status == 1)

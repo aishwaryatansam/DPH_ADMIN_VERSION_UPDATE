@@ -11,7 +11,7 @@ use App\Models\Block;
 use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\HSCResource as DDHSCResource;
-
+use App\Models\FetchTag;
 
 class HscController extends Controller
 {
@@ -48,6 +48,19 @@ public function index(Request $request)
     }
 
     $results = $query->paginate($request->get('pageLength', 10));
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
 
     $huds = HUD::with('blocks')->get();
     $phcs = PHC::all();
@@ -67,7 +80,8 @@ public function index(Request $request)
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.hsc.create',compact('phc','statuses', 'huds', 'blocks', 'is_urban'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.hsc.create',compact('phc','statuses', 'huds', 'blocks', 'is_urban','tags'));
     }
     /**
      * Store a newly created resource in storage.
@@ -90,7 +104,8 @@ public function index(Request $request)
                 // 'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url,  
                 // 'is_urban' => $request->is_urban,          
-                'status' => $request->has('status') ? 1 : 0
+                'status' => $request->has('status') ? 1 : 0,
+                'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
 
 
             ];
@@ -156,7 +171,9 @@ public function getPhcByBlock($blockId)
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.hsc.edit',compact('result','phc','statuses', 'huds', 'blocks', 'is_urban'));
+         $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+        return view('admin.masters.hsc.edit',compact('result','phc','statuses','tags', 'selectedTags', 'huds', 'blocks', 'is_urban'));
     }
 
     /**
@@ -184,7 +201,8 @@ public function getPhcByBlock($blockId)
                 // 'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url, 
                 // 'is_urban' => $request->is_urban,           
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                   'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
            
