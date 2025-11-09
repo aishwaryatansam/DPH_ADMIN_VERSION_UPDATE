@@ -101,6 +101,7 @@
                                                 <th>Name</th>
                                                 <td>District</td>
                                                 <th>Status</th>
+                                                 <th>Tags</th>
                                                 <th class="text-center" style="width: 10%">Action</th>
                                             </tr>
                                         </thead>
@@ -116,6 +117,7 @@
                                                       <span class="text-danger">In-Active</span>
                                                     @endif
                                                 </td>
+                                                 <td>{{ $result->tag_names }}</td>
                                                 <td class="text-center">
                                                     <div class="form-button-action">
                                                         <button type="button"

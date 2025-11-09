@@ -13,6 +13,7 @@ class HUD extends Model
      protected $fillable = [
         'name',
         'status',
+        'tags',
         'district_id',
         'image_url',
         'location_url',

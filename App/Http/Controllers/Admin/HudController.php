@@ -16,6 +16,7 @@ use App\Exports\ConsolidateHudReport;
 use App\Exports\ConsolidateBlockReport;
 use App\Exports\ConsolidatePHCReport;
 use App\Exports\ConsolidateHSCReport;
+use App\Models\FetchTag;
 
 class HudController extends Controller
 {
@@ -45,6 +46,19 @@ public function index(Request $request)
     // Pagination with user-selected length
     $results = $query->paginate($request->get('pageLength', 10))
                      ->appends($request->query());
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
 
     $districts = District::where('status', _active())
                         ->orderBy('name')
@@ -63,7 +77,8 @@ public function index(Request $request)
         $statuses = _getGlobalStatus();
         $districts = District::getDistrictData();
         $is_urban = _isUrban();
-        return view('admin.masters.huds.create',compact('districts','statuses', 'is_urban'));
+           $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.huds.create',compact('districts','statuses', 'is_urban','tags'));
     }
 
     /**
@@ -88,7 +103,9 @@ public function index(Request $request)
                 // 'location_url' => $request->location_url,
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                 'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+
             ];
             
            
@@ -141,7 +158,10 @@ public function index(Request $request)
         $statuses = _getGlobalStatus();
         $districts = District::getDistrictData();
         $is_urban = _isUrban();
-        return view('admin.masters.huds.edit',compact('result','districts','statuses', 'is_urban'));
+         $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+  
+        return view('admin.masters.huds.edit',compact('result','districts','statuses', 'tags', 'selectedTags','is_urban'));
     }
 
     /**
@@ -169,7 +189,8 @@ public function index(Request $request)
                 // 'location_url' => $request->location_url,
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                 'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
             
