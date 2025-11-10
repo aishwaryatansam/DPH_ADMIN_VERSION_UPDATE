@@ -16,41 +16,41 @@
         <div class="container-fluid">
             <div class="page-inner">
                 <!-- insert the contents Here start -->
-                <div class="card mb-0 mt-2">
+     <div class="card mb-0 mt-2">
                     <div class="card-body">
-                        <form method="GET" action="{{ url('/hsc') }}">
+                        <form>
                             <div class="row">
                                 <div class="col col-md-4">
-                                
-          <div>
-             <label>Block</label>
-              <select name="block_id" class="form-control" onchange="this.form.submit()">
-            <option value="">-- Select Block --</option>
-            @foreach ($huds as $hud)
-                <optgroup label="{{ $hud->name }}">
-                    @foreach ($hud->blocks as $block)
-                        <option value="{{ $block->id }}" {{ request('block_id') == $block->id ? 'selected' : '' }}>
-                            {{ $block->name }}
-                        </option>
-                    @endforeach
-                </optgroup>
-            @endforeach
-             </select>
-    </div>
-
-
-        <label>PHC</label>
-        <select name="phc_id" class="form-control" onchange="this.form.submit()">
-            <option value="">-- Select PHC --</option>
-            @foreach ($phcs as $phc)
-                <option value="{{ $phc->id }}" {{ request('phc_id') == $phc->id ? 'selected' : '' }}>
-                    {{ $phc->name }}
-                </option>
-            @endforeach
-        </select>
-    
-    
-                    <div class="col d-flex justify-content-end align-items-center mt-2">
+                                    <div class="form-group">
+                                        <label>Block</label>
+                                        <select name="block_id" class="form-control searchable" onchange="searchFun()">
+                                            <option value="">-- Select Block -- </option>
+                                            @foreach ($huds as $hud)
+                                                <optgroup label="{{ $hud->name }}">
+                                                    @foreach ($hud->blocks as $block)
+                                                        <option value="{{ $block->id }}"
+                                                            {{ SELECT($block->id, request('block_id')) }}>
+                                                            {{ $block->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col col-md-4">
+                                    <div class="form-group">
+                                        <label>PHC</label>
+                                        <select name="phc_id" class="form-control searchable" onchange="searchFun()">
+                                            <option value="">-- Select PHC -- </option>
+                                            @foreach ($phcs as $phc)
+                                                <option value="{{ $phc->id }}"
+                                                    {{ SELECT($phc->id, request('phc_id')) }}>{{ $phc->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
                                         <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch"
                                             style="border-radius: 10px;">
@@ -58,12 +58,10 @@
                                         </button>
                                     </div>
                                 </div>
-
-                                </div>
-                              
                             </div>
 
-                    </div></form> 
+                        </form>
+                    </div>
                 </div>
                 <!-- Filter Card end-->
                 <div>
