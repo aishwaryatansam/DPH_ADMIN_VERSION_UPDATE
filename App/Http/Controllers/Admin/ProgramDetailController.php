@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FetchTag;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProgramDetailsExport;
 class ProgramDetailController extends Controller
 {
     private $program_details_image_path = '/program_details/images';
@@ -439,9 +441,15 @@ public function index(Request $request)
         return [];
     }
 
-    public function export(Request $request){
-    	$filename = 'programs'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
+  public function export()
+{
+    try {
+       
+        return Excel::download(new ProgramDetailsExport, 'program_details.xlsx');
+    } catch (\Exception $e) {
+       
+        dd($e->getMessage());
     }
+}
+
 }

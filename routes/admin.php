@@ -38,7 +38,9 @@ Route::middleware(['admin'])->group(function () {
 
 
 	Route::resource('/programs','Admin\ProgramController');
-	Route::get('/programs-export', 'Admin\ProgramDetailController@export')->name('programs.export');
+	Route::get('/programs-export', 'Admin\ProgramDetailController@export')->name('programsdetail.export');
+	Route::get('/programs-divisions/export', 'Admin\ProgramController@export')->name('programsanddivision.export');
+
 	Route::resource('/sections','Admin\SectionController');
 	Route::get('/sections-export', 'Admin\SectionController@export')->name('sections.export');
 
@@ -109,7 +111,8 @@ Route::middleware(['admin'])->group(function () {
 	// Route::get('/configurations', 'Admin\ConfigurationController@edit');
 	// Route::post('/configurations/update/{id}', 'Admin\ConfigurationController@updateConfiguration')->name('configurations.update');
 	Route::get('/documents-export','Admin\DocumentController@export1')->name('documents.export');
-	Route::get('/programs-export', 'Admin\ProgramController@export')->name('programsdetail.export');
+	
+
 	Route::get('/schemes-export', 'Admin\SchemeDetailController@export')->name('schemesdetail.export');
 	Route::get('huds/export', [App\Http\Controllers\Admin\HudController::class, 'export'])->name('huds.export');
    Route::get('/blocks/export', [App\Http\Controllers\Admin\BlockController::class, 'export'])

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\ProgramDetailsExport;
+use App\Exports\ProgramAndDivisionExport;
+use App\Exports\ProgramAndDivsisonExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dropdown\ProgramResource;
@@ -193,8 +194,15 @@ class ProgramController extends Controller
         return sendResponse(ProgramResource::collection($program));
     }
 
-    public function export()
-    {
-        return Excel::download(new ProgramDetailsExport, 'program_details.xlsx');
+  public function export()
+{
+    try {
+        Log::info('Export started');
+        return Excel::download(new ProgramAndDivisionExport, 'program_division.xlsx');
+    } catch (\Exception $e) {
+        Log::error('Export failed: '.$e->getMessage());
+        dd($e->getMessage());
     }
+}
+
 }
