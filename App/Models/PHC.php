@@ -14,7 +14,7 @@ class PHC extends Model
 	protected $fillable = [
         'name',
         'status',
-        'tags',
+        // 'tags',
         'block_id',
         'image_url',
         'location_url',

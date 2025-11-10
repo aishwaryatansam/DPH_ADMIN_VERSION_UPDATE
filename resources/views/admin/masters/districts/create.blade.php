@@ -54,7 +54,7 @@
                                     </div>
                                 </div>
                         <div class="row mb-3 p-3">
-    <div class="font-weight-bold text-secondary">Tags:</div>
+    {{-- <div class="font-weight-bold text-secondary">Tags:</div>
     <div class="col-md-10">
         <select class="form-select select-dropdown" id="tags" name="tags[]" multiple>
             @foreach ($tags as $tag)
@@ -62,7 +62,7 @@
             @endforeach
         </select>
     </div>
-</div>
+</div> --}}
 
                                 <!-- Buttons -->
                                 <div class="text-start mt-4">

@@ -131,12 +131,12 @@ $(document).ready(function() {
                                             </div>
                                         </div>
                                     </div>
-<tr>
+{{-- <tr>
     <td class="col-12 col-md-3">
         <label for="tags" class="form-label">Tags</label>
     </td>
     <td class="col-12 col-md-9">
-        {{-- FIX: Corrected the 'multiple' attribute syntax and name attribute --}}
+      
       <select class="form-select select-dropdown" id="tags" name="tags[]" multiple>
     <option value=""> -- Select --</option>
     @foreach ($tags as $tag)
@@ -145,7 +145,7 @@ $(document).ready(function() {
 </select>
 
     </td>
-</tr>     
+</tr>      --}}
                                     <!-- Select Image Row -->
                                     <!-- <div class="row mb-3">
                                                 <div class="col-12 col-md-3">

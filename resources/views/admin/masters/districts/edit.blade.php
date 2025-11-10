@@ -92,7 +92,7 @@
                                                 </div>
                                             </div>
                                         </div>
-<div class="row mb-3">
+{{-- <div class="row mb-3">
     <div class="col-12 col-md-3">
         <label for="tags" class="form-label">Tags <span class="sizeoftextred">*</span></label>
     </div>
@@ -106,7 +106,7 @@
     @endforeach
 </select>
     </div>
-</div>   
+</div>    --}}
                                         <!-- Buttons -->
                                         <div class="text-start mt-4">
                                             <button type="submit" class="btn btn-primary">Save</button>

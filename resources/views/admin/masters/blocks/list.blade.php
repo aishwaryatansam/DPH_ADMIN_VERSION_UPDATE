@@ -89,7 +89,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
-                                                 <th>Tags</th>
+                                                 {{-- <th>Tags</th> --}}
                                                 <th>HUD</th>
                                                 <th>Status</th>
                                                 <th class="text-center" style="width: 10%">Action</th>
@@ -99,7 +99,7 @@
                                             @foreach ($results as $result)
                                                 <tr>
                                                     <td>{{ $result->name ?? '' }}</td>
-                                                     <td>{{ $result->tag_names }}</td>
+                                                     {{-- <td>{{ $result->tag_names }}</td> --}}
                                                     <td>{{ $result->hud->name ?? '' }}</td>
                                                     <td style="font-weight: bold;">
                                                         @if ($result->status == 1)

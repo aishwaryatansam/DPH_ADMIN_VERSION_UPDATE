@@ -101,7 +101,7 @@
                                                 <th>Name</th>
                                                 <td>District</td>
                                                 <th>Status</th>
-                                                 <th>Tags</th>
+                                                 {{-- <th>Tags</th> --}}
                                                 <th class="text-center" style="width: 10%">Action</th>
                                             </tr>
                                         </thead>

@@ -67,7 +67,7 @@
                                         </div>
 
                                     </div>
-<div class="row mb-3">
+{{-- <div class="row mb-3">
     <div class="col-12 col-md-3">
         <label for="tags" class="form-label">Tags <span class="sizeoftextred">*</span></label>
     </div>
@@ -81,7 +81,7 @@
     @endforeach
 </select>
     </div>
-</div>                           <!-- District Row as Dropdown -->
+</div>                           <!-- District Row as Dropdown --> --}}
                                     <div class="row mb-3 px-3">
                                         <div class="col-12 col-md-3">
                                             <label for="district" class="form-label">HUD<span

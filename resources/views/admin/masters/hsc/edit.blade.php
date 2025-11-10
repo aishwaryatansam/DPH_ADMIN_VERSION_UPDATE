@@ -135,7 +135,7 @@
                                             </div>
                                         </div>
                                     </div>
- <div class="row mb-3 px-3">
+ {{-- <div class="row mb-3 px-3">
     <div class="col-md-10">
    <label for="phc" class="form-label">Tags<span
                                                     style="color: red;">*</span></label>
@@ -149,7 +149,7 @@
         @endforeach
     </select>
 </div>
- </div>
+ </div> --}}
 
                                     <!-- Buttons -->
                                     <div class="text-start mt-4 px-3">

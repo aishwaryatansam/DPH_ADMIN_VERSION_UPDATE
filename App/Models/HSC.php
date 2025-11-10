@@ -13,7 +13,7 @@ class HSC extends Model
      protected $fillable = [
         'name',
         'status',
-        'tags',
+        // 'tags',
         'phc_id',
         'image_url',
         'location_url',
