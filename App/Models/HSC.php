@@ -13,12 +13,14 @@ class HSC extends Model
      protected $fillable = [
         'name',
         'status',
+        // 'tags',
         'phc_id',
         'image_url',
         'location_url',
         'video_url',
         'is_urban',
         'property_document_url'
+        
     ];
 
     protected $casts = [

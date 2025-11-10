@@ -34,10 +34,7 @@
                                 </div>
 
                                 <!-- District -->
-                                <div class="col-md-9">
-                                    <div class="font-weight-bold text-secondary">HUD:</div>
-                                    <div class="border p-3 rounded bg-light">{{$result->hud->name ?? '--'}}</div>
-                                </div>
+                               
                                   
                             </div>
                         
@@ -51,7 +48,7 @@
                                 </div>
                             </div>
                         
-                            <button type="button" onclick="window.location.href='{{url('/blocks')}}';" class="btn btn-primary mt-3" style="margin-left: 13px;">Back</button>
+                            <button type="button" onclick="window.location.href='{{url('/tags')}}';" class="btn btn-primary mt-3" style="margin-left: 13px;">Back</button>
                         </div>
                         
                         

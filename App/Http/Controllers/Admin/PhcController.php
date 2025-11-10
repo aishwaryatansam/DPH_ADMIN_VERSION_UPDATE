@@ -7,12 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\PHC;
 use App\Models\HUD;
 use App\Models\Block;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\PHCResource as DDPHCResource;
 
-
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PHCExport;
+use App\Models\FetchTag;
 class PhcController extends Controller
 {
     /**
@@ -20,12 +21,67 @@ class PhcController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = PHC::getQueriedResult();
-        $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
-        return view('admin.masters.phc.list',compact('results', 'huds'));
+//   public function index()
+// {
+//     // You can specify per page, e.g., 10 or use request('pageLength', 10)
+//     $results = PHC::getQueriedResult()->paginate(10); // If getQueriedResult is a query builder
+
+//     $huds = HUD::with(['blocks:id,name,hud_id'])
+//         ->filter()
+//         ->where('status', _active())
+//         ->orderBy('name')
+//         ->get();
+
+//     return view('admin.masters.phc.list', compact('results', 'huds'));
+// }
+
+public function index(Request $request)
+{
+    // Default per-page value (from dropdown)
+    $perPage = $request->get('pageLength', 10);
+
+    $query = PHC::with('block');
+
+    // Filter by block_id
+    if ($request->filled('block_id')) {
+        $query->where('block_id', $request->block_id);
     }
+
+    // Search by name or block name
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhereHas('block', function ($b) use ($search) {
+                  $b->where('name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    // Pagination with dynamic per-page
+    $results = $query->paginate($perPage)->appends($request->query());
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
+
+    // Load HUDs + Blocks for filter dropdown
+    $huds = HUD::with(['blocks:id,name,hud_id'])
+        ->where('status', _active())
+        ->orderBy('name')
+        ->get();
+
+    return view('admin.masters.phc.list', compact('results', 'huds'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -38,7 +94,8 @@ class PhcController extends Controller
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.phc.create',compact('blocks','statuses', 'huds', 'is_urban'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.phc.create',compact('blocks','statuses', 'huds', 'is_urban', 'tags'));
     }
 
 
@@ -64,7 +121,8 @@ class PhcController extends Controller
                 // 'location_url' => $request->location_url,
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                  'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
             
@@ -119,7 +177,10 @@ class PhcController extends Controller
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.phc.edit',compact('result','blocks','statuses', 'huds', 'is_urban'));
+         $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+      
+        return view('admin.masters.phc.edit',compact('result','blocks','statuses','tags', 'selectedTags', 'huds', 'is_urban'));
     }
 
     /**
@@ -147,7 +208,8 @@ class PhcController extends Controller
                 // 'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,           
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
           
@@ -237,4 +299,9 @@ class PhcController extends Controller
         // dd($phcs);
         return sendResponse(DDPHCResource::collection($phcs));
     }
+    public function export(Request $request)
+{
+    $blockId = $request->get('block_id');
+    return Excel::download(new PHCExport($blockId), 'phc-list.xlsx');
+}
 }

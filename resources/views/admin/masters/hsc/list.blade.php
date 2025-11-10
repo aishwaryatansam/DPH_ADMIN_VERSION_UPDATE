@@ -16,7 +16,7 @@
         <div class="container-fluid">
             <div class="page-inner">
                 <!-- insert the contents Here start -->
-                <div class="card mb-0 mt-2">
+     <div class="card mb-0 mt-2">
                     <div class="card-body">
                         <form>
                             <div class="row">
@@ -77,36 +77,56 @@
                                             onclick="window.location.href='{{route('hsc.create')}}';">
                                             <i class="fa fa-plus"></i> Add HSC
                                         </button>
+<a href="{{ route('hsc.export', request()->all()) }}" class="btn btn-success">
+    Download Excel
+</a>
 
-                                        <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
-                                            <i class="fa fa-download"></i> Download
-                                        </button>
 
                                     </div>
                                 </div>
                                 <!-- Table Card -->
                                 <div class="card-body">
+<form method="GET" action="{{ url('/hsc') }}" class="mb-3"> 
+
+    <input type="hidden" name="hsc" value="{{ request('hsc') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
+        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
+    </div>
+</form>
+
                                     <div class="table-responsive">
                                         <div class="row m-b-40">
                                             <div class="col-sm-12 col-md-6">
-                                                <div class="dataTables_length" id="myTable_length">
-                                                   <label>Show </label>
-                                                      <select name="pageLength" id="pageLength" aria-controls="myTable" on-change="searchFun()">
-                                                        @foreach(getPageLenthArr() as $pageLenght)
-                                              <option value="{{$pageLenght}}" {{SELECT($pageLenght,request('pageLength'))}}>{{$pageLenght}}</option>
-                                              @endforeach   
-                                                      </select>
-                                                </div>
+                                               <div class="row align-items-center">
+   
                                              </div>
-                                             <div class="col-sm-12 col-md-6">
-                                                <div class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="myTable" id="keyword" value=""></label></div>
-                                             </div>
+                                        
                                         </div>
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
+                                                      {{-- <th>Tags</th> --}}
                                                     <th>PHC</th>
                                                     <th>Status</th>
                                                     <th class="text-center" style="width: 10%">Action</th>
@@ -121,6 +141,7 @@
                                                 @foreach ($results as $result)
                                                     <tr>
                                                         <td>{{ $result->name ?? '' }}</td>
+                                                        {{-- <td>{{ $result->tag_names }}</td> --}}
                                                         <td>{{ $result->phc->name ?? '' }}</td>
                                                         <td style="font-weight: bold;">
                                                             @if (isset($result->status) && $result->status == 1)
@@ -150,8 +171,14 @@
                                             </tbody>
                                         </table>
                                         <!-- Pagination Links -->
-                                        @include('admin.common.table-footer')
+                                       
                                     </div>
+                                     @if(method_exists($results, 'links'))
+                                    <div class="mt-3">
+                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+
+                                    </div>
+                                @endif
                                 </div>
                             </div>
                         </div>
@@ -159,6 +186,9 @@
 
                     <!-- DataTable End -->
 
+
+
+    
 
                     <!-- insert the contents Here end -->
                 </div>
@@ -206,9 +236,24 @@ $('#downloadBtn').on('click', function () {
 });
 
 </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            setPageUrl('/hsc?');
-        });
-    </script>
+<script>
+function searchFun() {
+    // Get selected values
+    var blockId = document.querySelector('select[name="block_id"]').value;
+    var phcId = document.querySelector('select[name="phc_id"]').value;
+
+    // Build query string
+    var query = '?';
+    if (blockId) query += 'block_id=' + blockId + '&';
+    if (phcId) query += 'phc_id=' + phcId + '&';
+
+    // Redirect to URL with filters applied
+    window.location.href = '/hsc' + query;
+}
+
+function resetSearch() {
+    window.location.href = '/hsc';
+}
+</script>
+
 @endsection

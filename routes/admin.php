@@ -46,6 +46,7 @@ Route::middleware(['admin'])->group(function () {
 	Route::get('/schemes-export','Admin\SchemeController@export')->name('schemes.export');
 
 
+    Route::get('districts/export', [App\Http\Controllers\Admin\DistrictController::class, 'export'])->name('districts.export');
 	Route::resource('/districts','Admin\DistrictController');
 	Route::resource('/designations','Admin\DesignationController');
 	Route::resource('/welcome-banner','Admin\WelcomeBannerController');
@@ -53,7 +54,7 @@ Route::middleware(['admin'])->group(function () {
 
 	Route::resource('/masters','Admin\MasterController');
 	Route::get('/master-export', 'Admin\MasterController@export')->name('master.export');
-
+    Route::post('track-visitor', ['VisitorController::class', 'trackVisitor']);
 	Route::resource('/about-us','Admin\PageController');
 	Route::resource('/submenu','Admin\SubmenuController');
 	Route::get('/ethics-committee','Admin\SiteController@getEhicsCommittee');
@@ -110,6 +111,12 @@ Route::middleware(['admin'])->group(function () {
 	Route::get('/documents-export','Admin\DocumentController@export1')->name('documents.export');
 	Route::get('/programs-export', 'Admin\ProgramController@export')->name('programsdetail.export');
 	Route::get('/schemes-export', 'Admin\SchemeDetailController@export')->name('schemesdetail.export');
+	Route::get('huds/export', [App\Http\Controllers\Admin\HudController::class, 'export'])->name('huds.export');
+   Route::get('/blocks/export', [App\Http\Controllers\Admin\BlockController::class, 'export'])
+     ->name('blocks.export');
+
+
+
 });
 
 Route::middleware(['privilege'])->group(function () {
@@ -125,16 +132,21 @@ Route::middleware(['privilege'])->group(function () {
 	Route::resource('/blocks','Admin\BlockController');
 	Route::get('/blocks/destroy-document/{block}', 'Admin\BlockController@destroyDocument');
 
+   Route::get('phc/export', [App\Http\Controllers\Admin\PhcController::class, 'export'])->name('phc.export');
 
 	Route::resource('/phc','Admin\PhcController');
 	Route::get('/phc/destroy-document/{block}', 'Admin\PhcController@destroyDocument');
+Route::get('/hsc/export', 'Admin\HscController@export')->name('hsc.export');
 
 	Route::resource('/hsc','Admin\HscController');
 	Route::resource('/tags','Admin\TagController');
+	Route::resource('/popular','Admin\PopularController');
 	Route::get('/hsc/destroy-document/{block}', 'Admin\HscController@destroyDocument');
 	// Route::get('/hsc-export','Admin\HscController@export')->name('hsc.export');
-	Route::get('/hsc/export', 'Admin\HscController@export')->name('hsc.export');
+	
+// Route::get('/hsc/export', [App\Http\Controllers\Admin\HscController::class, 'export'])->name('hsc.export');
 
+Route::get('/hsc/get-phc/{blockId}', 'Admin\HscController@getPhcByBlock')->name('hsc.getPhcByBlock');
 
 	Route::get('/hw-location','Admin\HealthWalkLocationController@index');
 	Route::post('/hw-location-submit','Admin\HealthWalkLocationController@store');

@@ -44,6 +44,27 @@
                             
 
                         </div>
+<form method="GET" action="{{ url('/programdetails') }}" class="mb-3">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <label for="pageLength" class="me-2 mb-0">Show</label>
+            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto ms-auto">
+            <label for="search">Search:</label>
+            <input type="search" name="search" id="search" value="{{ request('search') }}">
+            <button type="submit">Go</button>
+        </div>
+    </div>
+</form>
+
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="add-row" class="display table table-striped table-hover">
@@ -346,9 +367,12 @@
                             </button>
 
                         </form>
+             
                     </div>
                 </div>
             </div>
+  
+
         </div>
 
         <!-- Officials Section End ==================================================================================================================================-->
@@ -357,31 +381,10 @@
 
         <!-- main panel end -->
     </div>
-    <script>
-        $(document).ready(function() {
-            var tableData = @json($results);
-            if (tableData.length > 0) {
-                $('#add-row').DataTable({
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "info": true,
-                    "autoWidth": false,
-                });
-            } else {
-                $('#add-row').DataTable({
-                    "data": [],
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "info": true,
-                    "autoWidth": false
-                });
-            }
-        });
-    </script>
+ 
+  <div class="d-flex justify-content-center mt-3">
+    {{ $results->links('pagination::bootstrap-5') }}
+</div>
     <script type="text/javascript">
         $(document).ready(function() {
             setPageUrl('/programs?');

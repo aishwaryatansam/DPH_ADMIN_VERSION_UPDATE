@@ -20,7 +20,7 @@ use App\Models\Scheme;
 use App\Models\Section;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToArray;
-
+use App\Models\FetchTag;
 class NewDocumentController extends Controller
 {
     /**
@@ -28,17 +28,62 @@ class NewDocumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = NewDocument::getQueriedResult();
+public function index(Request $request)
+{
+    // New: get search and per-page inputs
+    $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10); // match your HTML select name
 
+    // Get existing query result (your existing code)
+   $results = NewDocument::getQueriedResult();
 
-        $sections = Section::where('status', _active())->get();
-        $document_types = DocumentType::where('status', _active())->get();
-        $statuses = _getGlobalStatus();
-
-        return view('admin.documents.list', compact('results', 'sections', 'document_types', 'statuses'));
+    /**
+     * ✅ FIXED SEARCHING — works whether $results is a query or collection
+     */
+       if (!empty($search)) {
+        $results = $results->filter(function ($item) use ($search) {
+            return stripos($item->name ?? '', $search) !== false;
+        });
     }
+
+    // 🧾 Pagination logic (keep your original code)
+    if (method_exists($results, 'paginate')) {
+        $results = $results->paginate($perPage);
+    } else if ($results instanceof \Illuminate\Support\Collection) {
+        $page = $request->get('page', 1);
+        $results = new \Illuminate\Pagination\LengthAwarePaginator(
+            $results->forPage($page, $perPage), 
+            $results->count(), 
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+    }
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
+
+
+    // Your existing code (unchanged)
+    $sections = Section::where('status', _active())->get();
+    $document_types = DocumentType::where('status', _active())->get();
+    $statuses = _getGlobalStatus();
+
+    return view('admin.documents.list', compact('results', 'sections', 'document_types', 'statuses'));
+}
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -49,6 +94,7 @@ class NewDocumentController extends Controller
     {
         $statuses = _getGlobalStatus();
         $languages = Master::getLanguagesData();
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
         $document_types = DocumentType::where('status', _active())->orderBy('order_no')->get();
         if (isState()) {
             $programs_id = auth()->user()->programs_id;
@@ -72,7 +118,7 @@ class NewDocumentController extends Controller
         $notifications = Master::getNotifacationsData();
         $events_type = Master::getEventsData();
 
-        return view('admin.documents.create', compact('statuses', 'document_types', 'sections', 'programs', 'schemes', 'languages', 'publications', 'notifications', 'events_type'));
+        return view('admin.documents.create', compact('statuses', 'document_types', 'sections', 'programs', 'schemes', 'languages', 'publications', 'notifications', 'events_type', 'tags'));
     }
 
     /**
@@ -126,6 +172,7 @@ class NewDocumentController extends Controller
             'dated' => dateOf($request->dated, 'Y-m-d h:i:s'),
             'user_id' => Auth::user()->id,
             'language_id' => $request->language,
+            'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ];
 
         if ($request->hasFile('document') && $file = $request->file('document')) {
@@ -194,21 +241,27 @@ class NewDocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $result = NewDocument::with('document_type')->find($id);
-        //dd($result->toArray());
-        $statuses = _getGlobalStatus();
-        $programs = Program::where('status', _active())->orderBy('name')->pluck('name', 'id');
-        $languages = Master::getLanguagesData();
-        $publications = Master::getPublicationsData();
-        $notifications = Master::getNotifacationsData();
-        $sections = Section::where('status', _active())->orderBy('name')->pluck('name', 'id');
-        $documents_type = DocumentType::where('status', _active())->orderBy('order_no')->get();
-        $events_type = Master::getEventsData();
-        $schemes = Scheme::where('status', _active())->orderBy('name')->pluck('name', 'id');
-        return view('admin.documents.edit', compact('result', 'statuses', 'documents_type', 'schemes', 'programs', 'languages', 'publications', 'sections', 'notifications', 'events_type'));
-    }
+  public function edit($id)
+{
+    // Load the document along with the tags relationship
+      $result = NewDocument::with('document_type')->findOrFail($id);
+    // Other code...
+
+
+    $statuses = _getGlobalStatus();
+    $programs = Program::where('status', _active())->orderBy('name')->pluck('name', 'id');
+    $languages = Master::getLanguagesData();
+    $publications = Master::getPublicationsData();
+    $notifications = Master::getNotifacationsData();
+    $sections = Section::where('status', _active())->orderBy('name')->pluck('name', 'id');
+    $documents_type = DocumentType::where('status', _active())->orderBy('order_no')->get();
+    $events_type = Master::getEventsData();
+    $schemes = Scheme::where('status', _active())->orderBy('name')->pluck('name', 'id');
+   $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+    return view('admin.documents.edit', compact('result', 'statuses', 'documents_type', 'schemes', 'programs', 'languages', 'publications', 'sections', 'notifications', 'events_type', 'tags', 'selectedTags'));
+}
+
 
     /**
      * Update the specified resource in storage.
@@ -249,6 +302,7 @@ class NewDocumentController extends Controller
             'dated' => dateOf($request->dated, 'Y-m-d h:i:s'),
             'user_id' => Auth::user()->id,
             'language_id' => $request->language,
+              'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ];
 
         if ($request->hasFile('document') && $file = $request->file('document')) {

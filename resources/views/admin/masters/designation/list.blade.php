@@ -129,6 +129,21 @@
                                             <!-- Additional rows as needed -->
                                         </tbody>
                                     </table>
+                                        <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-5') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+</div>
                                 </div>
                             </div>
                         </div>

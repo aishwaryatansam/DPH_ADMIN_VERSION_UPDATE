@@ -28,6 +28,7 @@
                 <div>
                     <div class="card mb-0 mt-2">
                         <div class="card-body">
+                            
                             <form>
                                 <div class="row">
                                     @if (!request('document_type'))
@@ -123,6 +124,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
+                                        
                                         <h4 class="card-title">
                                             @if (request('document_type'))
                                                 {{ $document_types->firstWhere('id', request('document_type'))->name ?? 'Documents' }}
@@ -147,23 +149,56 @@
                                     <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
+                                                            <form method="GET" action="{{ url('/new-documents') }}" class="mb-3"> 
+
+    <input type="hidden" name="document_type" value="{{ request('document_type') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
+        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
+    </div>
+</form>
+
+
+
+
                                             <thead>
                                                 <tr>
                                                     <th>Type Of Document</th>
                                                     <th>Name Of Document</th>
+                                                     <th>Tags</th>
                                                     <th>Dated</th>
                                                     <th>Approval Status</th>
                                                     <th>Public Status</th>
                                                     <th class="text-center" style="width: 10%">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody> @if ($results->count())
                                                 @foreach ($results as $result)
                                                     <tr>
                                                         <td>{{ $result->document_type->name ?? '--' }}</td>
                                                         <td><a
                                                                 href="{{ fileLink($result->document_url) }}">{{ $result->name }}</a>
                                                         </td>
+                                                              <td>{{ $result->tag_names }}</td>
+
                                                         <td>{{ $result->dated ?? '--' }}</td>
                                                         <td>
                                                             {!! getStageBadge($result->approvalWorkflow->current_stage ?? '') !!}
@@ -196,9 +231,32 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
+                                                @else
+        <tr>
+            <td colspan="6" class="text-center text-muted">No matching records found</td>
+        </tr>@endif
                                                 <!-- More rows as needed -->
                                             </tbody>
                                         </table>
+                                                                       <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-5') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+</div>
                                     </div>
                                 </div>
                             </div>

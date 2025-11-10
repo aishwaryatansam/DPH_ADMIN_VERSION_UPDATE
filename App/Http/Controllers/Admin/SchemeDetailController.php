@@ -15,7 +15,7 @@ use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-
+use App\Models\FetchTag;
 class SchemeDetailController extends Controller
 {
     private $scheme_details_image_path = '/scheme_details/images';
@@ -28,39 +28,57 @@ class SchemeDetailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        if (isState()){
-            $programs_id = auth()->user()->programs_id;
-            $sections_id = auth()->user()->sections_id;
-            if ($programs_id) {
-                $results = SchemeDetail::whereHas('scheme', function($query) use ($programs_id) {
-                    $query->where('programs_id', $programs_id);
+ public function index(Request $request)
+{
+    $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10);
+
+    // ✅ Start query builder
+    if (isState()) {
+        $programs_id = auth()->user()->programs_id;
+        $sections_id = auth()->user()->sections_id;
+
+        if ($programs_id) {
+            $query = SchemeDetail::whereHas('scheme', function ($q) use ($programs_id) {
+                $q->where('programs_id', $programs_id);
+            });
+        } elseif ($sections_id) {
+            $section = Section::find($sections_id);
+            $query = $section
+                ? SchemeDetail::whereHas('scheme', function ($q) use ($section) {
+                    $q->where('programs_id', $section->programs_id);
                 })
-                ->with('approvalWorkflow')
-                ->get();
-            } elseif ($sections_id) {
-                $section = Section::find($sections_id);
-                if ($section) {
-                    $results = SchemeDetail::whereHas('scheme', function($query) use ($section) {
-                        $query->where('programs_id', $section->programs_id);
-                    })
-                    ->with('approvalWorkflow')
-                    ->get();
-                } else {
-                    $results = collect();
-                }
-            } else {
-                $results = collect();
-            }
+                : SchemeDetail::query()->whereRaw('1=0');
+        } else {
+            $query = SchemeDetail::query()->whereRaw('1=0');
         }
-        else{
-            $results = SchemeDetail::getQueriedResult();
-        }
-        // dd($results->toArray());
-        $schemes = Scheme::getSchemeData();
-        return view('admin.scheme-details.list', compact('results', 'schemes'));
+    } else {
+        $query = SchemeDetail::query();
     }
+
+    // ✅ Include relationships
+    $query->with('approvalWorkflow', 'scheme');
+
+    // ✅ Apply search filter (search description or scheme name)
+    if (!empty($search)) {
+        $query->where(function ($q) use ($search) {
+            $q->where('description', 'like', "%{$search}%")
+              ->orWhereHas('scheme', function ($p) use ($search) {
+                  $p->where('name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    // ✅ Order + paginate
+    $results = $query->orderBy('id', 'desc')
+        ->paginate($perPage)
+        ->appends($request->all());
+
+    $schemes = Scheme::getSchemeData();
+
+    return view('admin.scheme-details.list', compact('results', 'schemes'));
+}
+
 
     /** 
      * Show the form for creating a new resource.
@@ -73,6 +91,7 @@ class SchemeDetailController extends Controller
         $programs_id = auth()->user()->programs_id;
         $sections_id = auth()->user()->sections_id;
         $section = Section::find($sections_id);
+   
         // dd($section->programs_id);
         $programs = collect();
         if (isState()) {
@@ -89,7 +108,8 @@ class SchemeDetailController extends Controller
             $schemes = Scheme::getSchemeData();
             $programs = Program::getProgramData();
         }
-        return view('admin.scheme-details.create', compact('statuses', 'schemes', 'programs'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.scheme-details.create', compact('statuses', 'schemes', 'programs',  'tags'));
     }
 
     /**
@@ -112,6 +132,7 @@ class SchemeDetailController extends Controller
             'description' => $request->description,
             'schemes_id' => $request->scheme_id,
             'status' => $request->status ?? 0,
+            'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
             'visible_to_public' => $request->visible_to_public ?? 0,
             'user_id' => Auth::user()->id,
         ];
@@ -172,7 +193,8 @@ class SchemeDetailController extends Controller
             }
         }
 
-        $result = SchemeDetail::create($input);
+           $result = SchemeDetail::create($input);
+             
 
         $approvalData = getApprovalData();
 

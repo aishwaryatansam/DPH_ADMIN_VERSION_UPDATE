@@ -8,7 +8,8 @@ class MediaGallery extends Model
 {
     //
     protected $fillable = [
-        'media_gallery', // Integer: 1 for image, 2 for audio, 3 for video
+        'media_gallery',
+        'tags', // Integer: 1 for image, 2 for audio, 3 for video
         'title',          // String: Title of the media
         'description',    // String: Description of the media
         'date',           // Date: Date when the media was added

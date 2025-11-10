@@ -1,6 +1,22 @@
 @extends('admin.layouts.layout')
 @section('title', 'Upload Document')
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Select2 CSS & JS from CDN -->
+
+<script>
+$(document).ready(function() {
+    $('#tags').select2({
+        placeholder: "-- Select --",
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+
     <style>
         #typeofdoc.readonly {
             pointer-events: none;
@@ -11,6 +27,9 @@
             width: 100% !important;
             /* Or set a fixed width, e.g., 300px */
         }
+
+
+        
     </style>
     <div class="container" style="margin-top: 90px;">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
@@ -182,16 +201,15 @@
                                                         <td class="col-12 col-md-9">
                                                             <div class="position-relative">
                                                                 <div class="select-wrapper">
-                                                                    <select class="form-select select-dropdown"
-                                                                        id="programDivisions">
-                                                                        <option> -- Select --</option>
-                                                                        @foreach ($programs as $key => $value)
-                                                                            <option value="{{ $key }}"
-                                                                                {{ SELECT($key, old('programs')) }}>
-                                                                                {{ $value }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
+                                                              <select name="programs_id" id="programs_id" class="form-control" >
+    <option value="">-- Select Program -- </option>
+   @foreach ($programs as $id => $name)
+    <option value="{{ $id }}">
+        {{ $name }}
+    </option>
+@endforeach
+
+</select>
                                                                 </div>
                                                         </td>
                                                     </tr>
@@ -205,16 +223,15 @@
                                                     <td class="col-12 col-md-9">
                                                         <div class="position-relative">
                                                             <div class="select-wrapper">
-                                                                <select class="form-select select-dropdown" id="schemes"
-                                                                    name="scheme_id" required>
-                                                                    <option> -- Select --</option>
-                                                                    @foreach ($schemes as $key => $value)
-                                                                        <option value="{{ $key }}"
-                                                                            {{ SELECT($key, old('schemes')) }}>
-                                                                            {{ $value }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
+                                                               <select name="scheme_id" id="scheme_id" class="form-control">
+    <option value="">-- Select Scheme -- </option>
+@foreach ($schemes as $id => $name)
+    <option value="{{ $id }}"
+        {{ old('scheme_id') == $id ? 'selected' : '' }}>
+        {{ $name }}
+    </option>
+@endforeach
+</select>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -544,6 +561,7 @@
 
 
                                             @if (isAdmin())
+                                            
                                             <!-- Visible to public -->
                                             <tr>
                                                 <td>
@@ -561,7 +579,35 @@
                                                     </div>
                                                 </td>
                                             </tr>
+{{-- <tr>
+    <td class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags</label>
+    </td>
+    <td class="col-12 col-md-9">
+        <select class="form-select select-dropdown" id="tags" name="tags[]" >
+            <option value=""> -- Select --</option>
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+            @endforeach
+        </select>
+        
+    </td>
+</tr> --}}
+<tr>
+    <td class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags</label>
+    </td>
+    <td class="col-12 col-md-9">
+        {{-- FIX: Corrected the 'multiple' attribute syntax and name attribute --}}
+      <select class="form-select select-dropdown" id="tags" name="tags[]" multiple>
+    <option value=""> -- Select --</option>
+    @foreach ($tags as $tag)
+        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+    @endforeach
+</select>
 
+    </td>
+</tr>
                                             <!-- Status -->
                                             <tr>
                                                 <td>
@@ -748,6 +794,38 @@
             }
         });
     </script>
+    <script>
+     
+const programSelect = document.getElementById('programs_id');
+const schemeSelect = document.getElementById('scheme_id');
+
+programSelect.addEventListener('change', () => {
+    const programId = programSelect.value;
+    schemeSelect.innerHTML = '<option value="">-- Select Scheme --</option>';
+
+    if (!programId) return;
+
+    fetch('{{ route('list-scheme') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ program_id: programId }),
+    })
+    .then(res => res.json())
+    .then(data => {
+        data.data.forEach(scheme => {
+            const option = document.createElement('option');
+            option.value = scheme.id;
+            option.textContent = scheme.name;
+            schemeSelect.appendChild(option);
+        });
+    })
+    .catch(console.error);
+});
+</script>
+ 
     <script>
         document.getElementById('typeofdoc').classList.add('readonly');
     </script>

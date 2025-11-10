@@ -40,6 +40,7 @@ class NewDocument extends Model
         'end_date',
         'financial_year',
         'language_id',
+        'tags',
         'approval_stage',
         'remarks',
         'verified_at',

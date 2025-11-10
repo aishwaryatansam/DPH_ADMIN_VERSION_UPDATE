@@ -11,7 +11,7 @@ use App\Models\Configuration;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use App\Models\FetchTag;
 class SocialMediaPostController extends Controller
 {
     private $configurations_image_path = '/configurations/social_media_post';
@@ -20,13 +20,37 @@ class SocialMediaPostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = ConfigurationDetails::getConfigurationDetailsData($id = 28);
-        //$result = DB::table('configurations')->where('id', $id)->first();
-        $statuses = _getGlobalStatus();
-        return view('admin.configurations.social-media-post.list', compact('results', 'statuses'));
+public function index(Request $request)
+{
+    //  $results = ConfigurationDetails::getConfigurationDetailsData($id = 28);
+       
+    $query = ConfigurationDetails::where('configuration_content_type_id', 28);
+
+    // Apply search by name or link if present
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('link', 'like', "%{$search}%");
+        });
     }
+
+    // Always use paginate for effective server-side navigation
+    $perPage = 10;
+    $results = $query->paginate($perPage)->appends($request->query());
+
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    foreach ($results as $result) {
+        $tagIds = explode(',', $result->tags);
+        $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+        $result->tag_names = implode(', ', $tagNames);
+    }
+
+    $statuses = _getGlobalStatus();
+    $total = $results->total();
+
+    return view('admin.configurations.social-media-post.list', compact('results', 'statuses', 'total'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -39,7 +63,9 @@ class SocialMediaPostController extends Controller
         $statuses = _getGlobalStatus();
         $social_media_type = getSocialMediaType();
         $menu_to_show = getMenuToShow();
-        return view('admin.configurations.social-media-post.create', compact('statuses', 'social_media_type', 'menu_to_show'));
+          $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+      
+        return view('admin.configurations.social-media-post.create', compact('statuses', 'social_media_type', 'menu_to_show','tags'));
     }
 
     /**
@@ -61,9 +87,12 @@ class SocialMediaPostController extends Controller
         $input = [
                 'name' => $request->name,
                 'menu_to_show' => $request->menu_to_show,
+                  'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+    
                 'link' => $request->link,
                 'configuration_content_type_id' => 28,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                
             ];
 
 
@@ -108,7 +137,11 @@ class SocialMediaPostController extends Controller
         $statuses = _getGlobalStatus();
         $social_media_type = getSocialMediaType();
         $menu_to_show = getMenuToShow();
-        return view('admin.configurations.social-media-post.edit',compact('result', 'statuses', 'social_media_type', 'menu_to_show'));
+        $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+
+
+        return view('admin.configurations.social-media-post.edit',compact('result', 'statuses', 'social_media_type', 'menu_to_show',  'tags', 'selectedTags'));
     }
 
     /**
@@ -131,6 +164,8 @@ class SocialMediaPostController extends Controller
                 'name' => $request->name,
                 'link' => $request->link,
                 'menu_to_show' => $request->menu_to_show,
+                  'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+      
                 'status' => $request->status ?? 0
             ];
 

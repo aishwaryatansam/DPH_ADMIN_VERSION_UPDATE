@@ -8,7 +8,9 @@ use App\Models\HUD;
 use App\Models\District;
 use Validator;
 use App\Services\FileService;
-
+use App\Exports\DistrictExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\FetchTag;
 class DistrictController extends Controller
 {
     /**
@@ -16,12 +18,37 @@ class DistrictController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = District::getQueriedResult();
+public function index(Request $request)
+{
+    // Start query with optional relationships
+    $query = District::orderBy('name');
 
-        return view('admin.masters.districts.list', compact('results'));
+    // ✅ Keyword search
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where('name', 'like', "%{$keyword}%");
     }
+
+    // ✅ Pagination (default 10 per page, customizable via dropdown)
+    $results = $query->paginate($request->get('pageLength', 10))
+                     ->appends($request->query());
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
+
+    return view('admin.masters.districts.list', compact('results'));
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -31,7 +58,8 @@ class DistrictController extends Controller
     public function create()
     {
         $statuses = _getGlobalStatus();
-        return view('admin.masters.districts.create', compact('statuses'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.districts.create', compact('statuses', 'tags'));
     }
 
     /**
@@ -52,6 +80,8 @@ class DistrictController extends Controller
         $input = [
             'name' => $request->name,
             'status' => $request->status ?? 0,
+            'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+
             // 'location_url' => $request->location_url,
 
         ];
@@ -84,6 +114,7 @@ class DistrictController extends Controller
         return view('admin.masters.districts.show', compact('result'));
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -94,8 +125,9 @@ class DistrictController extends Controller
     {
         $result = District::with([])->find($id);
         $statuses = _getGlobalStatus();
-
-        return view('admin.masters.districts.edit', compact('result', 'statuses'));
+ $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+        return view('admin.masters.districts.edit', compact('result', 'statuses','tags', 'selectedTags'));
     }
 
 
@@ -121,7 +153,8 @@ class DistrictController extends Controller
         $input = [
             'name' => $request->name,
             'location_url' => $request->location_url,
-            'status' => $request->status ?? 0
+            'status' => $request->status ?? 0,
+             'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ];
 
         if ($request->hasFile('district_image') && $file = $request->file('district_image')) {
@@ -185,41 +218,9 @@ class DistrictController extends Controller
         return sendResponse($districts);
     }
 
-    public function export()
-    {
-        $fileName = 'Districts_' . date('Y-m-d') . '.xlsx';
-
-        // Fetch data for districts
-        $districts = District::select('id', 'name', 'status')->get();
-
-        // Convert status to readable format
-        $districts = $districts->map(function ($district) {
-            $district->status = $district->status ? 'Active' : 'Inactive';
-            return $district;
-        });
-
-        // Create and return the Excel file
-        return Excel::download(new class($districts) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-            private $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function collection()
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'ID',
-                    'Name',
-                    'Status',
-                ];
-            }
-        }, $fileName);
-    }
+public function export()
+{
+    $fileName = 'Districts_' . date('Y-m-d') . '.xlsx';
+    return Excel::download(new DistrictExport, $fileName);
+}
 }

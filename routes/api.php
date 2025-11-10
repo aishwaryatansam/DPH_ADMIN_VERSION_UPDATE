@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VisitorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,5 +60,6 @@ Route::post('rti-officer','Admin\RtiOfficerController@getRtiOfficer');
 Route::post('social-media-post','Admin\SocialMediaPostController@getSocialMediaPost');
 Route::post('events','Website\HomePageController@getEvents');
 
-
+Route::post('/track-visitor', [VisitorController::class, 'trackVisitor']);
+Route::get('/visitor-count', [VisitorController::class, 'getVisitorCount']);
 

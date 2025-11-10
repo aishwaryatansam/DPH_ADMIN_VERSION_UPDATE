@@ -2,31 +2,27 @@
 
 namespace App\Exports;
 
+use App\Models\HUD;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use App\Exports\HUDReport;
-
-class HudsExport implements WithMultipleSheets
+class HudsExport implements FromCollection, WithHeadings
 {
-    use Exportable;
-
-    protected $year;
-
-    public function __construct()
+    public function collection()
     {
-
+        return HUD::with('district')
+            ->get()
+            ->map(function($hud) {
+                return [
+                    'HUD Name' => $hud->name,
+                    'District Name' => $hud->district->name ?? '',
+                    'Status' => $hud->status ? 'Active' : 'In-Active'
+                ];
+            });
     }
 
-    /**
-     * @return array
-     */
-    public function sheets(): array
+    public function headings(): array
     {
-        $sheets = [];
-        $sheets['HUD Report'] = new HUDReport();
-        $sheets['One Report'] = new HUDBasedUpdateCountReport();
-
-        return $sheets;
+        return ['HUD Name', 'District Name', 'Status'];
     }
 }

@@ -11,7 +11,7 @@ use App\Models\Block;
 use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\HSCResource as DDHSCResource;
-
+use App\Models\FetchTag;
 
 class HscController extends Controller
 {
@@ -20,18 +20,53 @@ class HscController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = HSC::getQueriedResult();
-        $phcs = array();
+    // public function index()
+    // {
+    //     $results = HSC::getQueriedResult();
+    //     $phcs = array();
 
-        $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
-        if($block_id = request('block_id')) {
-            $phcs = PHC::filter()->where('status', _active())->orderBy('name')->get();
-        }
+    //     $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
+    //     if($block_id = request('block_id')) {
+    //         $phcs = PHC::filter()->where('status', _active())->orderBy('name')->get();
+    //     }
 
-        return view('admin.masters.hsc.list',compact('results', 'huds','phcs'));
+    //     return view('admin.masters.hsc.list',compact('results', 'huds','phcs'));
+    // }
+
+public function index(Request $request)
+{
+    $query = HSC::query()->with('phc');
+
+    if ($request->has('block_id') && $request->block_id != '') {
+        $query->whereHas('phc', function ($q) use ($request) {
+            $q->where('block_id', $request->block_id);
+        });
     }
+
+    if ($request->has('phc_id') && $request->phc_id != '') {
+        $query->where('phc_id', $request->phc_id);
+    }
+
+    $results = $query->paginate($request->get('pageLength', 10));
+foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
+
+    $huds = HUD::with('blocks')->get();
+    $phcs = PHC::all();
+
+    return view('admin.masters.hsc.list', compact('results', 'huds', 'phcs'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -45,7 +80,8 @@ class HscController extends Controller
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.hsc.create',compact('phc','statuses', 'huds', 'blocks', 'is_urban'));
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.hsc.create',compact('phc','statuses', 'huds', 'blocks', 'is_urban','tags'));
     }
     /**
      * Store a newly created resource in storage.
@@ -68,7 +104,8 @@ class HscController extends Controller
                 // 'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url,  
                 // 'is_urban' => $request->is_urban,          
-                'status' => $request->has('status') ? 1 : 0
+                'status' => $request->has('status') ? 1 : 0,
+                'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
 
 
             ];
@@ -112,7 +149,14 @@ class HscController extends Controller
         return view('admin.masters.hsc.show',compact('result'));
     }
 
-
+public function getPhcByBlock($blockId)
+{
+    $phcs = PHC::where('block_id', $blockId)
+        ->where('status', _active())
+        ->orderBy('name')
+        ->get(['id', 'name']);
+    return response()->json($phcs);
+}
     /**
      * Show the form for editing the specified resource.
      *
@@ -127,7 +171,9 @@ class HscController extends Controller
         $huds = HUD::collectHudData();
         $blocks = Block::collectBlockData();
         $is_urban = _isUrban();
-        return view('admin.masters.hsc.edit',compact('result','phc','statuses', 'huds', 'blocks', 'is_urban'));
+         $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+        return view('admin.masters.hsc.edit',compact('result','phc','statuses','tags', 'selectedTags', 'huds', 'blocks', 'is_urban'));
     }
 
     /**
@@ -155,7 +201,8 @@ class HscController extends Controller
                 // 'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url, 
                 // 'is_urban' => $request->is_urban,           
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                   'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags
             ];
 
            
@@ -244,9 +291,10 @@ class HscController extends Controller
         return sendResponse(DDHSCResource::collection($hscs));
     }
 
-    public function export(Request $request){
-    	$filename = 'hscs'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
-    }
+  public function export(Request $request)
+{
+    $phcId = $request->get('phc_id');
+    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\HSCExport($phcId), 'hsc-list.xlsx');
+}
+
 }

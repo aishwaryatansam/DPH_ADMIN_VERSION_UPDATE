@@ -35,6 +35,25 @@
                             </div>
                                              
                         </div>
+                        <form method="GET" action="{{ url('/programdetails') }}" class="mb-3">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <label for="pageLength" class="me-2 mb-0">Show</label>
+            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto ms-auto">
+            <label for="search">Search:</label>
+            <input type="search" name="search" id="search" value="{{ request('search') }}">
+            <button type="submit">Go</button>
+        </div>
+    </div>
+</form>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="add-row" class="display table table-striped table-hover">
@@ -86,8 +105,15 @@
                                             @endforeach
                                             <!-- Add more rows as needed -->
                                     </tbody>
+                                    
                                 </table>
-                            </div>
+               </div>
+      @if(method_exists($results, 'links'))
+                                    <div class="mt-3">
+                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+
+                                    </div>
+                                @endif
                         </div>
 
 

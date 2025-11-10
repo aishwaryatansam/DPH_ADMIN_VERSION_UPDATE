@@ -1,6 +1,22 @@
 @extends('admin.layouts.layout')
 @section('title', 'Create Hsc')
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Select2 CSS & JS from CDN -->
+
+<script>
+$(document).ready(function() {
+    $('#tags').select2({
+        placeholder: "-- Select --",
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+
     <div class="container" style="margin-top: 90px;">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
             <div class="d-flex justify-content-between align-items-center" style="padding-left: 20px; padding-right: 20px;">
@@ -115,7 +131,21 @@
                                             </div>
                                         </div>
                                     </div>
+{{-- <tr>
+    <td class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags</label>
+    </td>
+    <td class="col-12 col-md-9">
+      
+      <select class="form-select select-dropdown" id="tags" name="tags[]" multiple>
+    <option value=""> -- Select --</option>
+    @foreach ($tags as $tag)
+        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+    @endforeach
+</select>
 
+    </td>
+</tr>      --}}
                                     <!-- Select Image Row -->
                                     <!-- <div class="row mb-3">
                                                 <div class="col-12 col-md-3">
@@ -212,5 +242,29 @@
         <!-- database table end -->
     </div>
     <script src="{{ asset('packa/custom/hierarchy.js') }}"></script>
+
+<script>
+document.getElementById('block_id').addEventListener('change', function() {
+    const blockId = this.value;
+    const phcSelect = document.getElementById('phc_id');
+    phcSelect.innerHTML = '<option value="">Loading...</option>';
+
+    if (blockId) {
+        fetch(`/hsc/get-phc/${blockId}`)
+            .then(res => res.json())
+            .then(data => {
+                phcSelect.innerHTML = '<option value="">-- Select PHC --</option>';
+                data.forEach(phc => {
+                    phcSelect.innerHTML += `<option value="${phc.id}">${phc.name}</option>`;
+                });
+            })
+            .catch(() => {
+                phcSelect.innerHTML = '<option value="">Error loading PHCs</option>';
+            });
+    } else {
+        phcSelect.innerHTML = '<option value="">-- Select PHC --</option>';
+    }
+});
+</script>
 
 @endsection

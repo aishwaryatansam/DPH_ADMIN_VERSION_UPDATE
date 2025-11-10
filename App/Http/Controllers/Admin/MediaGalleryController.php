@@ -10,7 +10,7 @@ use App\Models\Configuration;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\FetchTag;
 class MediaGalleryController extends Controller
 {
     private $media_gallery_path = '/media_gallery';
@@ -19,9 +19,44 @@ class MediaGalleryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+         $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10); // match your HTML select name
+
+        
         $results = MediaGallery::all();
+               if (!empty($search)) {
+        $results = $results->filter(function ($item) use ($search) {
+            return stripos($item->name ?? '', $search) !== false;
+        });
+    }    if (method_exists($results, 'paginate')) {
+        $results = $results->paginate($perPage);
+    } else if ($results instanceof \Illuminate\Support\Collection) {
+        $page = $request->get('page', 1);
+        $results = new \Illuminate\Pagination\LengthAwarePaginator(
+            $results->forPage($page, $perPage), 
+            $results->count(), 
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+    }foreach ($results as $result) {
+    // Fetch active tags (consistent with your existing code)
+     $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    
+    // Get tag IDs (from the result)
+    $tagIds = explode(',', $result->tags);
+
+    // Fetch tag names by matching the tag IDs
+    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+
+    // Store the tag names as a comma-separated string
+    $result->tag_names = implode(', ', $tagNames);
+}
+
+
+        
         $statuses = _getGlobalStatus();
         return view('admin.configurations.media-gallery.list', compact('results', 'statuses'));
     }
@@ -35,8 +70,9 @@ class MediaGalleryController extends Controller
     {
         $statuses = _getGlobalStatus();
         $media_gallery = config('constant.media_gallery');
+         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
         // $menu_to_show = getMenuToShow();
-        return view('admin.configurations.media-gallery.create', compact('statuses', 'media_gallery'));
+        return view('admin.configurations.media-gallery.create', compact('statuses', 'media_gallery', 'tags'));
     }
 
     /**
@@ -53,6 +89,7 @@ class MediaGalleryController extends Controller
         // Base validation rules
         $rules = [
             'media_gallery' => 'required|integer',
+            
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'date' => 'required|date',
@@ -72,6 +109,8 @@ class MediaGalleryController extends Controller
         // Create a new MediaGallery instance
         $mediaGallery = new MediaGallery();
         $mediaGallery->media_gallery = $mediaType;
+         $mediaGallery->tags = is_array($request->tags) ? implode(',', $request->tags) : $request->tags;
+
         $mediaGallery->title = $request->title;
         $mediaGallery->description = $request->description;
         $mediaGallery->date = $request->date;
@@ -116,9 +155,9 @@ class MediaGalleryController extends Controller
         $mediaGallery = MediaGallery::findOrFail($id);
         $statuses = _getGlobalStatus();
         $media_gallery = config('constant.media_gallery');
-
-        // Pass the correct variable to the view
-        return view('admin.configurations.media-gallery.edit', compact('mediaGallery', 'statuses', 'media_gallery'));
+          $tags = FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+    $selectedTags = $mediaGallery->tags ? explode(',', $mediaGallery->tags) : [];
+    return view('admin.configurations.media-gallery.edit', compact('mediaGallery', 'statuses', 'media_gallery', 'tags', 'selectedTags'));
     }
 
 
@@ -144,6 +183,7 @@ class MediaGalleryController extends Controller
             'description' => 'required|string|max:1000',
             'date' => 'required|date',
             'status' => 'nullable|boolean',
+            //   'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
         ];
 
         // Conditional validation based on media type
@@ -158,6 +198,8 @@ class MediaGalleryController extends Controller
 
         // Update the common fields
         $mediaGallery->media_gallery = $mediaType;
+           $mediaGallery->tags = is_array($request->tags) ? implode(',', $request->tags) : $request->tags;
+
         $mediaGallery->title = $request->title;
         $mediaGallery->description = $request->description;
         $mediaGallery->date = $request->date;

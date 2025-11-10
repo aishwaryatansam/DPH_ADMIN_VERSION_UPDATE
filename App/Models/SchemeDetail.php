@@ -29,7 +29,8 @@ class SchemeDetail extends Model
         'verified_at',
         'approved_at',
         'published_at',
-        'icon_url'
+        'icon_url',
+        'tags'
     ];
 
     protected $casts = [

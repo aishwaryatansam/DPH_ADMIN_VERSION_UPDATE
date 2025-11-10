@@ -1,6 +1,9 @@
 @extends('admin.layouts.layout')
 @section('title', 'Edit Document')
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         .select2-container {
             width: 100% !important;
@@ -324,6 +327,20 @@
                                                 </select>
                                             </div>
                                         @endif
+@if (!in_array($result->document_type_id, [4, 15, 14]))
+<div>
+    <div class="font-weight-bold text-secondary">Tags</div>
+    <select class="form-control select2" id="tags" name="tags[]" multiple>
+        @foreach ($tags as $id => $name)
+            <option value="{{ $id }}" {{ in_array($id, $selectedTags) ? 'selected' : '' }}>
+                {{ $name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+
+@endif
 
                                         <!-- Reference Number -->
                                         @if (!in_array($result->document_type_id, [8, 9, 10, 11, 12, 13, 14]))
@@ -539,6 +556,16 @@
         });
     
        
+    </script>
+    <script>
+        $(document).ready(function() {
+    $('.select2').select2({
+        width: '100%',
+        placeholder: "Select tags",
+        allowClear: true
+    });
+});
+
     </script>
     <script src="{{ asset('packa/custom/document.js') }}"></script>
 @endsection

@@ -23,20 +23,9 @@
                         <form>
                             <div class="row">
                                 <div class="col col-md-4">
-                                    <div class="form-group">
-                                        <label>HUD</label>
-                                        <select name="hud_id" class="form-control form-control-line searchable"
-                                            onchange="searchFun()">
-                                            <option value="">-- Select HUD -- </option>
-                                            @foreach ($huds as $hud)
-
-                                                <option value="{{ $hud->id }}"
-                                                    {{ SELECT($hud->id, request('hud_id')) }}>{{ $hud->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                  
                                 </div>
-                                <div class="col d-flex justify-content-end align-items-center mt-2">
+                                 <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
                                         <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch"
                                             style="border-radius: 10px;">
@@ -44,7 +33,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> 
 
                         </form>
                     </div>
@@ -59,10 +48,12 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
+                                        
                                         <h4 class="card-title mb-4 text-primary">All tags</h4>
                                         <!-- Button to add employees if needed -->
+                                        
                                         <button class="btn btn-primary btn-round ms-auto"
-                                            onclick="window.location.href='{{route('blocks.create')}}';">
+                                            onclick="window.location.href='{{route('tags.create')}}';">
                                             <i class="fa fa-plus"></i> Add Tags
                                         </button>
                                         <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
@@ -73,67 +64,91 @@
                                 </div>
 
                                 <!-- Table Card -->
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table id="add-row" class="display table table-striped table-hover"
-                                            style="width:100%">
-                                            <thead>
-
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>HUD</th>
-                                                    <th>Status</th>
-                                                    <th class="text-center" style="width: 10%">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($results as $result)
-                                                    <tr>
-                                                        <td>{{ $result->name ?? '' }}</td>
-                                                        <td>{{ $result->hud->name ?? '' }}</td>
-                                                        <td style="font-weight: bold;">
-                                                            @if (isset($result->status) && $result->status == 1)
-                                                                <span class="text-success">Active</span>
-                                                            @else
-                                                                <span class="text-danger">In-Active</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <div class="form-button-action">
-                                                                <button type="button"
-                                                                    class="btn btn-link btn-primary btn-lg"
-                                                                    onclick="window.location.href='{{route('blocks.edit',$result->id)}}'"
-                                                                    data-bs-toggle="tooltip" title="Edit Block">
-                                                                    <i class="fa fa-edit"></i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-link btn-danger"
-                                                                    onclick="window.location.href='{{route('blocks.show',$result->id)}}'"
-                                                                    data-bs-toggle="tooltip" title="View Block">
-                                                                    <i class="fa fa-eye"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                    <!-- Additional rows as needed -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DataTable End -->
-
-
-                    <!-- insert the contents Here end -->
-                </div>
-            </div>
+             <div class="card-body">
+<form method="GET" action="{{ url('/tags') }}" class="mb-3">
+    <input type="hidden" name="tags" value="{{ request('tags') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
         </div>
-        <!-- content end here -->
-        <!-- main panel end -->
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
     </div>
+</form>
+
+                           
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+  
+                @forelse ($results as $tag)
+                    <tr>
+                        <td>{{ $tag->id }}</td>
+                        <td>{{ $tag->name }}</td>
+                        <td>{{ $tag->status ? 'Active' : 'Inactive' }}</td>
+                        <td>
+                            <div class="form-button-action">
+                                <button type="button"
+                                    class="btn btn-link btn-primary btn-lg"
+                                    onclick="window.location.href='{{ route('tags.edit', $tag->id) }}'"
+                                    title="Edit Tags">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-link btn-danger"
+                                    onclick="window.location.href='{{ route('tags.show', $tag->id) }}'"
+                                    title="View Tags">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="4" class="text-center">No tags found</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+                 <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-5') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+    </div>
+
+</div>
+
    <!-- Include Libraries -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -142,26 +157,7 @@
         var tableData = @json($results);
 
         // Initialize DataTable
-        if (tableData.length > 0) {
-            $('#add-row').DataTable({
-                "paging": true,
-                "searching": true,
-                "lengthChange": true,
-                "pageLength": 10,
-                "info": true,
-                "autoWidth": false,
-            });
-        } else {
-            $('#add-row').DataTable({
-                "data": [],
-                "paging": true,
-                "searching": true,
-                "lengthChange": true,
-                "pageLength": 10,
-                "info": true,
-                "autoWidth": false,
-            });
-        }
+      
 
         // Handle the download button click
         $('#downloadBtn').on('click', function () {
@@ -170,7 +166,7 @@
             tableData.forEach(function (row) {
                 exportData.push([
                     row.name ?? '', // Block Name
-                    row.hud ? row.hud.name : '', // HUD Name
+                     // HUD Name
                     row.status == 1 ? 'Active' : 'In-Active' // Status
                 ]);
             });
@@ -196,7 +192,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            setPageUrl('/blocks?');
+            setPageUrl('/tags?');
         });
     </script>
 @endsection

@@ -9,7 +9,9 @@ use App\Models\HUD;
 use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\BlockResource as DDBlockResource;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BlockExport;
+use App\Models\FetchTag;
 class BlockController extends Controller
 {
     /**
@@ -17,12 +19,69 @@ class BlockController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = Block::getQueriedResult();
-        $huds = HUD::where('status', _active())->orderBy('name')->get();
-        return view('admin.masters.blocks.list',compact('results','huds'));
+// public function index(Request $request)
+// {
+//     $perPage = (int) $request->get('pageLength', 10);
+//     if ($perPage <= 0) $perPage = 10;
+
+//     $keyword = $request->get('keyword');
+
+//     $query = Block::with('hud')->orderBy('name');
+
+//     // 🔍 Search filter
+//     if (!empty($keyword)) {
+//         $query->where(function ($q) use ($keyword) {
+//             $q->where('name', 'like', "%{$keyword}%")
+//               ->orWhereHas('hud', function ($q2) use ($keyword) {
+//                   $q2->where('name', 'like', "%{$keyword}%");
+//               });
+//         });
+//     }
+
+//     $results = $query->paginate($perPage)->appends($request->query());
+
+//     $huds = HUD::where('status', _active())->orderBy('name')->get();
+
+//     return view('admin.masters.blocks.list', compact('results', 'huds'));
+// }
+
+public function index(Request $request)
+{
+    $query = Block::with('hud')->orderBy('name');
+
+    // 🔍 Keyword search
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where('name', 'like', "%{$keyword}%")
+              ->orWhereHas('hud', function ($q) use ($keyword) {
+                  $q->where('name', 'like', "%{$keyword}%");
+              });
     }
+
+    // 🔽 HUD filter
+    if ($request->filled('hud_id')) {
+        $query->where('hud_id', $request->hud_id);
+    }
+
+    // ✅ Pagination first
+    $results = $query->paginate($request->get('pageLength', 10))
+                     ->appends($request->query());
+
+    // ✅ Fetch active tags once
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+
+    // ✅ Process tag names for each block
+    foreach ($results as $result) {
+        $tagIds = $result->tags ? explode(',', $result->tags) : [];
+        $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+        $result->tag_names = implode(', ', $tagNames);
+    }
+
+    // HUD dropdown data
+    $huds = HUD::where('status', _active())->orderBy('name')->get();
+
+    return view('admin.masters.blocks.list', compact('results', 'huds'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +93,8 @@ class BlockController extends Controller
         $statuses = _getGlobalStatus();
         $huds = HUD::collectHudData();
         $is_urban = _isUrban();
-        return view('admin.masters.blocks.create',compact('huds','statuses', 'is_urban'));
+           $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+        return view('admin.masters.blocks.create',compact('huds','statuses', 'is_urban','tags'));
     }
 
     /**
@@ -58,6 +118,7 @@ class BlockController extends Controller
                 // 'location_url' => $request->location_url,
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,
+                 'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
                 'status' => $request->status ?? 0
             ];
 
@@ -111,7 +172,9 @@ class BlockController extends Controller
         $statuses = _getGlobalStatus();
         $huds = Hud::collectHudData();
         $is_urban = _isUrban();
-        return view('admin.masters.blocks.edit',compact('result','huds','statuses', 'is_urban'));
+         $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
+$selectedTags = $result->tags ? explode(',', $result->tags) : [];
+        return view('admin.masters.blocks.edit',compact('result','huds','statuses', 'is_urban','tags', 'selectedTags'));
     }
 
     /**
@@ -139,7 +202,8 @@ class BlockController extends Controller
                 // 'location_url' => $request->location_url,
                 // 'video_url' => $request->video_url,
                 // 'is_urban' => $request->is_urban,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+                 'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
             ];
 
              
@@ -231,9 +295,10 @@ class BlockController extends Controller
         $blocks = Block::collectBlockData($request->hud_id);
         return sendResponse(DDBlockResource::collection($blocks));
     }
-    public function export(Request $request){
-    	$filename = 'blocks'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
-    }
+    public function export(Request $request)
+{
+    $filename = 'blocks-' . date('d-m-Y') . '.xlsx';
+    return Excel::download(new BlockExport, $filename);
+}
+
 }

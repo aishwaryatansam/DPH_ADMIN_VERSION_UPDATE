@@ -26,9 +26,12 @@ class FacilityHierarchyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // dd('hiiii');
+         $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10); // match your HTML select name
+
         $facility_levels = FacilityLevel::getFacilityLevelData();
 
         $huds = HUD::filter()->where('status', _active())->orderBy('name')->get();
@@ -47,6 +50,27 @@ class FacilityHierarchyController extends Controller
             $hscs = HSC::filter()->where('status', _active())->orderBy('name')->get();
         }
         $results = FacilityHierarchy::getQueriedResult();
+       if (!empty($search)) {
+        $results = $results->filter(function ($item) use ($search) {
+            return stripos($item->name ?? '', $search) !== false;
+        });
+    }
+
+    // 🧾 Pagination logic (keep your original code)
+    if (method_exists($results, 'paginate')) {
+        $results = $results->paginate($perPage);
+    } else if ($results instanceof \Illuminate\Support\Collection) {
+        $page = $request->get('page', 1);
+        $results = new \Illuminate\Pagination\LengthAwarePaginator(
+            $results->forPage($page, $perPage), 
+            $results->count(), 
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+    }
+
+
         // dd($results);
         return view('admin.masters.facilityhierarchy.list', compact('results', 'facility_levels', 'huds', 'blocks', 'phcs', 'hscs'));
     }
@@ -56,7 +80,7 @@ class FacilityHierarchyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+ public function create()
     {
         $statuses = _getGlobalStatus();
         $facility_levels = FacilityLevel::getFacilityLevelData();
@@ -64,7 +88,6 @@ class FacilityHierarchyController extends Controller
         $districts = $huds = $blocks = $phc = $hsc = $designation = [];
         return view('admin.masters.facilityhierarchy.create', compact('districts', 'huds', 'blocks', 'phc', 'hsc', 'statuses', 'facility_levels', 'facility_types'));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -87,6 +110,8 @@ class FacilityHierarchyController extends Controller
             'facility_code' => $request->code,
             'facility_type_id' => $request->facility_type_id,
             'facility_level_id' => $request->facility_level_id,
+            'latitude' => $request->latitude,
+             'longitude' => $request->longitude,
             'district_id'  => $request->district_id,
             'hud_id'  => $request->hud_id,
             'block_id'  => $request->block_id,
@@ -163,8 +188,11 @@ class FacilityHierarchyController extends Controller
         $input = [
             'facility_name' => $request->name,
             'facility_code' => $request->code,
+            
             'facility_type_id' => $request->facility_type_id,
             'facility_level_id' => $request->facility_level_id,
+              'latitude' => $request->latitude,
+             'longitude' => $request->longitude,
             'district_id'  => $request->district_id,
             'hud_id'  => $request->hud_id,
             'block_id'  => $request->block_id,

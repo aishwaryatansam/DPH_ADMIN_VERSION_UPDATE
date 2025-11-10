@@ -1,6 +1,18 @@
 @extends('admin.layouts.layout')
 @section('title', 'Edit District')
 @section('content') <div class="page-wrapper">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script><script>
+        $(document).ready(function() {
+    $('.select2').select2({
+        width: '100%',
+        placeholder: "Select tags",
+        allowClear: true
+    });
+});
+
+    </script>
         <div class="container" style="margin-top: 90px;">
             <div class="container-fluid p-2" style="background-color: #f2f2f2;">
                 <div class="d-flex justify-content-between align-items-center"
@@ -80,7 +92,21 @@
                                                 </div>
                                             </div>
                                         </div>
-
+{{-- <div class="row mb-3">
+    <div class="col-12 col-md-3">
+        <label for="tags" class="form-label">Tags <span class="sizeoftextred">*</span></label>
+    </div>
+    <div class="col-12 col-md-7">
+       <select class="form-control select2" id="tags" name="tags[]" multiple>
+    <option value="" disabled>Select Tags</option>
+    @foreach ($tags as $tagId => $tagName)
+        <option value="{{ $tagId }}" {{ in_array($tagId, $selectedTags) ? 'selected' : '' }}>
+            {{ $tagName }}
+        </option>
+    @endforeach
+</select>
+    </div>
+</div>    --}}
                                         <!-- Buttons -->
                                         <div class="text-start mt-4">
                                             <button type="submit" class="btn btn-primary">Save</button>

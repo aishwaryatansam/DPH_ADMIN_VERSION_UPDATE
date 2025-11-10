@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
         // Carbon::setLocale(config('app.timezone')); 
 
         // TO THIS:
+         Paginator::useBootstrap();
+
         Carbon::setLocale(config('app.locale')); 
 
         View::composer('*', function ($view) {

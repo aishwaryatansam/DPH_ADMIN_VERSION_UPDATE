@@ -419,6 +419,16 @@
                     <span class="sub-item">Footer</span>
                   </a>
                 </li>
+                <li>
+                  <a href="{{url('/tags')}}">
+                    <span class="sub-item">Tags</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url('/popular')}}">
+                    <span class="sub-item">Popular</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </li>
@@ -571,11 +581,11 @@
                     <span class="sub-item">HSC</span>
                   </a>
                 </li>
-                    <li>
+                    <!-- <li>
                   <a href="{{url('/tags')}}">
                     <span class="sub-item">Tags</span>
                   </a>
-                </li>
+                </li> -->
               </ul>
             </div>
           </li>
