@@ -37,9 +37,9 @@
                                         </button>
 
                                          <!-- Download Button -->
-                                         <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
-                                            <i class="fa fa-download"></i> Download
-                                        </button>
+                                      <button class="btn btn-success" onclick="window.location.href='{{ route('schemesdetail.export') }}';">
+                                        Download
+                                    </button>
 
                                     </div>
                                 </div>
