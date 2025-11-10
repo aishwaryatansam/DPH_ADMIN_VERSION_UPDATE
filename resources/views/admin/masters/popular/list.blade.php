@@ -30,9 +30,9 @@
                                         onclick="window.location.href='{{ route('popular.create') }}';">
                                         <i class="fa fa-plus"></i> Add Popular
                                     </button>
-                                    <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
+                                    {{-- <button class="btn btn-secondary btn-round ms-2" id="downloadBtn">
                                         <i class="fa fa-download"></i> Download
-                                    </button>
+                                    </button> --}}
                                 </div>
                             </div>
 
