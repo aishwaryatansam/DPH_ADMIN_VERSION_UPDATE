@@ -22,7 +22,7 @@
                 <h5 class="mb-0">Tags</h5>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0" style="background-color: #f2f2f2;">
-                        <li class="breadcrumb-item"><a href="#">Tags</a></li>
+                        <li class="breadcrumb-item"><a href="#">Popular</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Edit</li>
                     </ol>
                 </nav>
@@ -47,7 +47,7 @@
 
                             <div class="card-body">
                                 <!-- Heading -->
-                                <h4 class="card-title mb-4 text-primary">Edit tags Details</h4>
+                                <h4 class="card-title mb-4 text-primary">Edit Popular Details</h4>
 
                                 <form action="{{route('popular.update',$result->id)}}" enctype="multipart/form-data" method="post">
                                     {{csrf_field()}}
@@ -61,6 +61,31 @@
                                         </div>
 
                                     </div>
+  <div class="row mb-3 p-3">
+            <div class="col-md-10">
+                <label for="description" class="form-label fw-bold text-secondary">Short Description:</label>
+                <textarea class="form-control" name="description" id="description" rows="3"
+                    placeholder="Enter description">{{ old('description', $result->description) }}</textarea>
+            </div>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="row mb-3 p-3">
+            <div class="col-md-10">
+                <label for="image" class="form-label fw-bold text-secondary">Image:</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+
+                @if (!empty($result->image) && file_exists(public_path($result->image)))
+                    <div class="mt-2">
+                        <p class="text-muted">Current Image:</p>
+                        <img src="{{ asset($result->image) }}" alt="Popular Image"
+                            width="100" height="100" style="object-fit: cover; border-radius: 8px;">
+                    </div>
+                @else
+                    <p class="text-muted mt-2">No image uploaded.</p>
+                @endif
+            </div>
+        </div>
 
                                     <!-- District Row as Dropdown -->
                                  <div class="row mb-3 px-3">

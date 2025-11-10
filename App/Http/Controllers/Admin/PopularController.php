@@ -79,20 +79,40 @@ public function index(Request $request)
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|min:2|max:99',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|min:2|max:99',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+    ]);
 
-        Popular::create([
-            'name' => $request->name,
-            'status' => $request->status,
-              'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
-        ]);
+    $data = [
+        'name' => $request->name,
+        'status' => $request->status,
+        'description' => $request->description,
+        'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+    ];
 
-        return redirect()->route('popular.index')->with('success', 'Popular item created successfully!');
+    // ✅ handle image upload
+    if ($request->hasFile('image')) {
+        $path = public_path('tnpdphpmfiles/popular');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        $image = $request->file('image');
+        $filename = time() . '_' . $image->getClientOriginalName();
+        $image->move($path, $filename);
+
+        $data['image'] = 'tnpdphpmfiles/popular/' . $filename;
     }
+
+    Popular::create($data);
+
+    return redirect()->route('popular.index')->with('success', 'Popular item created successfully!');
+}
+
 
     /**
      * Display the specified resource.
@@ -119,23 +139,46 @@ $selectedTags = $result->tags ? explode(',', $result->tags) : [];
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|min:2|max:99',
-        ]);
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|min:2|max:99',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+    ]);
 
-        $result = Popular::findOrFail($id);
+    $result = Popular::findOrFail($id);
 
-        $result->update([
-            'name' => $request->name,
-             'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
-            'status' => $request->status ?? 1
-            
-        ]);
+    $data = [
+        'name' => $request->name,
+        'status' => $request->status ?? 1,
+        'description' => $request->description,
+        'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
+    ];
 
-        return redirect()->route('popular.index')->with('success', 'Popular item updated successfully!');
+    if ($request->hasFile('image')) {
+        $path = public_path('tnpdphpmfiles/popular');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        // optional: delete old image
+        if ($result->image && file_exists(public_path($result->image))) {
+            unlink(public_path($result->image));
+        }
+
+        $image = $request->file('image');
+        $filename = time() . '_' . $image->getClientOriginalName();
+        $image->move($path, $filename);
+
+        $data['image'] = 'tnpdphpmfiles/popular/' . $filename;
     }
+
+    $result->update($data);
+
+    return redirect()->route('popular.index')->with('success', 'Popular item updated successfully!');
+}
+
 
     /**
      * Remove the specified resource from storage.

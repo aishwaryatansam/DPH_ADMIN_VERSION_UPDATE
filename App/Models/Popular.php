@@ -9,5 +9,6 @@ class Popular extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','tags', 'status'];
+    protected $fillable = ['name', 'description',
+    'image','tags', 'status'];
 }

@@ -49,7 +49,27 @@ $(document).ready(function() {
                                     <input type="text" class="form-control" name="name" id="popularName"
                                         placeholder="Enter popular item name" required>
                                 </div>
+                                    <div class="mb-3">
+    <label for="popularDescription" class="form-label">Short Description</label>
+    <textarea class="form-control" name="description" id="popularDescription"
+        placeholder="Enter short description" rows="3"></textarea>
+</div>
 
+                                      <div class="row mb-3">
+                                          
+                                            <div class="mb-3">
+                                                 <label for="popularName" class="form-label">Upload Image</label>
+                                                <input type="file" class="form-control" id="profileImage"
+                                                    accept="image/*" name="image" required>
+                                                <small class="sizeoftextred">Accepted .jpg/.jpeg/.png format & allowed max
+                                                    size is
+                                                    5MB</small>
+                                            </div>
+                                            <div class="col-12 col-md-2">
+                                                <img id="imagePreview" src="#" alt="Image Preview" class="img-fluid"
+                                                    style="max-width: 100px; display: none; border: 1px solid #ccc; border-radius: 10px; padding: 5px; cursor: pointer;">
+                                            </div>
+                                        </div>
                                 <div class="row mb-3">
                                     <div class="col-12 mt-2 col-md-3">
                                         <label for="status" class="form-label">Status</label>
