@@ -24,7 +24,7 @@
                                 <h4 class="card-title mb-2 mb-md-0">Schemes</h4>
                                 <div class="d-flex gap-2">
                                     @if ($user_detail->user_type_id == '7')
-                                    <button class="btn btn-success" onclick="window.location.href='{{ route('schemesdetail.export') }}';">
+                                    <button class="btn btn-success" onclick="window.location.href='{{ route('schemeDetails.export') }}';">
                                         Download
                                     </button>
                                     @endif

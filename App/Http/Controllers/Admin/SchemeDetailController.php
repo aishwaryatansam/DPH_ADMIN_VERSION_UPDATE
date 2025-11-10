@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\SchemeDetailsExport;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ApprovalWorkflows;
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\FetchTag;
+use App\Exports\SchemeExport;
 class SchemeDetailController extends Controller
 {
     private $scheme_details_image_path = '/scheme_details/images';
@@ -407,8 +408,20 @@ public function messages()
         return [];
     }
 
-    public function export()
-    {
-        return Excel::download(new SchemeDetailsExport, 'scheme_details.xlsx');
+public function export()
+{
+    try {
+        // Fetch SchemeDetails along with Scheme and Program
+        $data = \App\Models\SchemeDetail::with('scheme.program')->get();
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\SchemeExport($data),
+            'scheme_details.xlsx'
+        );
+    } catch (\Exception $e) {
+        dd($e->getMessage());
     }
+}
+
+
 }

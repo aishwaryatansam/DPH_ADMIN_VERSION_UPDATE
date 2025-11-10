@@ -12,7 +12,8 @@ use App\Models\Scheme;
 use App\Models\Section;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
+use \App\Exports\SchemeDetailExport;
+use Maatwebsite\Excel\Facades\Excel;
 class SchemeController extends Controller
 {
     /**
@@ -235,10 +236,20 @@ public function create(Request $request)
         $scheme = Scheme::getSchemeData($request->program_id);
         return sendResponse(SchemeResource::collection($scheme));
     }
+public function export()
+{
+    try {
+        // ✅ Fetch all Scheme records with their related Program
+        $data = \App\Models\Scheme::with('program')->get();
 
-    public function export(Request $request){
-    	$filename = 'Schemes'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
+        // ✅ Pass the data to the export class
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\SchemeDetailsExport($data),
+            'scheme_details.xlsx'
+        );
+    } catch (\Exception $e) {
+        dd($e->getMessage());
     }
+}
+
 }

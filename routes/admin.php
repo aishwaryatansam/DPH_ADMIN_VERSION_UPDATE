@@ -45,7 +45,7 @@ Route::middleware(['admin'])->group(function () {
 	Route::get('/sections-export', 'Admin\SectionController@export')->name('sections.export');
 
 	Route::resource('/schemes','Admin\SchemeController');
-	Route::get('/schemes-export','Admin\SchemeController@export')->name('schemes.export');
+	Route::get('/schemesDetails-export','Admin\SchemeDetailController@export')->name('schemeDetails.export');
 
 
     Route::get('districts/export', [App\Http\Controllers\Admin\DistrictController::class, 'export'])->name('districts.export');
@@ -113,7 +113,7 @@ Route::middleware(['admin'])->group(function () {
 	Route::get('/documents-export','Admin\DocumentController@export1')->name('documents.export');
 	
 
-	Route::get('/schemes-export', 'Admin\SchemeDetailController@export')->name('schemesdetail.export');
+	Route::get('/schemes-export', 'Admin\SchemeDetailController@export')->name('scheme.export');
 	Route::get('huds/export', [App\Http\Controllers\Admin\HudController::class, 'export'])->name('huds.export');
    Route::get('/blocks/export', [App\Http\Controllers\Admin\BlockController::class, 'export'])
      ->name('blocks.export');
@@ -158,7 +158,7 @@ Route::get('/hsc/get-phc/{blockId}', 'Admin\HscController@getPhcByBlock')->name(
 	Route::resource('/programdetails','Admin\ProgramDetailController');
 
 	Route::resource('/schemedetails','Admin\SchemeDetailController');
-	Route::get('/schemedetails-export','Admin\SchemeDetailController@export')->name('schemedetail.export');
+	Route::get('/schemedetails-export','Admin\SchemeController@export')->name('scheme.export');
 
 
 	Route::prefix('approval')->group(function () {
