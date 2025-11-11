@@ -64,8 +64,8 @@
   <div class="row mb-3 p-3">
             <div class="col-md-10">
                 <label for="description" class="form-label fw-bold text-secondary">Short Description:</label>
-                <textarea class="form-control" name="description" id="description" rows="3"
-                    placeholder="Enter description">{{ old('description', $result->description) }}</textarea>
+                <textarea class="form-control" name="descript" id="description" rows="3"
+                    placeholder="Enter description">{{ old('descript', $result->descript) }}</textarea>
             </div>
         </div>
 

@@ -144,7 +144,7 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'name' => 'required|min:2|max:99',
-        'description' => 'nullable|string',
+        'descript' => 'nullable|string',
         'img' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
 
