@@ -49,6 +49,7 @@ class ScrollerController extends Controller
         }
         
         $input = [
+            'title' => $request->title,
                 'name' => $request->name,
                 'link' => $request->link,
                 'configuration_content_type_id' => 11,           // 11 - Scroller Notification

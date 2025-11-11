@@ -41,6 +41,11 @@
                                         <h4 class="mb-4 text-primary">Create Scroller Notification</h4>
                                         <div class="row g-3 align-items-start">
                                           <!-- Notification Text -->
+                                             <div class="col-md-9">
+                                            <label for="scrollerNotification" class="form-label font-weight-bold">Notification Title</label>
+                                            <textarea class="form-control shadow-sm" id="scrollerNotification" placeholder="Enter scrolling notification text" rows="4" name="title" required></textarea>
+                                          </div>
+                                      
                                           <div class="col-md-9">
                                             <label for="scrollerNotification" class="form-label font-weight-bold">Notification Text</label>
                                             <textarea class="form-control shadow-sm" id="scrollerNotification" placeholder="Enter scrolling notification text" rows="4" name="name" required></textarea>
@@ -81,7 +86,7 @@
         </div>
         <!-- page inner end-->
     </div>
-    <script>
+    {{-- <script>
         tinymce.init({
           selector: '#scrollerNotification', // Target the textarea by its ID
           height: 300, // Set the height of the editor
@@ -89,5 +94,5 @@
           plugins: 'lists link image table code help', // Add plugins as needed
           toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code | help', // Customize the toolbar
         });
-      </script>
+      </script> --}}
 @endsection

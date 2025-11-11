@@ -51,7 +51,7 @@ $(document).ready(function() {
                                 </div>
                                     <div class="mb-3">
     <label for="popularDescription" class="form-label">Short Description</label>
-    <textarea class="form-control" name="description" id="popularDescription"
+    <textarea class="form-control" name="descript" id="popularDescription"
         placeholder="Enter short description" rows="3"></textarea>
 </div>
 
@@ -60,7 +60,7 @@ $(document).ready(function() {
                                             <div class="mb-3">
                                                  <label for="popularName" class="form-label">Upload Image</label>
                                                 <input type="file" class="form-control" id="profileImage"
-                                                    accept="image/*" name="image" required>
+                                                    accept="image/*" name="img" required>
                                                 <small class="sizeoftextred">Accepted .jpg/.jpeg/.png format & allowed max
                                                     size is
                                                     5MB</small>

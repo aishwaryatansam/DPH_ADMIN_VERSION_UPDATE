@@ -84,13 +84,13 @@
 
                 <!-- Description Column -->
                 <td style="white-space: pre-wrap; max-width: 300px;">
-                    {{ $popular->description }}
+                    {{ $popular->descript }}
                 </td>
 
                 <!-- Image Column -->
                 <td>
-                    @if(!empty($popular->image) && file_exists(public_path($popular->image)))
-                        <img src="{{ asset($popular->image) }}" alt="Popular Image"
+                    @if(!empty($popular->img) && file_exists(public_path($popular->img)))
+                        <img src="{{ asset($popular->img) }}" alt="Popular Image"
                              width="60" height="60"
                              style="object-fit: cover; border-radius: 6px;">
                     @else
@@ -143,9 +143,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-3">
-                                    {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
-                                </div>
+                              
                             </div>
                         </div>
                     </div>
