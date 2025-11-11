@@ -105,6 +105,7 @@ class ScrollerController extends Controller
         }
         $result = ConfigurationDetails::find($id);
         $input = [
+            'title' => $request->title,
                 'name' => $request->name,
                 'link' => $request->link,
                 'status' => $request->status ?? 0

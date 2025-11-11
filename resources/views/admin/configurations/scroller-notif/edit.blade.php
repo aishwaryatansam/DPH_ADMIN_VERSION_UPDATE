@@ -51,7 +51,16 @@
                                                     placeholder="Enter scroller notification content" required>{{old('name', $result->name)}}</textarea>
                                             </div>
                                         </div>
-
+     <div class="row mb-3">
+                                            <div class="col-12 col-md-3">
+                                                <label for="scrollerNotification" class="form-label">Scroller Notification
+                                                    <span class="sizeoftextred">*</span></label>
+                                            </div>
+                                            <div class="col-12 col-md-7">
+                                                <input class="form-control" id="scrollerNotification" rows="4" name="title" type="text"
+                                                    placeholder="Enter scroller notification content" required>{{old('name', $result->title)}}</input>
+                                            </div>
+                                        </div>
                                         <!-- Scroller Notification Row -->
                                         <div class="row mb-3">
                                             <div class="col-12 col-md-3">

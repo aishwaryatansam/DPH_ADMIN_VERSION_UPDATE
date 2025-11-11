@@ -35,6 +35,7 @@
                                     <thead>
                                         <tr>
                                             <th>Scroller Notification</th>
+                                            <th>Title</th>
                                             <th>Link</th>
                                             <th>Status</th>
                                             <th class="text-center" style="width: 10%">Action</th>
@@ -50,7 +51,12 @@
                                                         <p>{{ $result->name ?? '' }}</p>
                                                     </div>
                                                 </td>
-
+                                                  <td>
+                                                    <!-- Example Scroller Notification content -->
+                                                    <div class="scroller-notification">
+                                                        <p>{{ $result->title ?? '' }}</p>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <!-- Example Scroller Notification content -->
                                                     <div class="scroller-notification">
