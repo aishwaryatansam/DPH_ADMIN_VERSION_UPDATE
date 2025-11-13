@@ -83,35 +83,36 @@ public function store(Request $request)
 {
     $request->validate([
         'name' => 'required|min:2|max:99',
-        'description' => 'nullable|string',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+        'descript' => 'nullable|string',
+        'img' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
 
     $data = [
         'name' => $request->name,
-        'status' => $request->status,
-        'description' => $request->description,
+        'status' => $request->status ?? 0,
+        'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
 
-    // ✅ handle image upload
-    if ($request->hasFile('image')) {
+    // ✅ Corrected image handling
+    if ($request->hasFile('img')) {
         $path = public_path('tnpdphpmfiles/popular');
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
-        $image = $request->file('image');
+        $image = $request->file('img');
         $filename = time() . '_' . $image->getClientOriginalName();
         $image->move($path, $filename);
 
-        $data['image'] = 'tnpdphpmfiles/popular/' . $filename;
+        $data['img'] = 'tnpdphpmfiles/popular/' . $filename;
     }
 
     Popular::create($data);
 
     return redirect()->route('popular.index')->with('success', 'Popular item created successfully!');
 }
+
 
 
     /**
@@ -143,8 +144,8 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'name' => 'required|min:2|max:99',
-        'description' => 'nullable|string',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+        'descript' => 'nullable|string',
+        'img' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
 
     $result = Popular::findOrFail($id);
@@ -152,11 +153,11 @@ public function update(Request $request, $id)
     $data = [
         'name' => $request->name,
         'status' => $request->status ?? 1,
-        'description' => $request->description,
+        'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
 
-    if ($request->hasFile('image')) {
+    if ($request->hasFile('img')) {
         $path = public_path('tnpdphpmfiles/popular');
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -167,11 +168,11 @@ public function update(Request $request, $id)
             unlink(public_path($result->image));
         }
 
-        $image = $request->file('image');
-        $filename = time() . '_' . $image->getClientOriginalName();
-        $image->move($path, $filename);
+        $img = $request->file('img');
+        $filename = time() . '_' . $img->getClientOriginalName();
+        $img->move($path, $filename);
 
-        $data['image'] = 'tnpdphpmfiles/popular/' . $filename;
+        $data['img'] = 'tnpdphpmfiles/popular/' . $filename;
     }
 
     $result->update($data);

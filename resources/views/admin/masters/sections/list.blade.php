@@ -33,9 +33,8 @@
                                         </button>
 
                                          <!-- Button to export sections -->
-                                         <button class="btn btn-secondary btn-round ms-2" id="btnExcel">
-                                            <i class="fa fa-download"></i> Export Sections
-                                        </button>
+                                      <a href="{{ route('sections.export') }}" class="btn btn-success">Export Sections</a>
+
                                     </div>
                                 </div>
 

@@ -1,6 +1,24 @@
 @extends('admin.layouts.layout')
 @section('title', 'List Blocks')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+$(function() {
+    $('.searchable').select2({
+        width: '100%',
+        placeholder: "-- Select HUD --",
+        allowClear: true
+    });
+});
+
+function resetSearch() {
+    window.location.href = "{{ url()->current() }}";
+}
+</script>
+
+
 <div class="container" style="margin-top: 90px;">
     <div class="container-fluid p-2" style="background-color: #f2f2f2;">
         <div class="d-flex justify-content-between align-items-center" style="padding-left: 20px; padding-right: 20px;">
@@ -20,24 +38,32 @@
                 <div class="card-body">
                     <form>
                         <div class="row">
-                            <div class="col col-md-4">
-                                <div class="form-group">
-                                    <label>HUD</label>
-                                    <select name="hud_id" class="form-control form-control-line searchable" onchange="searchFun()">
-                                        <option value="">-- Select HUD --</option>
-                                        @foreach ($huds as $hud)
-                                            <option value="{{ $hud->id }}" {{ SELECT($hud->id, request('hud_id')) }}>
-                                                {{ $hud->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                      <form method="GET" action="{{ url()->current() }}">
+    <div class="col col-md-4">
+        <div class="form-group">
+            <label>HUD</label>
+            <select name="hud_id" class="form-control searchable" onchange="this.form.submit()">
+                <option value="">-- Select HUD --</option>
+                @foreach ($huds as $hud)
+                    <option value="{{ $hud->id }}" {{ SELECT($hud->id, request('hud_id')) }}>
+                        {{ $hud->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</form>
+
+
                             <div class="col d-flex justify-content-end align-items-center mt-2">
                                 <div class="form-group d-flex">
-                                    <button type="reset" onClick="resetSearch()" class="btn btn-secondary resetSearch" style="border-radius: 10px;">
-                                        <i class="fas fa-redo"></i>
-                                    </button>
+                                  <button type="button"
+        onclick="window.location='{{ url()->current() }}'"
+        class="btn btn-secondary"
+        style="border-radius: 10px;">
+    <i class="fas fa-redo"></i> Reset
+</button>
+
                                 </div>
                             </div>
                         </div>

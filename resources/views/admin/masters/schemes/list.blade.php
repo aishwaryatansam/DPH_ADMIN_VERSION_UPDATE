@@ -37,7 +37,7 @@
                                         </button>
 
                                          <!-- Download Button -->
-                                      <button class="btn btn-success" onclick="window.location.href='{{ route('schemesdetail.export') }}';">
+                                      <button class="btn btn-success" onclick="window.location.href='{{ route('scheme.export') }}';">
                                         Download
                                     </button>
 

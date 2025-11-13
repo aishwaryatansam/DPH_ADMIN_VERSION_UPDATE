@@ -8,6 +8,8 @@ use App\Http\Resources\Dropdown\SectionResource;
 use App\Models\Program;
 use App\Models\Section;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\SectionExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SectionController extends Controller
 {
@@ -184,9 +186,9 @@ class SectionController extends Controller
         $section = Section::getSectionData();
         return sendResponse(SectionResource::collection($section));
     }
-    public function export(Request $request){
-    	$filename = 'sections'.date('d-m-Y').'.xlsx';
-    	return Excel::download(new CustomersExport, $filename);
-    	
-    }
+ public function export(Request $request)
+{
+    $filename = 'sections_' . date('d-m-Y') . '.xlsx';
+    return Excel::download(new SectionExport, $filename);
+}
 }

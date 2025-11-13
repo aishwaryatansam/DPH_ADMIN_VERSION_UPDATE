@@ -37,9 +37,8 @@
                                         </button>
 
                                         <!-- Button to export sections -->
-                                        <button class="btn btn-secondary btn-round ms-2" id="btnExcel">
-                                            <i class="fa fa-download"></i> Export programs
-                                        </button>
+                                        <a href="{{ route('programsanddivision.export') }}" class="btn btn-success">Download Excel</a>
+
 
                                     </div>
                                 </div>

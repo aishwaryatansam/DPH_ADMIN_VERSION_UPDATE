@@ -49,6 +49,7 @@ class ScrollerController extends Controller
         }
         
         $input = [
+            'title' => $request->title,
                 'name' => $request->name,
                 'link' => $request->link,
                 'configuration_content_type_id' => 11,           // 11 - Scroller Notification
@@ -104,6 +105,7 @@ class ScrollerController extends Controller
         }
         $result = ConfigurationDetails::find($id);
         $input = [
+            'title' => $request->title,
                 'name' => $request->name,
                 'link' => $request->link,
                 'status' => $request->status ?? 0

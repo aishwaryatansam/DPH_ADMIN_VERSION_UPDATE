@@ -8,6 +8,7 @@ class ConfigurationDetails extends Model
 {
     protected $table = 'configuration_details';
     protected $fillable = [
+        'title',
         'name',
         'link',
         'image_url',

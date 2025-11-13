@@ -24,7 +24,7 @@
                                 <h4 class="card-title mb-2 mb-md-0">Schemes</h4>
                                 <div class="d-flex gap-2">
                                     @if ($user_detail->user_type_id == '7')
-                                    <button class="btn btn-success" onclick="window.location.href='{{ route('schemesdetail.export') }}';">
+                                    <button class="btn btn-success" onclick="window.location.href='{{ route('schemeDetails.export') }}';">
                                         Download
                                     </button>
                                     @endif
@@ -35,23 +35,30 @@
                             </div>
                                              
                         </div>
-                        <form method="GET" action="{{ url('/programdetails') }}" class="mb-3">
-    <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+    
+                                             <form method="GET" action="{{ url('/schemedetails') }}" class="mb-3">
+    <input type="hidden" name="schemes" value="{{ request('schemes') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
                 @foreach(getPageLenthArr() as $pageLength)
                     <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
                         {{ $pageLength }}
                     </option>
                 @endforeach
             </select>
+            <span>entries</span>
         </div>
-        <div class="col-auto ms-auto">
-            <label for="search">Search:</label>
-            <input type="search" name="search" id="search" value="{{ request('search') }}">
-            <button type="submit">Go</button>
-        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
     </div>
 </form>
                         <div class="card-body">

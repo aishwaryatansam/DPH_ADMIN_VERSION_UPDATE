@@ -33,7 +33,7 @@
                                 <div class="buttons d-flex flex-column flex-sm-row gap-2">
                                     @if ($user_detail->user_type_id == '7')
                                     <button class="btn btn-success w-100 w-sm-auto" onclick="window.location.href='{{ route('programsdetail.export')}}';">
-                                        Download
+                                        Downloada
                                     </button>
                                     @endif
                                     <button class="btn btn-primary btn-round w-100 w-sm-auto" onclick="window.location.href='{{ route('programdetails.create') }}';">

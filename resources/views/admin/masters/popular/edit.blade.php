@@ -64,8 +64,8 @@
   <div class="row mb-3 p-3">
             <div class="col-md-10">
                 <label for="description" class="form-label fw-bold text-secondary">Short Description:</label>
-                <textarea class="form-control" name="description" id="description" rows="3"
-                    placeholder="Enter description">{{ old('description', $result->description) }}</textarea>
+                <textarea class="form-control" name="descript" id="description" rows="3"
+                    placeholder="Enter description">{{ old('descript', $result->descript) }}</textarea>
             </div>
         </div>
 
@@ -73,9 +73,9 @@
         <div class="row mb-3 p-3">
             <div class="col-md-10">
                 <label for="image" class="form-label fw-bold text-secondary">Image:</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                <input type="file" class="form-control" id="image" name="img" accept="image/*">
 
-                @if (!empty($result->image) && file_exists(public_path($result->image)))
+                @if (!empty($result->img) && file_exists(public_path($result->img)))
                     <div class="mt-2">
                         <p class="text-muted">Current Image:</p>
                         <img src="{{ asset($result->image) }}" alt="Popular Image"

@@ -38,12 +38,14 @@ Route::middleware(['admin'])->group(function () {
 
 
 	Route::resource('/programs','Admin\ProgramController');
-	Route::get('/programs-export', 'Admin\ProgramDetailController@export')->name('programs.export');
+	Route::get('/programs-export', 'Admin\ProgramDetailController@export')->name('programsdetail.export');
+	Route::get('/programs-divisions/export', 'Admin\ProgramController@export')->name('programsanddivision.export');
+
 	Route::resource('/sections','Admin\SectionController');
 	Route::get('/sections-export', 'Admin\SectionController@export')->name('sections.export');
 
 	Route::resource('/schemes','Admin\SchemeController');
-	Route::get('/schemes-export','Admin\SchemeController@export')->name('schemes.export');
+	Route::get('/schemesDetails-export','Admin\SchemeDetailController@export')->name('schemeDetails.export');
 
 
     Route::get('districts/export', [App\Http\Controllers\Admin\DistrictController::class, 'export'])->name('districts.export');
@@ -109,8 +111,9 @@ Route::middleware(['admin'])->group(function () {
 	// Route::get('/configurations', 'Admin\ConfigurationController@edit');
 	// Route::post('/configurations/update/{id}', 'Admin\ConfigurationController@updateConfiguration')->name('configurations.update');
 	Route::get('/documents-export','Admin\DocumentController@export1')->name('documents.export');
-	Route::get('/programs-export', 'Admin\ProgramController@export')->name('programsdetail.export');
-	Route::get('/schemes-export', 'Admin\SchemeDetailController@export')->name('schemesdetail.export');
+	
+
+	Route::get('/schemes-export', 'Admin\SchemeDetailController@export')->name('scheme.export');
 	Route::get('huds/export', [App\Http\Controllers\Admin\HudController::class, 'export'])->name('huds.export');
    Route::get('/blocks/export', [App\Http\Controllers\Admin\BlockController::class, 'export'])
      ->name('blocks.export');
@@ -155,7 +158,7 @@ Route::get('/hsc/get-phc/{blockId}', 'Admin\HscController@getPhcByBlock')->name(
 	Route::resource('/programdetails','Admin\ProgramDetailController');
 
 	Route::resource('/schemedetails','Admin\SchemeDetailController');
-	Route::get('/schemedetails-export','Admin\SchemeDetailController@export')->name('schemedetail.export');
+	Route::get('/schemedetails-export','Admin\SchemeController@export')->name('scheme.export');
 
 
 	Route::prefix('approval')->group(function () {
@@ -163,6 +166,8 @@ Route::get('/hsc/get-phc/{blockId}', 'Admin\HscController@getPhcByBlock')->name(
         Route::get('/documents/{id}', 'Admin\DocumentApprovalController@show')->name('documentsapproval.show');
         Route::post('/documents/{id}/{action}', 'Admin\DocumentApprovalController@handleAction')->name('documentsapproval.handle');
 		Route::post('/documents/bulk-action', 'Admin\DocumentApprovalController@performBulkAction')->name('documentsapproval.bulk-action');
+Route::post('contacts/get-designation', [App\Http\Controllers\Admin\ContactController::class, 'getDesignation'])
+    ->name('contacts.getDesignation');
 
 		Route::get('/programdetails', 'Admin\PorgramDetailApprovalController@index')->name('programdetailsapproval.index');
         Route::get('/programdetails/{id}', 'Admin\PorgramDetailApprovalController@show')->name('programdetailsapproval.show');
