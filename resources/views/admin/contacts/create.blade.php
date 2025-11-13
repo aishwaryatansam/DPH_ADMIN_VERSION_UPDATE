@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 @section('title', 'Create Contact')
 @section('content')
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
     /* Frame card styles */
     .frame-card {
@@ -374,4 +374,36 @@
             }
         }
     </script>
+    
+<script>
+    $(document).ready(function() {
+        $('#contact_type').on('change', function() {
+            let contactTypeId = $(this).val();
+            let token = "{{ csrf_token() }}";
+
+            if (contactTypeId) {
+                $.ajax({
+                    url: "{{ route('contacts.getDesignation') }}", // route to fetch designations
+                    type: "POST",
+                    data: {
+                        contact_type: contactTypeId,
+                        _token: token
+                    },
+                    success: function(response) {
+                        $('#designation_id').empty();
+                        $('#designation_id').append('<option value="">-- Select Designation --</option>');
+                        $.each(response.data, function(key, value) {
+                            $('#designation_id').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    },
+                    error: function() {
+                        alert('Unable to load designations.');
+                    }
+                });
+            } else {
+                $('#designation_id').html('<option value="">-- Select Designation --</option>');
+            }
+        });
+    });
+</script>
 @endsection

@@ -302,4 +302,52 @@
         <!-- database table end -->
     </div>
     <script src="{{ asset('packa/custom/contact.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let token = "{{ csrf_token() }}";
+        let existingContactType = "{{ $result->contact_type }}";
+        let existingDesignation = "{{ $result->designation_id }}";
+
+        // Function to load designations dynamically
+        function loadDesignations(contactTypeId, selectedId = null) {
+            if (contactTypeId) {
+                $.ajax({
+                    url: "{{ route('contacts.getDesignation') }}",
+                    type: "POST",
+                    data: {
+                        contact_type: contactTypeId,
+                        _token: token
+                    },
+                    success: function(response) {
+                        $('#designation_id').empty();
+                        $('#designation_id').append('<option value="">-- Select Designation --</option>');
+
+                        $.each(response.data, function(key, value) {
+                            let selected = (selectedId == value.id) ? 'selected' : '';
+                            $('#designation_id').append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
+                        });
+                    },
+                    error: function() {
+                        alert('Unable to load designations.');
+                    }
+                });
+            } else {
+                $('#designation_id').html('<option value="">-- Select Designation --</option>');
+            }
+        }
+
+        // Load designations automatically on edit page
+        if (existingContactType) {
+            loadDesignations(existingContactType, existingDesignation);
+        }
+
+        // On change of contact type
+        $('#contact_type').on('change', function() {
+            let contactTypeId = $(this).val();
+            loadDesignations(contactTypeId);
+        });
+    });
+</script>
+
 @endsection

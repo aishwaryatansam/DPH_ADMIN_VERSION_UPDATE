@@ -166,6 +166,8 @@ Route::get('/hsc/get-phc/{blockId}', 'Admin\HscController@getPhcByBlock')->name(
         Route::get('/documents/{id}', 'Admin\DocumentApprovalController@show')->name('documentsapproval.show');
         Route::post('/documents/{id}/{action}', 'Admin\DocumentApprovalController@handleAction')->name('documentsapproval.handle');
 		Route::post('/documents/bulk-action', 'Admin\DocumentApprovalController@performBulkAction')->name('documentsapproval.bulk-action');
+Route::post('contacts/get-designation', [App\Http\Controllers\Admin\ContactController::class, 'getDesignation'])
+    ->name('contacts.getDesignation');
 
 		Route::get('/programdetails', 'Admin\PorgramDetailApprovalController@index')->name('programdetailsapproval.index');
         Route::get('/programdetails/{id}', 'Admin\PorgramDetailApprovalController@show')->name('programdetailsapproval.show');

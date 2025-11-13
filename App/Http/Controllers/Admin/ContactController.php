@@ -155,14 +155,14 @@ class ContactController extends Controller
             'order_no' => $request->order_no,
             'programs_id' => $request->programs_id,
             'user_id' => Auth::user()->id,
-            // 'hud_id'  => $hud_id,
-            // 'block_id'  => $request->block_id,
-            // 'phc_id'  => $request->phc_id,
-            // 'hsc_id'  => $request->hsc_id,
+            'hud_id'  => $hud_id,
+            'block_id'  => $request->block_id,
+            'phc_id'  => $request->phc_id,
+            'hsc_id'  => $request->hsc_id,
             'is_post_vacant' => $request->is_post_vacant ?? 0,
             'status' => $request->status ?? 0
         ];
-        // dd($input);
+        dd($input);
 
         $result = Contact::create($input);
 
@@ -297,10 +297,10 @@ class ContactController extends Controller
             'facility_id' => $request->facility_id,
             'order_no' => $request->order_no,
             'programs_id' => $request->programs_id,
-            // 'hud_id'  => $request->hud_id,
-            // 'block_id'  => $request->block_id,
-            // 'phc_id'  => $request->phc_id,
-            // 'hsc_id'  => $request->hsc_id,
+            'hud_id'  => $request->hud_id,
+            'block_id'  => $request->block_id,
+            'phc_id'  => $request->phc_id,
+            'hsc_id'  => $request->hsc_id,
             'is_post_vacant' => $request->is_post_vacant ?? 0,
             'status' => $request->status ?? 0
         ];
@@ -332,6 +332,26 @@ class ContactController extends Controller
 
         return redirect()->route('contacts.index');
     }
+
+
+    public function getDesignation(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'contact_type' => 'required|exists:designation_types,id',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 422);
+    }
+
+    $designations = \App\Models\Designation::where('designation_type_id', $request->contact_type)
+        ->where('status', _active())
+        ->orderBy('name')
+        ->get(['id', 'name']);
+
+    return response()->json(['data' => $designations]);
+}
+
     /**
      * Remove the specified resource from storage.
      *
