@@ -33,7 +33,7 @@
                                 <div class="buttons d-flex flex-column flex-sm-row gap-2">
                                     @if ($user_detail->user_type_id == '7')
                                     <button class="btn btn-success w-100 w-sm-auto" onclick="window.location.href='{{ route('programsdetail.export')}}';">
-                                        Downloada
+                                        Download
                                     </button>
                                     @endif
                                     <button class="btn btn-primary btn-round w-100 w-sm-auto" onclick="window.location.href='{{ route('programdetails.create') }}';">
@@ -44,7 +44,12 @@
                             
 
                         </div>
-                                        <form method="GET" action="{{ url('/programdetails') }}" class="mb-3">
+   
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-striped table-hover">
+                                                                         <form method="GET" action="{{ url('/programdetails') }}" class="mb-3">
     <input type="hidden" name="schemes" value="{{ request('schemes') }}">
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
@@ -70,10 +75,6 @@
     </div>
 </form>
 
-
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -373,11 +374,28 @@
                             </button>
 
                         </form>
-             
+              <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-5') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+</div>
                     </div>
                 </div>
             </div>
-  
 
         </div>
 
@@ -388,9 +406,8 @@
         <!-- main panel end -->
     </div>
  
-  <div class="d-flex justify-content-center mt-3">
-    {{ $results->links('pagination::bootstrap-5') }}
-</div>
+
+            
     <script type="text/javascript">
         $(document).ready(function() {
             setPageUrl('/programs?');
