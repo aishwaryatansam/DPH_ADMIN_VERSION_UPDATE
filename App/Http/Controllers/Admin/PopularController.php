@@ -217,6 +217,22 @@ public function update(Request $request, $id)
     {
         return [];
     }
+    public function apiList()
+{
+    $populars = Popular::select('id','name','descript','img','tags','status')->get();
+
+    // Include tag names
+    $tags = FetchTag::where('status', 1)->pluck('name', 'id');
+
+    foreach ($populars as $item) {
+        $tagIds = explode(',', $item->tags ?? '');
+        $item->tag_names = $tags->only($tagIds)->values()->implode(', ');
+        $item->image_url = $item->img ? asset($item->img) : null;
+    }
+
+    return response()->json($populars);
+}
+
 
     /**
      * Export Popular items to Excel.
