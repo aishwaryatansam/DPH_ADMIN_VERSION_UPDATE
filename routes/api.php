@@ -62,4 +62,4 @@ Route::post('events','Website\HomePageController@getEvents');
 
 Route::post('/track-visitor', [VisitorController::class, 'trackVisitor']);
 Route::get('/visitor-count', [VisitorController::class, 'getVisitorCount']);
-
+Route::get('/popular-list', [App\Http\Controllers\Admin\PopularController::class, 'apiList']);

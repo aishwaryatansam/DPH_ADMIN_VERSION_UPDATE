@@ -12,7 +12,23 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CustomersExport;
 use App\Models\FetchTag;
 class PopularController extends Controller
+
+
 {
+
+
+private function canActivatePopular($excludeId = null)
+{
+    $query = Popular::where('status', 1);
+
+    if ($excludeId) {
+        $query->where('id', '!=', $excludeId);
+    }
+
+    return $query->count() < 4; // Allow only max 4 active items
+}
+
+
     /**
      * Display a listing of the resource.
      */
@@ -93,6 +109,14 @@ public function store(Request $request)
         'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
+    if (($request->status ?? 0) == 1) {
+        $activeCount = Popular::where('status', 1)->count();
+        if ($activeCount >= 4) {
+            return back()->withErrors([
+                'status' => 'Only 4 active popular items are allowed.'
+            ])->withInput();
+        }
+    }
 
     // ✅ Corrected image handling
     if ($request->hasFile('img')) {
@@ -152,10 +176,18 @@ public function update(Request $request, $id)
 
     $data = [
         'name' => $request->name,
-        'status' => $request->status ?? 1,
+        'status' => $request->has('status') ? 1 : 0,
         'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
+    if (($request->status ?? 0) == 1) {
+        $activeCount = Popular::where('status', 1)->count();
+        if ($activeCount >= 4) {
+            return back()->withErrors([
+                'status' => 'Only 4 active popular items are allowed.'
+            ])->withInput();
+        }
+    }
 
     if ($request->hasFile('img')) {
         $path = public_path('tnpdphpmfiles/popular');
@@ -217,6 +249,27 @@ public function update(Request $request, $id)
     {
         return [];
     }
+public function apiList()
+{
+    // Only latest 4 active populars
+    $populars = Popular::where('status', 1)
+        ->orderBy('id', 'desc')  // latest items first
+        ->limit(4)
+        ->get(['id','name','descript','img','tags','status']);
+
+    // Load active tags
+    $tags = FetchTag::where('status', 1)->pluck('name', 'id');
+
+    foreach ($populars as $item) {
+        $tagIds = explode(',', $item->tags ?? '');
+        $item->tag_names = $tags->only($tagIds)->values()->implode(', ');
+        $item->image_url = $item->img ? asset($item->img) : null;
+    }
+
+    return response()->json($populars);
+}
+
+
 
     /**
      * Export Popular items to Excel.

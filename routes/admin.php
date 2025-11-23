@@ -56,7 +56,8 @@ Route::middleware(['admin'])->group(function () {
 
 	Route::resource('/masters','Admin\MasterController');
 	Route::get('/master-export', 'Admin\MasterController@export')->name('master.export');
-    Route::post('track-visitor', ['VisitorController::class', 'trackVisitor']);
+    Route::post('/track-visitor', [VisitorController::class, 'trackVisitor']);
+
 	Route::resource('/about-us','Admin\PageController');
 	Route::resource('/submenu','Admin\SubmenuController');
 	Route::get('/ethics-committee','Admin\SiteController@getEhicsCommittee');
