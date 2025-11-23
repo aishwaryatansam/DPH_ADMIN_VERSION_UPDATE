@@ -227,13 +227,13 @@ public function create(Request $request)
 
     public function listScheme(Request $request) {
         $validator = Validator::make($request->all(),[
-            'programs_id' => 'required|exists:programs,id,status,'._active(),
+            'program_id' => 'required|exists:programs,id,status,'._active(),
         ]);
 
         if($validator->fails()) {
             return sendError($validator->errors());
         }
-        $scheme = Scheme::getSchemeData($request->programs_id);
+        $scheme = Scheme::getSchemeData($request->program_id);
         return sendResponse(SchemeResource::collection($scheme));
     }
 public function export()
