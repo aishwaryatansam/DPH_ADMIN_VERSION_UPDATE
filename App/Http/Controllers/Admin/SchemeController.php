@@ -202,7 +202,7 @@ public function create(Request $request)
         $rules = array();
 
         $rules['name'] = 'required';
-        $rules['program_id'] = 'required';
+        $rules['programs_id'] = 'required';
         $rules['short_code'] = 'required|nullable';
         
         if ($id) {
@@ -224,7 +224,6 @@ public function create(Request $request)
     public function attributes() {
         return [];
     }
-
     public function listScheme(Request $request) {
         $validator = Validator::make($request->all(),[
             'program_id' => 'required|exists:programs,id,status,'._active(),
