@@ -202,7 +202,7 @@ public function create(Request $request)
         $rules = array();
 
         $rules['name'] = 'required';
-        $rules['program_id'] = 'required';
+        $rules['programs_id'] = 'required';
         $rules['short_code'] = 'required|nullable';
         
         if ($id) {

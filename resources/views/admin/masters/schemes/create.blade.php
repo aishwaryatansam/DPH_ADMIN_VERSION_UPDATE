@@ -57,18 +57,18 @@
                                                         style="color: red;">*</span></label>
                                             </div>
                                             <div class="col-12 col-md-7">
-                                                <select name="program_id" id="program_id" class="form-control">
-                                                    <option value="">-- Select Program -- </option>
-                                                    @foreach ($programs as $key => $value)
-                                                        <option value="{{ $value->id }}"
-                                                            {{ SELECT($value->id, old('program_id')) }}>
-                                                            {{ $value->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                               <select name="programs_id" id="programs_id" class="form-control" >
+    <option value="">-- Select Program -- </option>
+    @foreach ($programs as $key => $value)
+        <option value="{{ $value->id }}"
+            {{ (old('programs_id', $selectedProgramId ?? '') == $value->id) ? 'selected' : '' }}>
+            {{ $value->name }}
+        </option>
+    @endforeach
+</select>
                                             </div>
                                         </div>
-                                        \
+                                        
                                         <!-- Sections Dropdown Row -->
                                         <div class="row mb-3">
                                             <div class="col-12 col-md-3">
