@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         // Carbon::setLocale(config('app.timezone')); 
 
         // TO THIS:
-         Paginator::useBootstrap();
+        //   Paginator::useBootstrap();
 
         Carbon::setLocale(config('app.locale')); 
 

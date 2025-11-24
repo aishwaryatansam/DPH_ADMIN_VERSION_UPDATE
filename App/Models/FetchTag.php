@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+// use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
 class FetchTag extends Model
 {
-    use HasFactory;
+    // use HasFactory;
 
     protected $fillable = ['name', 'status'];
     protected $table = 'fetch_tags';

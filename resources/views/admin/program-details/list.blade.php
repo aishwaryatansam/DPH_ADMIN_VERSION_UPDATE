@@ -383,7 +383,7 @@
     </div>
  
   <div class="d-flex justify-content-center mt-3">
-    {{ $results->links('pagination::bootstrap-5') }}
+    {{ $results->links('pagination::bootstrap-4') }}
 </div>
     <script type="text/javascript">
         $(document).ready(function() {

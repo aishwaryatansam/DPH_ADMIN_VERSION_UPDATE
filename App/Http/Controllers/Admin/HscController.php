@@ -101,7 +101,7 @@ foreach ($results as $result) {
         $input = [
                 'name' => $request->name,
                 'phc_id' => $request->phc_id,
-                // 'location_url' => $request->location_url, 
+                'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url,  
                 // 'is_urban' => $request->is_urban,          
                 'status' => $request->has('status') ? 1 : 0,
@@ -198,7 +198,7 @@ $selectedTags = $result->tags ? explode(',', $result->tags) : [];
         $input = [
                 'name' => $request->name,
                 'phc_id' => $request->phc_id,
-                // 'location_url' => $request->location_url, 
+                'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url, 
                 // 'is_urban' => $request->is_urban,           
                 'status' => $request->status ?? 0,

@@ -175,7 +175,7 @@
                                     </div>
                                      @if(method_exists($results, 'links'))
                                     <div class="mt-3">
-                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-5') }}
+                                       {{ $results->appends(request()->query())->links('pagination::bootstrap-4') }}
 
                                     </div>
                                 @endif
