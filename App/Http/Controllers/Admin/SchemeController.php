@@ -227,7 +227,7 @@ public function create(Request $request)
 
     public function listScheme(Request $request) {
         $validator = Validator::make($request->all(),[
-            'program_id' => 'required|exists:programs,id,status,'._active(),
+            'programs_id' => 'required|exists:programs,id,status,'._active(),
         ]);
 
         if($validator->fails()) {

@@ -17,12 +17,32 @@ class HealthWalkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $results = HealthWalkLocation::with(['hud', 'hud.district'])->get();
-        
-        return view('admin.health-walk.list',compact('results'));
+public function index(Request $request)
+{
+    $pageLength = $request->pageLength ?? 10; // default 10 if not provided
+    
+    $query = HealthWalkLocation::with(['hud', 'hud.district']);
+
+    if ($request->has('search') && trim($request->search) !== '') {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('hud', function ($q2) use ($search) {
+                $q2->where('name', 'like', "%{$search}%")
+                   ->orWhereHas('district', function ($q3) use ($search) {
+                       $q3->where('name', 'like', "%{$search}%");
+                   });
+            })
+            ->orWhere('contact', 'like', "%{$search}%");
+        });
     }
+
+    $results = $query->paginate($pageLength)->appends([
+        'search' => $request->search,
+        'pageLength' => $pageLength,
+    ]);
+
+    return view('admin.health-walk.list', compact('results'));
+}
 
     /**
      * Show the form for creating a new resource.
