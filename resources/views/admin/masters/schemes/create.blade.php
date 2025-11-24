@@ -51,23 +51,21 @@
                                         </div>
 
                                         <!-- Program Divisions Dropdown Row -->
-                                        <div class="row mb-3">
-                                            <div class="col-12 col-md-3">
-                                                <label for="programDivision" class="form-label">Program Division <span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-12 col-md-7">
-                                               <select name="programs_id" id="programs_id" class="form-control" >
-    <option value="">-- Select Program -- </option>
-    @foreach ($programs as $key => $value)
-        <option value="{{ $value->id }}"
-            {{ (old('programs_id', $selectedProgramId ?? '') == $value->id) ? 'selected' : '' }}>
-            {{ $value->name }}
-        </option>
-    @endforeach
-</select>
-                                            </div>
-                                        </div>
+                                     <div class="row mb-3">
+    <div class="col-12 col-md-3">
+        <label for="programs_id" class="form-label">Program Division <span style="color:red">*</span></label>
+    </div>
+    <div class="col-12 col-md-7">
+        <select name="programs_id" id="programs_id" class="form-control">
+            <option value="">-- Select Program --</option>
+            @foreach ($programs as $value)
+                <option value="{{ $value->id }}" {{ SELECT($value->id, old('programs_id')) }}>
+                    {{ $value->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
                                         
                                         <!-- Sections Dropdown Row -->
                                         <div class="row mb-3">

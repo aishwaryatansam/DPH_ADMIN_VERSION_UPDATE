@@ -59,7 +59,9 @@ Route::post('publication','Admin\SiteController@getPublication');
 Route::post('rti-officer','Admin\RtiOfficerController@getRtiOfficer');
 Route::post('social-media-post','Admin\SocialMediaPostController@getSocialMediaPost');
 Route::post('events','Website\HomePageController@getEvents');
+Route::post('popular/store', [App\Http\Controllers\Admin\PopularController::class, 'store']);
 
 Route::post('/track-visitor', [VisitorController::class, 'trackVisitor']);
 Route::get('/visitor-count', [VisitorController::class, 'getVisitorCount']);
 
+Route::get('/popular-list', [App\Http\Controllers\Admin\PopularController::class, 'apiList']);

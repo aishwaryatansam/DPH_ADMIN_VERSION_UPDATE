@@ -167,7 +167,7 @@ class HomePageController extends Controller
         return sendResponse(ContactResource::collection($contacts));
     }
 
-    public function getPrograms(Request $request)
+    public function  getPrograms(Request $request)
     {
         // Fetch all programs
         $programs = Program::where('status', _active())->orderBy('order_no', 'asc')->get();
