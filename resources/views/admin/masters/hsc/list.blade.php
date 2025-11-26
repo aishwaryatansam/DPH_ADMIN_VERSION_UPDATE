@@ -19,40 +19,41 @@
             <!-- Filter Card -->
             <div class="card mb-0 mt-2">
                 <div class="card-body">
-                  <form method="GET" action="{{ url('/hsc') }}">
+                  <form id="filterForm" method="GET" action="{{ route('hsc.index') }}">
                         <div class="row">
                             <!-- Block Filter -->
                             <div class="col col-md-4">
                                 <div class="form-group">
                                     <label>Block</label>
-                                    <select name="block_id" id="block_id" class="form-control searchable">
-                                        <option value="">-- Select Block -- </option>
-                                        @foreach ($huds as $hud)
-                                            <optgroup label="{{ $hud->name }}">
-                                                @foreach ($hud->blocks as $block)
-                                                    <option value="{{ $block->id }}" {{ SELECT($block->id, request('block_id')) }}>
-                                                        {{ $block->name }}
-                                                    </option>
-                                                @endforeach
-                                            </optgroup>
-                                        @endforeach
-                                    </select>
-                                </div>
+ <select name="block_id" id="block_id" class="form-control searchable"
+            data-selected="{{ request('block_id') }}">
+        <option value="">-- Select Block --</option>
+        @foreach ($huds as $hud)
+            <optgroup label="{{ $hud->name }}">
+                @foreach ($hud->blocks as $block)
+                    <option value="{{ $block->id }}" {{ $block->id == request('block_id') ? 'selected' : '' }}>
+                        {{ $block->name }}
+                    </option>
+                @endforeach
+            </optgroup>
+        @endforeach
+    </select>              </div>
                             </div>
 
                             <!-- PHC Filter -->
                             <div class="col col-md-4">
                                 <div class="form-group">
                                     <label>PHC</label>
-                                    <select name="phc_id" id="phc_id" class="form-control searchable">
-                                        <option value="">-- Select PHC -- </option>
-                                        @foreach ($phcs as $phc)
-                                            <option value="{{ $phc->id }}" {{ SELECT($phc->id, request('phc_id')) }}>
-                                                {{ $phc->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+         <select name="phc_id" id="phc_id" class="form-control searchable"
+            data-selected="{{ request('phc_id') }}">
+        <option value="">-- Select PHC --</option>
+        @foreach ($phcs as $phc)
+            <option value="{{ $phc->id }}" {{ $phc->id == request('phc_id') ? 'selected' : '' }}>
+                {{ $phc->name }}
+            </option>
+        @endforeach
+    </select>
+                </div>
                             </div>
 
                             <!-- Reset Button -->
@@ -160,6 +161,18 @@
 <!-- Dynamic PHC Script -->
 <!-- Dynamic PHC Script -->
 <script>
+    const filterForm = document.getElementById('filterForm');
+
+document.getElementById('block_id').addEventListener('change', function () {
+    // When block changes → reset PHC to empty (to avoid wrong filters)
+    document.getElementById('phc_id').value = "";
+    filterForm.submit();
+});
+
+document.getElementById('phc_id').addEventListener('change', function () {
+    filterForm.submit();
+});
+
 document.getElementById('block_id').addEventListener('change', function() {
     const blockId = this.value;
     const phcSelect = document.getElementById('phc_id');
@@ -171,17 +184,20 @@ document.getElementById('block_id').addEventListener('change', function() {
             .then(data => {
                 phcSelect.innerHTML = '<option value="">-- Select PHC --</option>';
                 data.forEach(phc => {
-                    const selected = phc.id == "{{ request('phc_id') }}" ? 'selected' : '';
-                    phcSelect.innerHTML += `<option value="${phc.id}" ${selected}>${phc.name}</option>`;
+                    phcSelect.innerHTML += `
+                        <option value="${phc.id}">${phc.name}</option>
+                    `;
                 });
-            })
-            .catch(() => {
-                phcSelect.innerHTML = '<option value="">Error loading PHCs</option>';
+
+                // Auto-submit after PHCs are loaded
+                document.getElementById('filterForm').submit();
             });
     } else {
         phcSelect.innerHTML = '<option value="">-- Select PHC --</option>';
+        filterForm.submit();
     }
 });
+
 </script>
 
 

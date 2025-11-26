@@ -35,28 +35,52 @@ class HscController extends Controller
 
 public function index(Request $request)
 {
-    $query = HSC::query()->with('phc');
+    // Base query with PHC relation
+    $query = HSC::with('phc');
 
-    if ($request->has('block_id') && $request->block_id != '') {
+    // Filter by block
+    if ($request->block_id) {
         $query->whereHas('phc', function ($q) use ($request) {
             $q->where('block_id', $request->block_id);
         });
     }
 
-    if ($request->has('phc_id') && $request->phc_id != '') {
+    // Filter by PHC
+    if ($request->phc_id) {
         $query->where('phc_id', $request->phc_id);
     }
 
+    // Pagination
     $results = $query->paginate($request->get('pageLength', 10));
-$phcs = array();
 
-   $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
-    if($block_id = request('block_id')) {
-             $phcs = PHC::filter()->where('status', _active())->orderBy('name')->get();
-       }
+    // HUDs and blocks for filters
+    $huds = HUD::with(['blocks:id,name,hud_id'])
+                ->filter()
+                ->where('status', _active())
+                ->orderBy('name')
+                ->get();
 
+    // PHCs filtered by selected block (for initial page load)
+    $phcs = [];
+    if ($request->block_id) {
+        $phcs = PHC::filter()
+                   ->where('block_id', $request->block_id)
+                   ->where('status', _active())
+                   ->orderBy('name')
+                   ->get();
+    }
 
     return view('admin.masters.hsc.list', compact('results', 'huds', 'phcs'));
+}
+
+// AJAX: Get PHCs by Block
+public function getPhcByBlock($blockId)
+{
+    $phcs = PHC::where('block_id', $blockId)
+               ->where('status', _active())
+               ->orderBy('name')
+               ->get(['id', 'name']);
+    return response()->json($phcs);
 }
 
     /**
@@ -140,14 +164,14 @@ $phcs = array();
         return view('admin.masters.hsc.show',compact('result'));
     }
 
-public function getPhcByBlock($blockId)
-{
-    $phcs = PHC::where('block_id', $blockId)
-        ->where('status', _active())
-        ->orderBy('name')
-        ->get(['id', 'name']);
-    return response()->json($phcs);
-}
+// public function getPhcByBlock($blockId)
+// {
+//     $phcs = PHC::where('block_id', $blockId)
+//         ->where('status', _active())
+//         ->orderBy('name')
+//         ->get(['id', 'name']);
+//     return response()->json($phcs);
+// }
     /**
      * Show the form for editing the specified resource.
      *
