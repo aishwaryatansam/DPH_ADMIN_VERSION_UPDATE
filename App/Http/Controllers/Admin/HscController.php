@@ -48,22 +48,13 @@ public function index(Request $request)
     }
 
     $results = $query->paginate($request->get('pageLength', 10));
-foreach ($results as $result) {
-    // Fetch active tags (consistent with your existing code)
-    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
-    
-    // Get tag IDs (from the result)
-    $tagIds = explode(',', $result->tags);
+$phcs = array();
 
-    // Fetch tag names by matching the tag IDs
-    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+   $huds = HUD::with(['blocks:id,name,hud_id'])->filter()->where('status', _active())->orderBy('name')->get();
+    if($block_id = request('block_id')) {
+             $phcs = PHC::filter()->where('status', _active())->orderBy('name')->get();
+       }
 
-    // Store the tag names as a comma-separated string
-    $result->tag_names = implode(', ', $tagNames);
-}
-
-    $huds = HUD::with('blocks')->get();
-    $phcs = PHC::all();
 
     return view('admin.masters.hsc.list', compact('results', 'huds', 'phcs'));
 }
