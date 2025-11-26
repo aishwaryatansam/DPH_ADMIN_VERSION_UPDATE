@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Popular extends Model
 {
-    use HasFactory;
+    // use HasFactory;
 
     protected $fillable = ['name', 'descript',
     'img','tags', 'status'];

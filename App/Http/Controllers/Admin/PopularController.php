@@ -69,12 +69,15 @@ public function index(Request $request)
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $statuses = _getGlobalStatus();
-         $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
-        return view('admin.masters.popular.create', compact('statuses','tags'));
-    }
+public function create()
+{
+    $tags = FetchTag::where('status', 1)->get();
+
+    // For a new record, no tags are selected
+    $selectedTags = [];
+
+    return view('admin.masters.popular.create', compact('tags', 'selectedTags'));
+}
 
     /**
      * Store a newly created resource in storage.
@@ -127,15 +130,19 @@ public function store(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
-    {
-        $result = Popular::findOrFail($id);
-        $statuses = _getGlobalStatus();
- $tags =FetchTag::where('status', _active())->orderBy('name')->pluck('name', 'id');
-$selectedTags = $result->tags ? explode(',', $result->tags) : [];
-   
-        return view('admin.masters.popular.edit', compact('result','tags', 'selectedTags', 'statuses'));
-    }
+public function edit($id)
+{
+    $result = Popular::findOrFail($id);
+
+    // Fetch active tags
+    $tags = FetchTag::where('status', 1)->get();
+
+    // Convert comma-separated string to array
+    $selectedTags = $result->tags ? array_map('intval', explode(',', $result->tags)) : [];
+
+    return view('admin.masters.popular.create', compact('result', 'tags', 'selectedTags'));
+}
+
 
     /**
      * Update the specified resource in storage.
