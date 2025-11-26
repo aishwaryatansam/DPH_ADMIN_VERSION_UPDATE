@@ -43,6 +43,18 @@
                                         <h4 class="card-title mb-4 text-primary">Create Social Media Post</h4>
 
                                         <!-- Socail Media Type Row -->
+
+                           <div class="row mb-3">
+                                            <div class="col-12 col-md-3">
+                                                <label for="link" class="form-label">Title <span
+                                                        class="sizeoftextred">*</span></label>
+                                            </div>
+                                            <div class="col-12 col-md-7">
+                                                <input type="text" class="form-control" id="title"
+                                                    placeholder="Enter title" name="title">
+                                            </div>
+                                        </div>
+
                                         <div class="row mb-3">
                                             <!-- Label Column with reduced width -->
                                             <div class="col-12 col-md-3">
