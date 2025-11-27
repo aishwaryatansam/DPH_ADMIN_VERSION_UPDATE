@@ -37,7 +37,16 @@ public function index(Request $request)
 {
     // Base query with PHC relation
     $query = HSC::with('phc');
+   if ($request->search) {
+        $keyword = $request->search;
 
+        $query->where(function ($q) use ($keyword) {
+            $q->where('name', 'LIKE', "%$keyword%")
+              ->orWhereHas('phc', function ($phcQ) use ($keyword) {
+                  $phcQ->where('name', 'LIKE', "%$keyword%");
+              });
+        });
+    }
     // Filter by block
     if ($request->block_id) {
         $query->whereHas('phc', function ($q) use ($request) {
