@@ -382,7 +382,7 @@
         <!-- main panel end -->
     </div>
  
-  <div class="d-flex justify-content-between align-items-center mt-3">
+<div class="d-flex justify-content-between align-items-center mt-3">
     <div>
         Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
     </div>

@@ -20,34 +20,20 @@ class DistrictController extends Controller
      */
 public function index(Request $request)
 {
-    // Start query with optional relationships
-    $query = District::orderBy('name');
+    $query = District::orderBy('name', 'asc');
 
-    // ✅ Keyword search
+    // Search by keyword
     if ($request->filled('keyword')) {
-        $keyword = $request->keyword;
-        $query->where('name', 'like', "%{$keyword}%");
+        $query->where('name', 'like', "%{$request->keyword}%");
     }
 
-    // ✅ Pagination (default 10 per page, customizable via dropdown)
-    $results = $query->paginate($request->get('pageLength', 10))
-                     ->appends($request->query());
-foreach ($results as $result) {
-    // Fetch active tags (consistent with your existing code)
-    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
-    
-    // Get tag IDs (from the result)
-    $tagIds = explode(',', $result->tags);
-
-    // Fetch tag names by matching the tag IDs
-    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
-
-    // Store the tag names as a comma-separated string
-    $result->tag_names = implode(', ', $tagNames);
-}
+    // Pagination (default 10)
+    $results = $query->paginate($request->pageLength ?? 10)
+                     ->appends($request->all());
 
     return view('admin.masters.districts.list', compact('results'));
 }
+
 
 
     /**
