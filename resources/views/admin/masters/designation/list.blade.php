@@ -89,7 +89,31 @@
                                    
                                 </div>
                             </div>
-                
+                   <form method="GET" action="{{ url('/designations') }}" class="mb-3">
+    <input type="hidden" name="designations" value="{{ request('designations') }}">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
+                @foreach(getPageLenthArr() as $pageLength)
+                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                        {{ $pageLength }}
+                    </option>
+                @endforeach
+            </select>
+            <span>entries</span>
+        </div>
+        <input type="search" name="search" id="search"
+               value="{{ request('search') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               onchange="this.form.submit()">
+    </div>
+</form>
                             <!-- Table Card -->
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -129,7 +153,11 @@
                                             <!-- Additional rows as needed -->
                                         </tbody>
                                     </table>
-                                        <div>
+                                      <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
         @if ($results->lastPage() > 1)
             {{ $results->links('pagination::bootstrap-4') }}
         @else

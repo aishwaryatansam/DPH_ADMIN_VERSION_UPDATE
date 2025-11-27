@@ -71,7 +71,7 @@ class SchemeDetailController extends Controller
     }
 
     // ✅ Order + paginate
-    $results = $query->orderBy('id', 'desc')
+    $results = $query->orderBy('id', 'asc')
         ->paginate($perPage)
         ->appends($request->all());
 

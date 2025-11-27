@@ -17,31 +17,25 @@ class DesignationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    
-    {
-        $search = $request->get('search');
+public function index(Request $request)
+{
+    $search = $request->get('search');
     $perPage = $request->get('pageLength', 10);
-        $results = Designation::getQueriedResult();
-   if (!empty($search)) {
-        $results = $results->filter(function ($item) use ($search) {
-            return stripos($item->name ?? '', $search) !== false;
-        });
-    }    if (method_exists($results, 'paginate')) {
-        $results = $results->paginate($perPage);
-    } else if ($results instanceof \Illuminate\Support\Collection) {
-        $page = $request->get('page', 1);
-        $results = new \Illuminate\Pagination\LengthAwarePaginator(
-            $results->forPage($page, $perPage), 
-            $results->count(), 
-            $perPage,
-            $page,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
+
+    // Convert to query builder, NOT collection
+    $query = Designation::query()->orderBy('name', 'asc');
+
+    // Apply search BEFORE pagination
+    if (!empty($search)) {
+        $query->where('name', 'like', "%{$search}%");
     }
-        return view('admin.masters.designation.list',compact('results'));
-       
-    }
+
+    // Paginate
+    $results = $query->paginate($perPage)->appends($request->all());
+
+    return view('admin.masters.designation.list', compact('results'));
+}
+
 
     /**
      * Show the form for creating a new resource.
