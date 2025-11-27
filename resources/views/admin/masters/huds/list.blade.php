@@ -86,9 +86,13 @@
             </select>
         </div>
         <div class="col-auto ms-auto">
-            <label for="keyword">Search:</label>
-            <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">
-            <button type="submit">Go</button>
+            
+             <input type="search" name="keyword"
+               value="{{ request('keyword') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
         </div>
     </div>
 </form>
