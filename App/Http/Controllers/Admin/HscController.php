@@ -35,37 +35,61 @@ class HscController extends Controller
 
 public function index(Request $request)
 {
-    $query = HSC::query()->with('phc');
+    // Base query with PHC relation
+    $query = HSC::with('phc');
+   if ($request->search) {
+        $keyword = $request->search;
 
-    if ($request->has('block_id') && $request->block_id != '') {
+        $query->where(function ($q) use ($keyword) {
+            $q->where('name', 'LIKE', "%$keyword%")
+              ->orWhereHas('phc', function ($phcQ) use ($keyword) {
+                  $phcQ->where('name', 'LIKE', "%$keyword%");
+              });
+        });
+    }
+    // Filter by block
+    if ($request->block_id) {
         $query->whereHas('phc', function ($q) use ($request) {
             $q->where('block_id', $request->block_id);
         });
     }
 
-    if ($request->has('phc_id') && $request->phc_id != '') {
+    // Filter by PHC
+    if ($request->phc_id) {
         $query->where('phc_id', $request->phc_id);
     }
 
+    // Pagination
     $results = $query->paginate($request->get('pageLength', 10));
-foreach ($results as $result) {
-    // Fetch active tags (consistent with your existing code)
-    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
-    
-    // Get tag IDs (from the result)
-    $tagIds = explode(',', $result->tags);
 
-    // Fetch tag names by matching the tag IDs
-    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+    // HUDs and blocks for filters
+    $huds = HUD::with(['blocks:id,name,hud_id'])
+                ->filter()
+                ->where('status', _active())
+                ->orderBy('name')
+                ->get();
 
-    // Store the tag names as a comma-separated string
-    $result->tag_names = implode(', ', $tagNames);
-}
-
-    $huds = HUD::with('blocks')->get();
-    $phcs = PHC::all();
+    // PHCs filtered by selected block (for initial page load)
+    $phcs = [];
+    if ($request->block_id) {
+        $phcs = PHC::filter()
+                   ->where('block_id', $request->block_id)
+                   ->where('status', _active())
+                   ->orderBy('name')
+                   ->get();
+    }
 
     return view('admin.masters.hsc.list', compact('results', 'huds', 'phcs'));
+}
+
+// AJAX: Get PHCs by Block
+public function getPhcByBlock($blockId)
+{
+    $phcs = PHC::where('block_id', $blockId)
+               ->where('status', _active())
+               ->orderBy('name')
+               ->get(['id', 'name']);
+    return response()->json($phcs);
 }
 
     /**
@@ -101,7 +125,7 @@ foreach ($results as $result) {
         $input = [
                 'name' => $request->name,
                 'phc_id' => $request->phc_id,
-                // 'location_url' => $request->location_url, 
+                'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url,  
                 // 'is_urban' => $request->is_urban,          
                 'status' => $request->has('status') ? 1 : 0,
@@ -149,14 +173,14 @@ foreach ($results as $result) {
         return view('admin.masters.hsc.show',compact('result'));
     }
 
-public function getPhcByBlock($blockId)
-{
-    $phcs = PHC::where('block_id', $blockId)
-        ->where('status', _active())
-        ->orderBy('name')
-        ->get(['id', 'name']);
-    return response()->json($phcs);
-}
+// public function getPhcByBlock($blockId)
+// {
+//     $phcs = PHC::where('block_id', $blockId)
+//         ->where('status', _active())
+//         ->orderBy('name')
+//         ->get(['id', 'name']);
+//     return response()->json($phcs);
+// }
     /**
      * Show the form for editing the specified resource.
      *
@@ -198,7 +222,7 @@ $selectedTags = $result->tags ? explode(',', $result->tags) : [];
         $input = [
                 'name' => $request->name,
                 'phc_id' => $request->phc_id,
-                // 'location_url' => $request->location_url, 
+                'location_url' => $request->location_url, 
                 // 'video_url' => $request->video_url, 
                 // 'is_urban' => $request->is_urban,           
                 'status' => $request->status ?? 0,

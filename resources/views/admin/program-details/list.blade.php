@@ -44,13 +44,15 @@
                             
 
                         </div>
-   
+
 
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover">
-                                                                         <form method="GET" action="{{ url('/programdetails') }}" class="mb-3">
-    <input type="hidden" name="schemes" value="{{ request('schemes') }}">
+                                 <table id="add-row" class="display table table-striped table-hover"
+                                            style="width:100%">
+                                                                           <form method="GET" action="{{ url('/programdetails') }}" class="mb-3"> 
+
+    <input type="hidden" name="programdetails" value="{{ request('programdetails') }}">
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <span class="me-1">Show</span>
@@ -73,12 +75,12 @@
                style="width: 180px;"
                oninput="this.form.submit()">
     </div>
-</form>
 
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Program Title</th>
+                                            <th>Tags</th>
                                             <th>Status</th>
                                             <th class="text-center" style="width: 10%">Action</th>
                                         </tr>
@@ -89,6 +91,7 @@
                                             <tr>
                                                 <td>{{ $result->id ?? '' }}</td>
                                                 <td>{{ $result->program->name ?? '' }}</td>
+                                                <td>{{ $result->tag_names  }}</td>
                                                 <td style="font-weight: bold;">
                                                     @if (isset($result->status) && $result->status == 1)
                                                         <span class="text-success">Active</span>
@@ -123,6 +126,25 @@
                                         <!-- Add more rows as needed -->
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-4') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+</div>
                             </div>
                         </div>
 
@@ -407,7 +429,6 @@
     </div>
  
 
-            
     <script type="text/javascript">
         $(document).ready(function() {
             setPageUrl('/programs?');

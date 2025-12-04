@@ -16,12 +16,13 @@ class ProgramDetail extends Model
         'image_three',
         'image_four',
         'image_five',
+        'tags',
         'programs_id',
         'status',
         'visible_to_public',
         'user_id',
-            'tag_id',
-    'tags',
+           
+    
         'approval_stage',
         'reamrks',
         'verified_at',

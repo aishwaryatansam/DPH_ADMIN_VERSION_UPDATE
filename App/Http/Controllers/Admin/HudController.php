@@ -28,7 +28,15 @@ class HudController extends Controller
 public function index(Request $request)
 {
     $query = HUD::with('district')->orderBy('name');
-
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where(function($q) use ($keyword) {
+            $q->where('name', 'like', "%{$keyword}%")
+              ->orWhereHas('district', function ($q2) use ($keyword) {
+                  $q2->where('name', 'like', "%{$keyword}%");
+              });
+        });
+    }
     // Filter by District (dropdown)
     if ($request->filled('district_id')) {
         $query->where('district_id', $request->district_id);
@@ -46,19 +54,6 @@ public function index(Request $request)
     // Pagination with user-selected length
     $results = $query->paginate($request->get('pageLength', 10))
                      ->appends($request->query());
-foreach ($results as $result) {
-    // Fetch active tags (consistent with your existing code)
-    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
-    
-    // Get tag IDs (from the result)
-    $tagIds = explode(',', $result->tags);
-
-    // Fetch tag names by matching the tag IDs
-    $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
-
-    // Store the tag names as a comma-separated string
-    $result->tag_names = implode(', ', $tagNames);
-}
 
     $districts = District::where('status', _active())
                         ->orderBy('name')

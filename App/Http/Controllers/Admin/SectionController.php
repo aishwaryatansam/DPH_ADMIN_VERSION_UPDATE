@@ -18,35 +18,55 @@ class SectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-          $search = $request->get('search');
-    $perPage = $request->get('pageLength', 10); // match your HTML select name
+public function index(Request $request)
+{
+    $search = $request->get('search');
+    $perPage = $request->get('pageLength', 10);
 
-        $results = Section::getQueriedResult();
-         if (!empty($search)) {
-        $results = $results->filter(function ($item) use ($search) {
-            return stripos($item->name ?? '', $search) !== false;
-        });
-    }
+    $results = Section::getQueriedResult();
 
-    // 🧾 Pagination logic (keep your original code)
-    if (method_exists($results, 'paginate')) {
-        $results = $results->paginate($perPage);
-    } else if ($results instanceof \Illuminate\Support\Collection) {
+    // CASE 1: result is Collection
+    if ($results instanceof \Illuminate\Support\Collection) {
+
+        // Search
+        if (!empty($search)) {
+            $results = $results->filter(function ($item) use ($search) {
+                return stripos($item->name ?? '', $search) !== false;
+            });
+        }
+
+        // FIX: Sort collection (oldest first)
+        $results = $results->sortBy('id')->values();
+
+        // Manual pagination
         $page = $request->get('page', 1);
+        $pagedData = $results->forPage($page, $perPage);
+
         $results = new \Illuminate\Pagination\LengthAwarePaginator(
-            $results->forPage($page, $perPage), 
-            $results->count(), 
+            $pagedData,
+            $results->count(),
             $perPage,
             $page,
             ['path' => $request->url(), 'query' => $request->query()]
         );
+
+    } else {
+
+        // CASE 2: query builder
+        if (!empty($search)) {
+            $results = $results->where('name', 'like', "%{$search}%");
+        }
+
+        // FIX: Sort query (oldest first)
+        $results = $results->orderBy('name', 'ASC');
+
+        $results = $results->paginate($perPage);
     }
-        // dd($results->toArray());
-        $programs = Program::getProgramData();
-        return view('admin.masters.sections.list',compact('results', 'programs'));
-    }
+
+    $programs = Program::getProgramData();
+
+    return view('admin.masters.sections.list', compact('results', 'programs'));
+}
 
     /**
      * Show the form for creating a new resource.

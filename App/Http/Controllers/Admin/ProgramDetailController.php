@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\FetchTag;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProgramDetailsExport;
+use App\Models\Tag;
 class ProgramDetailController extends Controller
 {
     private $program_details_image_path = '/program_details/images';
@@ -29,10 +30,12 @@ class ProgramDetailController extends Controller
      */
 public function index(Request $request)
 {
-    $search = $request->get('search');
+  $search = $request->input('search') 
+        ?: $request->input('keyword')
+        ?: '';
+// <-- FIXED
     $perPage = $request->get('pageLength', 10);
 
-    // start the query
     if (isState()) {
         $programs_id = auth()->user()->programs_id;
         $sections_id = auth()->user()->sections_id;
@@ -51,24 +54,41 @@ public function index(Request $request)
         $query = ProgramDetail::query();
     }
 
-    // ✅ apply search filter if user typed something
     if (!empty($search)) {
         $query->where(function ($q) use ($search) {
             $q->where('description', 'like', "%{$search}%")
-  ->orWhereHas('program', function ($p) use ($search) {
-      $p->where('name', 'like', "%{$search}%");
-  });
-
+              ->orWhereHas('program', function ($p) use ($search) {
+                  $p->where('name', 'like', "%{$search}%");
+              });
         });
     }
 
-    // ✅ paginate with query parameters retained
     $results = $query->paginate($perPage)->appends($request->all());
     $programofficers = ProgramOfficer::getQueriedResult();
+    
+
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    foreach ($results as $result) {
+        $rawTags = $result->tags;
+
+if ($rawTags) {
+    if (str_contains($rawTags, '[')) {
+        // JSON stored
+        $tagIds = json_decode($rawTags, true);
+    } else {
+        // CSV stored
+        $tagIds = explode(',', $rawTags);
+    }
+} else {
+    $tagIds = [];
+}
+
+        $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+        $result->tag_names = implode(', ', $tagNames);
+    }
 
     return view('admin.program-details.list', compact('results', 'programofficers'));
 }
-
 
 
     /**
@@ -250,15 +270,42 @@ public function index(Request $request)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $result = ProgramDetail::findOrFail($programs_id = $id);
-        $statuses = _getGlobalStatus();
-        $officers = ProgramOfficer::where('programs_id', $result->programs_id)->get();
-        $designations = Designation::where('status', _active())->get();
-        // dd($officers ->toArray(),$result ->toArray());
-        return view('admin.program-details.edit', compact('result', 'officers', 'statuses', 'designations'));
+public function edit($id)
+{
+    $result = ProgramDetail::findOrFail($id);
+
+    $statuses = _getGlobalStatus();
+    $officers = ProgramOfficer::where('programs_id', $result->programs_id)->get();
+    $designations = Designation::where('status', _active())->get();
+
+    $tags = FetchTag::where('status', _active())
+                    ->orderBy('name')
+                    ->pluck('name', 'id');
+
+   
+    $rawTags = $result->tags;
+
+    if ($rawTags) {
+        if (str_contains($rawTags, '[')) {
+            // JSON stored
+            $selectedTags = array_map('intval', json_decode($rawTags, true));
+        } else {
+            // comma-separated stored
+            $selectedTags = array_map('intval', explode(',', $rawTags));
+        }
+    } else {
+        $selectedTags = [];
     }
+
+    return view('admin.program-details.edit', compact(
+        'result',
+        'officers',
+        'statuses',
+        'designations',
+        'tags',
+        'selectedTags'
+    ));
+}
 
     /**
      * Update the specified resource in storage.
@@ -338,7 +385,9 @@ public function index(Request $request)
                 $input['document'] = $storedFile['stored_file_path'] ?? '';
             }
         }
-
+$input['tags'] = $request->tags
+    ? implode(',', (array) $request->tags)
+    : null;
         $programDetail->update($input);
 
         if ($request->has('officers')) {

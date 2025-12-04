@@ -86,6 +86,7 @@ public function index(Request $request)
 
         $input = [
                 'name' => $request->name,
+                'title' => $request->title,
                 'menu_to_show' => $request->menu_to_show,
                   'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     

@@ -44,6 +44,9 @@ Route::post('list-block','Admin\BlockController@listBlock');
 Route::post('list-phc','Admin\PhcController@listPHC');
 Route::post('list-hsc','Admin\HscController@listHSC');
 Route::post('list-scheme', [App\Http\Controllers\Admin\SchemeController::class, 'listScheme'])->name('list-scheme');
+Route::post('list-tags', [App\Http\Controllers\Admin\TagController::class, 'listTags'])->name('list-tags');
+
+
 
 Route::post('list-program','Admin\ProgramController@listProgram');
 Route::post('list-section','Admin\SectionController@listSection');

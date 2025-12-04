@@ -130,7 +130,7 @@
 
                                     <div>
                                         @if ($results->lastPage() > 1)
-                                            {{ $results->links('pagination::bootstrap-5') }}
+                                            {{ $results->links('pagination::bootstrap-4') }}
                                         @else
                                             <nav>
                                                 <ul class="pagination">

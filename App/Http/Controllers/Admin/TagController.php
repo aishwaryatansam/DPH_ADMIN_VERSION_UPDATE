@@ -8,6 +8,7 @@ use App\Models\FetchTag;
 use Validator;
 use App\Services\FileService;
 use App\Http\Resources\Dropdown\BlockResource as DDBlockResource;
+use App\Http\Resources\TagResource;
 
 class TagController extends Controller
 {
@@ -91,16 +92,18 @@ public function store(Request $request)
      */
 public function edit($id)
 {
-  
-    $result = FetchTag::findOrFail($id);
+    $result = Popular::findOrFail($id);
 
-   
-    $statuses = _getGlobalStatus();
-    $is_urban = _isUrban();
+    // Fetch active tags
+    $tags = FetchTag::where('status', 1)->get();
 
- 
-    return view('admin.masters.tags.edit', compact('result', 'statuses'));
+    // Convert comma-separated string to array
+    $selectedTags = $result->tags ? explode(',', $result->tags) : [];
+
+    return view('admin.masters.popular.create', compact('result', 'tags', 'selectedTags'));
 }
+
+
 public function update(Request $request, $id)
 {
     
@@ -183,4 +186,18 @@ public function update(Request $request, $id)
     	return Excel::download(new CustomersExport, $filename);
     	
     }
+    /**
+ * List all active tags for dropdown.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+   public function listTags(Request $request)
+    {
+        $tags = FetchTag::where('status', _active())->get(['id','name']);
+
+        return sendResponse($tags);
+    }
+
+
+
 }

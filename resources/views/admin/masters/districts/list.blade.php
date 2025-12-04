@@ -41,25 +41,40 @@
 
                             <!-- Table Card -->
                             <div class="card-body">
-                                                      <form method="GET" action="{{ url('/districts') }}" class="mb-3">
-    <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+<form method="GET" action="{{ url('/districts') }}" class="mb-3">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <!-- Page Length -->
+        <div class="d-flex align-items-center">
+            <span class="me-1">Show</span>
+
+            <select name="pageLength" id="pageLength"
+                    class="form-select form-select-sm me-1"
+                    style="width:70px"
+                    onchange="this.form.submit()">
                 @foreach(getPageLenthArr() as $pageLength)
-                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                    <option value="{{ $pageLength }}" 
+                        {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
                         {{ $pageLength }}
                     </option>
                 @endforeach
             </select>
+
+            <span>entries</span>
         </div>
-        <div class="col-auto ms-auto">
-            <label for="keyword">Search:</label>
-            <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">
-            <button type="submit">Go</button>
-        </div>
+
+        <!-- Search -->
+        <input type="search" name="keyword"
+               value="{{ request('keyword') }}"
+               placeholder="Search..."
+               class="form-control form-control-sm"
+               style="width: 180px;"
+               oninput="this.form.submit()">
     </div>
+
 </form>
+
                                 <div class="table-responsive">
                                     <table id="add-row" class="display table table-striped table-hover"
                                         style="width:100%">
@@ -102,10 +117,25 @@
                                                 <!-- Additional rows as needed -->
                                         </tbody>
                                     </table>
-                                    <div class="d-flex justify-content-center mt-3">
-    {{ $results->links('pagination::bootstrap-5') }}
+    <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-4') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
 </div>
-
                                 </div>
                             </div>
                         </div>
@@ -129,27 +159,7 @@
         $(document).ready(function () {
             var tableData = @json($results);
 
-            // Initialize DataTable
-            if (tableData.length > 0) {
-                $('#add-row').DataTable({
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "info": true,
-                    "autoWidth": false,
-                });
-            } else {
-                $('#add-row').DataTable({
-                    "data": [],
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "info": true,
-                    "autoWidth": false,
-                });
-            }
+           
 
             // Handle the download button click
             $('#downloadBtn').on('click', function () {
