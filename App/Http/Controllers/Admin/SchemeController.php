@@ -32,7 +32,9 @@ class SchemeController extends Controller
             return stripos($item->name ?? '', $search) !== false;
         });
     }
-
+if ($results instanceof \Illuminate\Support\Collection) {
+    $results = $results->sortBy('id');
+}
     // 🧾 Pagination logic (keep your original code)
     if (method_exists($results, 'paginate')) {
         $results = $results->paginate($perPage);

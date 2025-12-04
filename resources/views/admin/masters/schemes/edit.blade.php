@@ -50,15 +50,19 @@
                                 </div>
                                 <div class="row mb-3 p-3">
                                 <!-- program -->
-                                <div class="col-md-6">
-                                    <div class="font-weight-bold text-secondary">Program</div>
-                                    <select name="program_id" id="program_id" class="form-control">
-                                        <option value="" >-- Select Program -- </option>
-                                        @foreach($programs as $key => $value)
-                                            <option value="{{$value->id}}" {{SELECT($value->id,old('programs_id',$result->programs_id))}}>{{$value->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                           <div class="col-md-6">
+    <div class="font-weight-bold text-secondary">Program</div>
+    <select name="programs_id" id="program_id" class="form-control" required>
+        <option value="">-- Select Program --</option>
+        @foreach($programs as $program)
+            <option value="{{ $program->id }}" 
+                {{ old('programs_id', $result->programs_id) == $program->id ? 'selected' : '' }}>
+                {{ $program->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
                                 </div>
 
                                 <div class="row mb-3 p-3">
