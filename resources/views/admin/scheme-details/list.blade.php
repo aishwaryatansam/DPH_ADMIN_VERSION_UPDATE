@@ -69,6 +69,7 @@
                                             <th>ID</th>
                                             <th>Scheme</th>
                                             <th>Program & Divisions</th>
+                                            <th>Tags</th>
                                             <th>Status</th>
                                             <th class="text-center" style="width: 10%">Action</th>
                                         </tr>
@@ -80,6 +81,7 @@
                                                 <td>{{ $result->id ?? '' }}</td>
                                                 <td>{{ $result->scheme->name ?? '' }}</td>
                                                 <td>{{ optional($result->scheme->program)->name ?? '' }}</td>
+                                                   <td>{{ $result->tag_names  }}</td>
                                                 <td style="font-weight: bold;">
                                                     @if (isset($result->status) && $result->status == 1)
                                                         <span class="text-success">Active</span>

@@ -279,9 +279,7 @@ public function edit($id)
                     ->orderBy('name')
                     ->pluck('name', 'id');
 
-    // -----------------------------------------
-    // FIXED TAG PARSING (JSON or CSV detection)
-    // -----------------------------------------
+   
     $rawTags = $result->tags;
 
     if ($rawTags) {

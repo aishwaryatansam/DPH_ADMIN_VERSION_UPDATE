@@ -77,6 +77,28 @@ class SchemeDetailController extends Controller
 
     $schemes = Scheme::getSchemeData();
 
+    
+
+    $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
+    foreach ($results as $result) {
+        $rawTags = $result->tags;
+
+if ($rawTags) {
+    if (str_contains($rawTags, '[')) {
+        // JSON stored
+        $tagIds = json_decode($rawTags, true);
+    } else {
+        // CSV stored
+        $tagIds = explode(',', $rawTags);
+    }
+} else {
+    $tagIds = [];
+}
+
+        $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
+        $result->tag_names = implode(', ', $tagNames);
+    }
+
     return view('admin.scheme-details.list', compact('results', 'schemes'));
 }
 
@@ -247,7 +269,26 @@ class SchemeDetailController extends Controller
         $statuses = _getGlobalStatus();
         $programs = Program::getProgramData();
         $schemes = Scheme::getSchemeData();
-        return view('admin.scheme-details.edit', compact('result', 'statuses', 'schemes', 'programs'));
+        $tags = FetchTag::where('status', _active())
+                    ->orderBy('name')
+                    ->pluck('name', 'id');
+
+   
+    $rawTags = $result->tags;
+
+    if ($rawTags) {
+        if (str_contains($rawTags, '[')) {
+            // JSON stored
+            $selectedTags = array_map('intval', json_decode($rawTags, true));
+        } else {
+            // comma-separated stored
+            $selectedTags = array_map('intval', explode(',', $rawTags));
+        }
+    } else {
+        $selectedTags = [];
+    }
+        return view('admin.scheme-details.edit', compact('result', 'statuses', 'schemes', 'programs',  'tags',
+        'selectedTags'));
     }
 
     /**
@@ -346,6 +387,9 @@ $validator = Validator::make($request->all(), $this->rules($id), $this->messages
             }
         }
         // dd($input);
+        $input['tags'] = $request->tags
+    ? implode(',', (array) $request->tags)
+    : null;
         $result->update($input);
 
         createdResponse("Scheme Details Updated Successfully");
