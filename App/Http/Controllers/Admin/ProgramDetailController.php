@@ -30,7 +30,10 @@ class ProgramDetailController extends Controller
      */
 public function index(Request $request)
 {
-    $search = $request->get('keyword'); // <-- FIXED
+  $search = $request->input('search') 
+        ?: $request->input('keyword')
+        ?: '';
+// <-- FIXED
     $perPage = $request->get('pageLength', 10);
 
     if (isState()) {
