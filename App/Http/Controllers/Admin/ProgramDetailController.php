@@ -66,7 +66,20 @@ public function index(Request $request)
 
     $tags = FetchTag::where('status', 1)->orderBy('name')->get(['id', 'name']);
     foreach ($results as $result) {
-        $tagIds = explode(',', $result->tags);
+        $rawTags = $result->tags;
+
+if ($rawTags) {
+    if (str_contains($rawTags, '[')) {
+        // JSON stored
+        $tagIds = json_decode($rawTags, true);
+    } else {
+        // CSV stored
+        $tagIds = explode(',', $rawTags);
+    }
+} else {
+    $tagIds = [];
+}
+
         $tagNames = $tags->whereIn('id', $tagIds)->pluck('name')->toArray();
         $result->tag_names = implode(', ', $tagNames);
     }
@@ -371,7 +384,9 @@ public function edit($id)
                 $input['document'] = $storedFile['stored_file_path'] ?? '';
             }
         }
-
+$input['tags'] = $request->tags
+    ? implode(',', (array) $request->tags)
+    : null;
         $programDetail->update($input);
 
         if ($request->has('officers')) {
