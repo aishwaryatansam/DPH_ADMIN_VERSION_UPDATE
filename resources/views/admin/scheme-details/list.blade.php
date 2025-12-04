@@ -36,7 +36,11 @@
                                              
                         </div>
     
-                                             <form method="GET" action="{{ url('/schemedetails') }}" class="mb-3">
+                                           
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-striped table-hover">
+                                      <form method="GET" action="{{ url('/schemedetails') }}" class="mb-3">
     <input type="hidden" name="schemes" value="{{ request('schemes') }}">
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
@@ -61,9 +65,6 @@
                oninput="this.form.submit()">
     </div>
 </form>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="add-row" class="display table table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
