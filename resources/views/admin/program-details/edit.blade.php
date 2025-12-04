@@ -1,6 +1,20 @@
 @extends('admin.layouts.layout')
 @section('title', 'Edit Program Details')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+      <script>
+$(document).ready(function() {
+    $('#tags').select2({
+        placeholder: "Select tags",
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
     <div class="container" id="maincontent">
         <div class="container-fluid p-2" style="background-color: #f2f2f2;">
             <div class="d-flex justify-content-between align-items-center" style="padding-left: 20px; padding-right: 20px;">
@@ -203,7 +217,21 @@
                                         </div>
                                     </div>
 
-                                    <!-- Multi-select Images -->
+<div class="row mb-3 p-3">
+    <div class="col-md-10">
+        <label for="tags" class="form-label fw-bold text-secondary">Tags:</label>
+  <select class="form-control select2" id="tags" name="tags[]" multiple>
+    @foreach ($tags as $tagId => $name)
+        <option value="{{ $tagId }}" 
+            {{ in_array((int)$tagId, $selectedTags) ? 'selected' : '' }}>
+            {{ $name }}
+        </option>
+    @endforeach
+   </select>
+
+
+    </div>
+</div>                            <!-- Multi-select Images -->
                                     <div class="row mb-3">
                                         <div class="col-12 col-md-3">
                                             <label for="imageUploads" class="form-label">Select Images <span
@@ -576,4 +604,6 @@
           toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code | help', // Customize the toolbar
         });
       </script>
+
+
 @endsection

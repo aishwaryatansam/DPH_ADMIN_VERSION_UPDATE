@@ -33,7 +33,7 @@
                                 <div class="buttons d-flex flex-column flex-sm-row gap-2">
                                     @if ($user_detail->user_type_id == '7')
                                     <button class="btn btn-success w-100 w-sm-auto" onclick="window.location.href='{{ route('programsdetail.export')}}';">
-                                        Downloada
+                                        Download
                                     </button>
                                     @endif
                                     <button class="btn btn-primary btn-round w-100 w-sm-auto" onclick="window.location.href='{{ route('programdetails.create') }}';">
@@ -72,6 +72,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Program Title</th>
+                                            <th>Tags</th>
                                             <th>Status</th>
                                             <th class="text-center" style="width: 10%">Action</th>
                                         </tr>
@@ -82,6 +83,7 @@
                                             <tr>
                                                 <td>{{ $result->id ?? '' }}</td>
                                                 <td>{{ $result->program->name ?? '' }}</td>
+                                                       <td>{{ $result->tag_names ?? '' }}</td>
                                                 <td style="font-weight: bold;">
                                                     @if (isset($result->status) && $result->status == 1)
                                                         <span class="text-success">Active</span>
