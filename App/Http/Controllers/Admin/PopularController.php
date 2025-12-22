@@ -89,14 +89,28 @@ public function store(Request $request)
         'descript' => 'nullable|string',
         'img' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
-
+    if ($request->has('status')) {
+        $activeCount = Popular::where('status', 1)->count();
+        if ($activeCount >= 4) {
+            return back()
+                ->withErrors(['status' => 'Only 4 popular items can be active at a time'])
+                ->withInput();
+        }
+    }
     $data = [
         'name' => $request->name,
          'status' => $request->has('status') ? 1 : 0,
         'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
-
+    if ($request->has('status')) {
+        $activeCount = Popular::where('status', 1)->count();
+        if ($activeCount >= 4) {
+            return back()
+                ->withErrors(['status' => 'Only 4 popular items can be active at a time'])
+                ->withInput();
+        }
+    }
     // ✅ Corrected image handling
     if ($request->hasFile('img')) {
         $path = public_path('tnpdphpmfiles/popular');
