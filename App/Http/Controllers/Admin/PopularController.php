@@ -92,7 +92,7 @@ public function store(Request $request)
 
     $data = [
         'name' => $request->name,
-        'status' => $request->status ?? 0,
+         'status' => $request->has('status') ? 1 : 0,
         'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
@@ -159,7 +159,7 @@ public function update(Request $request, $id)
 
     $data = [
         'name' => $request->name,
-        'status' => $request->status ?? 1,
+         'status' => $request->has('status') ? 1 : 0,
         'descript' => $request->descript,
         'tags' => is_array($request->tags) ? implode(',', $request->tags) : $request->tags,
     ];
