@@ -1,6 +1,7 @@
 @extends('admin.layouts.layout')
 @section('title', 'Edit Facility Profile')
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
@@ -875,15 +876,15 @@
                                                         placeholder="Enter Email" />
                                                 </div>
                                             </div>
-                                            <!-- <input type="button" name="next" class="next action-button"
+                                             <input type="button" name="next" class="next action-button"
                                                     value="Next" />
                                                 <input type="button" name="previous" class="previous action-button-previous"
-                                                    value="Previous" /> -->
+                                                    value="Previous" /> 
                                             
-                                            <input type="button" name="next"
+                                            {{-- <input type="button" name="next"
                                                 class="next action-button btn btn-primary" value="Next" />
                                             <input type="button" name="previous"
-                                                class="previous action-button btn btn-secondary" value="Previous" />
+                                                class="previous action-button btn btn-secondary" value="Previous" /> --}}
                                         </div>
                                     </fieldset>
 
@@ -3466,6 +3467,34 @@
             toggleFaxDetails();
         });
     </script>
+<script>
+$(document).ready(function () {
+
+    $(".next").click(function () {
+        let current_fs = $(this).closest("fieldset");
+        let next_fs = current_fs.next("fieldset");
+
+        if (next_fs.length === 0) {
+            console.log("No next fieldset found");
+            return;
+        }
+
+        current_fs.hide();
+        next_fs.show();
+    });
+
+    $(".previous").click(function () {
+        let current_fs = $(this).closest("fieldset");
+        let prev_fs = current_fs.prev("fieldset");
+
+        current_fs.hide();
+        prev_fs.show();
+    });
+
+});
+</script>
+
+
 
     <style>
         .selected-items {
