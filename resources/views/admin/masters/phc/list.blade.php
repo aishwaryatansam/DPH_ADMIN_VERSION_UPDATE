@@ -91,26 +91,35 @@
             </select>
         </div>
 </div></div></form> --}}
- <form method="GET" action="{{ url('/phc') }}" class="mb-3">
-    <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
+<form method="GET" action="{{ url('/phc') }}" class="mb-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+        <!-- Left: Show entries -->
+        <div class="d-flex align-items-center mb-2 mb-md-0">
+            <label class="me-2 mb-0">Show</label>
+
+            <select name="pageLength"
+                    class="form-select form-select-sm me-2"
+                    style="width:80px"
+                    onchange="this.form.submit()">
                 @foreach(getPageLenthArr() as $pageLength)
-                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                    <option value="{{ $pageLength }}"
+                        {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
                         {{ $pageLength }}
                     </option>
                 @endforeach
             </select>
+
+            <span>entries</span>
         </div>
-        <div class="col-auto ms-auto">
-             <label for="keyword">Search:</label>
-    <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">
-    <button type="submit">Go</button>
-        </div>
+
+        <!-- Right: Search -->
+       <input type="search" name="search" id="search" value="{{ request('search') }}" placeholder="Search..." class="form-control form-control-sm" style="width: 180px;" oninput="this.form.submit()">
+                    
+
     </div>
-</form>              
-                                    <div class="table-responsive">
+</form>
+                           <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover"
                                             style="width:100%">
                                             <thead>
