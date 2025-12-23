@@ -59,9 +59,12 @@
                             <!-- Reset Button -->
                             <div class="col d-flex justify-content-end align-items-center mt-2">
                                 <div class="form-group d-flex">
-                                    <button type="button" onClick="resetSearch()" class="btn btn-secondary resetSearch" style="border-radius: 10px;">
-                                        <i class="fas fa-redo"></i>
-                                    </button>
+                                    <a href="{{ route('hsc.index') }}"
+   class="btn btn-secondary"
+   style="border-radius:10px;">
+    <i class="fas fa-redo"></i>
+</a>
+
                                 </div>
                             </div>
                         </div>
