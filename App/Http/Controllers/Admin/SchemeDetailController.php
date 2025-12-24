@@ -466,6 +466,40 @@ public function export()
         dd($e->getMessage());
     }
 }
+public function apiList(Request $request)
+{
+    $schemeDetails = SchemeDetail::with('scheme.program')->get();
+
+    $tags = FetchTag::where('status', 1)->pluck('name', 'id');
+
+    foreach ($schemeDetails as $item) {
+        // Handle tags
+        $tagIds = $item->tags ? explode(',', $item->tags) : [];
+        $item->tag_names = $tags->only($tagIds)->values()->implode(', ');
+
+        // Full URLs for images/documents
+        $item->images = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $field = 'image_' . $i;
+            if (!empty($item->$field)) {
+                $item->images[] = asset($item->$field);
+            }
+        }
+
+        $item->report_images = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $field = 'report_image_' . $i;
+            if (!empty($item->$field)) {
+                $item->report_images[] = asset($item->$field);
+            }
+        }
+
+        $item->icon_url = $item->icon_url ? asset($item->icon_url) : null;
+        $item->document_url = $item->document_url ? asset($item->document_url) : null;
+    }
+
+    return response()->json($schemeDetails);
+}
 
 
 }

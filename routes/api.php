@@ -68,3 +68,6 @@ Route::post('/track-visitor', [VisitorController::class, 'trackVisitor']);
 Route::get('/visitor-count', [VisitorController::class, 'getVisitorCount']);
 
 Route::get('/popular-list', [App\Http\Controllers\Admin\PopularController::class, 'apiList']);
+Route::get('/social-media-list', [App\Http\Controllers\Admin\PopularController::class, 'apiList']);
+Route::get('/program-details', [App\Http\Controllers\Admin\ProgramDetailController::class, 'apiList']);
+Route::get('/scheme-details', [App\Http\Controllers\Admin\SchemeDetailController::class, 'apiList']);

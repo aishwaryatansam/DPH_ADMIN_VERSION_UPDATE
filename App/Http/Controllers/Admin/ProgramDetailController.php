@@ -501,4 +501,26 @@ $input['tags'] = $request->tags
     }
 }
 
+public function apiList()
+{
+    $programs = ProgramDetail::all();
+    $tags = FetchTag::where('status', 1)->pluck('name', 'id');
+
+    foreach ($programs as $program) {
+        // Convert tag IDs to names
+        $tagIds = $program->tags ? explode(',', $program->tags) : [];
+        $program->tag_names = $tags->only($tagIds)->implode(', ');
+
+        // Image and document URLs
+        $program->image_one_url = $program->image_one ? asset($program->image_one) : null;
+        $program->icon_url = $program->icon_url ? asset($program->icon_url) : null;
+        $program->document_url = $program->document ? asset($program->document) : null;
+
+        // Include officers
+        $program->officers = ProgramOfficer::where('programs_id', $program->programs_id)->get();
+    }
+
+    return response()->json($programs);
+}
+
 }
