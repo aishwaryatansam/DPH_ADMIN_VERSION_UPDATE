@@ -504,23 +504,34 @@ $input['tags'] = $request->tags
 public function apiList()
 {
     $programs = ProgramDetail::all();
-    $tags = FetchTag::where('status', 1)->pluck('name', 'id');
 
     foreach ($programs as $program) {
-        // Convert tag IDs to names
-        $tagIds = $program->tags ? explode(',', $program->tags) : [];
-        $program->tag_names = $tags->only($tagIds)->implode(', ');
 
-        // Image and document URLs
+        // Tag IDs from program
+        $tagIds = $program->tags ? explode(',', $program->tags) : [];
+
+        // Full tag objects (id, name, status)
+        $program->tags_data = FetchTag::whereIn('id', $tagIds)
+            ->select('id', 'name', 'status')
+            ->get();
+
+        // Optional: only active tag names
+        $program->tag_names = $program->tags_data
+            ->where('status', 1)
+            ->pluck('name')
+            ->implode(', ');
+
+        // Image & document URLs
         $program->image_one_url = $program->image_one ? asset($program->image_one) : null;
         $program->icon_url = $program->icon_url ? asset($program->icon_url) : null;
         $program->document_url = $program->document ? asset($program->document) : null;
 
-        // Include officers
+        // Officers
         $program->officers = ProgramOfficer::where('programs_id', $program->programs_id)->get();
     }
 
     return response()->json($programs);
 }
+
 
 }

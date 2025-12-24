@@ -470,14 +470,23 @@ public function apiList(Request $request)
 {
     $schemeDetails = SchemeDetail::with('scheme.program')->get();
 
-    $tags = FetchTag::where('status', 1)->pluck('name', 'id');
-
     foreach ($schemeDetails as $item) {
-        // Handle tags
-        $tagIds = $item->tags ? explode(',', $item->tags) : [];
-        $item->tag_names = $tags->only($tagIds)->values()->implode(', ');
 
-        // Full URLs for images/documents
+        // Tag IDs
+        $tagIds = $item->tags ? explode(',', $item->tags) : [];
+
+        // Full tag data (id, name, status)
+        $item->tags_data = FetchTag::whereIn('id', $tagIds)
+            ->select('id', 'name', 'status')
+            ->get();
+
+        // Active tag names only
+        $item->tag_names = $item->tags_data
+            ->where('status', 1)
+            ->pluck('name')
+            ->implode(', ');
+
+        // Images
         $item->images = [];
         for ($i = 1; $i <= 5; $i++) {
             $field = 'image_' . $i;
@@ -486,6 +495,7 @@ public function apiList(Request $request)
             }
         }
 
+        // Report Images
         $item->report_images = [];
         for ($i = 1; $i <= 5; $i++) {
             $field = 'report_image_' . $i;
@@ -494,12 +504,14 @@ public function apiList(Request $request)
             }
         }
 
+        // URLs
         $item->icon_url = $item->icon_url ? asset($item->icon_url) : null;
         $item->document_url = $item->document_url ? asset($item->document_url) : null;
     }
 
     return response()->json($schemeDetails);
 }
+
 
 
 }

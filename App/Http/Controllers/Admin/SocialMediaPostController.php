@@ -240,4 +240,37 @@ $selectedTags = $result->tags ? explode(',', $result->tags) : [];
 
     return sendResponse($response);
     }
+    public function apiList(Request $request)
+{
+    $query = ConfigurationDetails::where('configuration_content_type_id', 28);
+
+    // Optional search
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    $posts = $query->where('status', 1)->get();
+
+    foreach ($posts as $post) {
+
+        // Tags with status
+        $tagIds = $post->tags ? explode(',', $post->tags) : [];
+
+        $post->tags_data = FetchTag::whereIn('id', $tagIds)
+            ->select('id', 'name', 'status')
+            ->get();
+
+        // Active tag names (optional)
+        $post->tag_names = $post->tags_data
+            ->where('status', 1)
+            ->pluck('name')
+            ->implode(', ');
+
+        // Image URL
+        $post->image_url = $post->image_url ? asset($post->image_url) : null;
+    }
+
+    return response()->json($posts);
+}
+
 }

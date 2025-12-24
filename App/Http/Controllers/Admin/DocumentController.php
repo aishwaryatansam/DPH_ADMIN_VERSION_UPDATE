@@ -240,4 +240,37 @@ class DocumentController extends Controller
         return Excel::download(new DocumentsExport, $filename);
         
     }
+
+
+public function apiList()
+{
+    $documents = Document::where('status', 1)->get();
+
+    foreach ($documents as $doc) {
+
+        // Normalize tag IDs
+        $tagIds = $doc->tag_id ? explode(',', $doc->tag_id) : [];
+
+        // Full tag data (id, name, status)
+        $doc->tags_data = Tag::whereIn('id', $tagIds)
+            ->select('id', 'name', 'status')
+            ->get();
+
+        // Active tag names only
+        $doc->tag_names = $doc->tags_data
+            ->where('status', 1)
+            ->pluck('name')
+            ->implode(', ');
+
+        // Full URLs
+        $doc->document_url = $doc->document_url ? asset($doc->document_url) : null;
+        $doc->image_url = $doc->image_url ? asset($doc->image_url) : null;
+    }
+
+    return response()->json($documents);
+}
+
+
+
+
 }

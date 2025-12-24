@@ -71,3 +71,8 @@ Route::get('/popular-list', [App\Http\Controllers\Admin\PopularController::class
 Route::get('/social-media-list', [App\Http\Controllers\Admin\PopularController::class, 'apiList']);
 Route::get('/program-details', [App\Http\Controllers\Admin\ProgramDetailController::class, 'apiList']);
 Route::get('/scheme-details', [App\Http\Controllers\Admin\SchemeDetailController::class, 'apiList']);
+Route::get('/social-media-post-list', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'apiList']);
+Route::get('/media-gallery-list', [App\Http\Controllers\Admin\MediaGalleryController::class, 'apiList']);
+Route::get('/new-document-list', [App\Http\Controllers\Admin\NewDocumentController::class, 'apiList']);
+
+

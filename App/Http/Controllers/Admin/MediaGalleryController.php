@@ -229,6 +229,59 @@ class MediaGalleryController extends Controller
         // Redirect to the media gallery index with a success message
         return redirect()->route('media-gallery.index')->with('success', 'Media Gallery Updated Successfully!');
     }
+// public function apiList()
+// {
+//     // Get ALL media gallery records
+//     $mediaGalleries = MediaGallery::all();
+
+//     foreach ($mediaGalleries as $media) {
+
+//         // Tag IDs
+//         $tagIds = $media->tags ? explode(',', $media->tags) : [];
+
+//         // Get tag data (id, name, status)
+//         $media->tags_data = FetchTag::whereIn('id', $tagIds)
+//             ->select('id', 'name', 'status')
+//             ->get();
+
+//         // Active tag names only (optional)
+//         $media->tag_names = $media->tags_data
+//             ->where('status', 1)
+//             ->pluck('name')
+//             ->implode(', ');
+
+//         // Media URLs
+//         $media->image_url = $media->image ? asset($media->image) : null;
+//         $media->url = $media->url ?? null;
+//     }
+
+//     return response()->json($mediaGalleries);
+// }
+
+public function apiList()
+{
+    $mediaGalleries = MediaGallery::where('status', 1)->get();
+
+    foreach ($mediaGalleries as $media) {
+
+        // Tag IDs
+        $tagIds = $media->tags ? explode(',', $media->tags) : [];
+
+        // Full tag data (id, name, status)
+        $media->tags_data = FetchTag::whereIn('id', $tagIds)
+            ->select('id', 'name', 'status')
+            ->get();
+
+        // Active tag names only
+   
+
+        // Media URLs
+        $media->image_url = $media->image ? asset($media->image) : null;
+        $media->url = $media->url ?? null;
+    }
+
+    return response()->json($mediaGalleries);
+}
 
     /**
      * Remove the specified resource from storage.

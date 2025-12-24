@@ -364,6 +364,35 @@ $selectedTags = $result->tags ? explode(',', $result->tags) : [];
 
         return $rules;
     }
+public function apiList()
+{
+    $documents = NewDocument::where('status', 1)->get();
+
+    // Fetch all active tags at once
+    $allTags = FetchTag::where('status', 1)->pluck('name', 'id');
+
+    foreach ($documents as $doc) {
+        // Check if 'tags' field exists
+        if ($doc->tags) {
+            // Split string into array and clean spaces
+            $tagIds = array_filter(array_map('trim', explode(',', $doc->tags)));
+
+            // Only keep tags that exist in FetchTag
+            $doc->tags_data = $allTags->only($tagIds)->map(function($name, $id) {
+                return ['id' => $id, 'name' => $name];
+            })->values();
+        } else {
+            $doc->tags_data = collect();
+        }
+
+        // Full URLs
+        $doc->document_url = $doc->document_url ? asset($doc->document_url) : null;
+        $doc->image_url = $doc->image_url ? asset($doc->image_url) : null;
+    }
+
+    return response()->json($documents);
+}
+
 
     public function messages()
     {
