@@ -508,6 +508,17 @@ public function apiList()
     foreach ($programs as $program) {
 
         // Tag IDs from program
+
+       
+
+    // Existing code ...
+
+    // Add program name from 'programs' table
+    $program->program_name = \DB::table('programs')
+        ->where('id', $program->programs_id)
+        ->value('name');
+
+
         $tagIds = $program->tags ? explode(',', $program->tags) : [];
 
         // Full tag objects (id, name, status)
