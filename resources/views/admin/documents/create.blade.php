@@ -393,6 +393,26 @@ $(document).ready(function() {
                                                 </tr>
                                             @endif
                                             <!-- Add File Description -->
+
+                                    
+                                            @if (!in_array(request('document_type'), [8, 9]))
+                                              <tr>
+    <td class="col-12 col-md-3">
+        <label class="form-label">
+            Name <span style="color:red;">*</span>
+        </label>
+    </td>
+    <td class="col-12 col-md-9">
+        <input type="text"
+               class="form-control"
+               name="name"
+               placeholder="Enter Name"
+               value="{{ old('name', $result->name ?? '') }}"
+               required>
+    </td>
+</tr>
+                                            @endif
+
                                             @if (!in_array(request('document_type'), [8, 9]))
                                                 <tr>
                                                     <td class="col-12 col-md-3">
