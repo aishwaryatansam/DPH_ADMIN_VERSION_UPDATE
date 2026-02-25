@@ -24,16 +24,17 @@
                     <form>
                         <div class="row">
                             <div class="col col-md-4">
-                                <div class="form-group">
-                                    <label>District</label>
-                                    <select name="district_id" class="form-control form-control-line searchable" onchange="searchFun()">
-                                        <option value="" >-- Select District -- </option>
-                                          @foreach($districts as $district)
-          
-                                      <option value="{{$district->id}}" {{SELECT($district->id,request('district_id'))}}>{{$district->name}}</option>
-                                      @endforeach
-                                      </select>
-                                </div>
+                             <form method="GET" id="filterForm">
+<select name="district_id" class="form-control" onchange="this.form.submit()">
+    <option value="">-- Select District --</option>
+    @foreach($districts as $district)
+        <option value="{{ $district->id }}" 
+        {{ request('district_id') == $district->id ? 'selected' : '' }}>
+            {{ $district->name }}
+        </option>
+    @endforeach
+</select>
+</form>
                             </div>
                             <div class="col d-flex justify-content-end align-items-center mt-2">
                                 <div class="form-group d-flex">

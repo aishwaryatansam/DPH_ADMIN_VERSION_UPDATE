@@ -3,11 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
-<<<<<<< HEAD
--- Generation Time: Oct 03, 2024 at 02:26 PM
-=======
 -- Generation Time: Oct 05, 2024 at 01:56 PM
->>>>>>> main
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 7.4.29
 
@@ -27674,8 +27670,6 @@ INSERT INTO `documents` (`id`, `document_url`, `navigation_id`, `display_filenam
 -- --------------------------------------------------------
 
 --
-<<<<<<< HEAD
-=======
 -- Table structure for table `document_type`
 --
 
@@ -27713,7 +27707,6 @@ INSERT INTO `document_type` (`id`, `name`, `order_no`, `status`, `slug_key`, `cr
 -- --------------------------------------------------------
 
 --
->>>>>>> main
 -- Table structure for table `facility_hierarchy`
 --
 
@@ -38390,8 +38383,6 @@ INSERT INTO `huds` (`id`, `name`, `district_id`, `image_url`, `status`, `created
 -- --------------------------------------------------------
 
 --
-<<<<<<< HEAD
-=======
 -- Table structure for table `masters`
 --
 
@@ -38436,7 +38427,6 @@ INSERT INTO `master_types` (`id`, `name`, `created_at`, `updated_at`) VALUES
 -- --------------------------------------------------------
 
 --
->>>>>>> main
 -- Table structure for table `migrations`
 --
 
@@ -38523,9 +38513,6 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (149, '2024_10_01_163434_add_coloumn_sections_id_in_schemes_table', 63),
 (150, '2024_10_03_111802_add_coloumn_order_no_in_program_table', 64),
 (151, '2024_10_03_111905_add_coloumn_order_no_in_schemes_table', 65),
-<<<<<<< HEAD
-(152, '2024_10_03_111912_add_coloumn_order_no_in_sections_table', 66);
-=======
 (152, '2024_10_03_111912_add_coloumn_order_no_in_sections_table', 66),
 (153, '2024_10_04_111637_create_document_type_table', 67),
 (154, '2024_10_04_121634_create_master_types_table', 68),
@@ -38533,7 +38520,6 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (157, '2024_10_04_113926_create_new_documents_table', 70),
 (158, '2024_10_04_150654_add_coloumn_user_id_in_new_documents_table', 71),
 (159, '2024_10_05_163547_add_coloumn_link_title_in_new_documents_table', 72);
->>>>>>> main
 
 -- --------------------------------------------------------
 
@@ -38573,8 +38559,6 @@ INSERT INTO `navigations` (`id`, `name`, `order_no`, `status`, `created_at`, `up
 -- --------------------------------------------------------
 
 --
-<<<<<<< HEAD
-=======
 -- Table structure for table `new_documents`
 --
 
@@ -38619,7 +38603,6 @@ INSERT INTO `new_documents` (`id`, `document_type_id`, `scheme_id`, `section_id`
 -- --------------------------------------------------------
 
 --
->>>>>>> main
 -- Table structure for table `password_resets`
 --
 
@@ -41131,8 +41114,6 @@ CREATE TABLE `scheme_details` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-<<<<<<< HEAD
-=======
 --
 -- Dumping data for table `scheme_details`
 --
@@ -41140,7 +41121,6 @@ CREATE TABLE `scheme_details` (
 INSERT INTO `scheme_details` (`id`, `schemes_id`, `description`, `document_url`, `image_one`, `image_two`, `image_three`, `image_four`, `image_five`, `report_image_one`, `report_image_two`, `report_image_three`, `report_image_four`, `report_image_five`, `visible_to_public`, `status`, `created_at`, `updated_at`) VALUES
 (1, 71, 'this is scheme description', 'scheme_details/documents/1728044137_adtw_e_104_2023.pdf', 'scheme_details/images/1728044137_dphicon.jpg', 'scheme_details/images/1728044137_insta.png', 'scheme_details/images/1728044137_download.jpeg', NULL, NULL, 'scheme_details/report_images/1728044137_dph_approval_process_1.jpg', 'scheme_details/report_images/1728044137_dph_approval_process.jpg', 'scheme_details/report_images/1728044137_logo.png', NULL, NULL, 0, 1, '2024-10-04 12:15:37', '2024-10-04 12:15:52');
 
->>>>>>> main
 -- --------------------------------------------------------
 
 --
@@ -41552,15 +41532,12 @@ ALTER TABLE `documents`
   ADD PRIMARY KEY (`id`);
 
 --
-<<<<<<< HEAD
-=======
 -- Indexes for table `document_type`
 --
 ALTER TABLE `document_type`
   ADD PRIMARY KEY (`id`);
 
 --
->>>>>>> main
 -- Indexes for table `facility_hierarchy`
 --
 ALTER TABLE `facility_hierarchy`
@@ -41609,8 +41586,6 @@ ALTER TABLE `huds`
   ADD UNIQUE KEY `huds_unique_code_unique` (`unique_code`);
 
 --
-<<<<<<< HEAD
-=======
 -- Indexes for table `masters`
 --
 ALTER TABLE `masters`
@@ -41624,7 +41599,6 @@ ALTER TABLE `master_types`
   ADD PRIMARY KEY (`id`);
 
 --
->>>>>>> main
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -41637,8 +41611,6 @@ ALTER TABLE `navigations`
   ADD PRIMARY KEY (`id`);
 
 --
-<<<<<<< HEAD
-=======
 -- Indexes for table `new_documents`
 --
 ALTER TABLE `new_documents`
@@ -41652,7 +41624,6 @@ ALTER TABLE `new_documents`
   ADD KEY `new_documents_user_id_foreign` (`user_id`);
 
 --
->>>>>>> main
 -- Indexes for table `password_resets`
 --
 ALTER TABLE `password_resets`
@@ -41817,15 +41788,12 @@ ALTER TABLE `documents`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1277;
 
 --
-<<<<<<< HEAD
-=======
 -- AUTO_INCREMENT for table `document_type`
 --
 ALTER TABLE `document_type`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
->>>>>>> main
 -- AUTO_INCREMENT for table `facility_hierarchy`
 --
 ALTER TABLE `facility_hierarchy`
@@ -41862,12 +41830,6 @@ ALTER TABLE `huds`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
-<<<<<<< HEAD
--- AUTO_INCREMENT for table `migrations`
---
-ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
-=======
 -- AUTO_INCREMENT for table `masters`
 --
 ALTER TABLE `masters`
@@ -41884,7 +41846,6 @@ ALTER TABLE `master_types`
 --
 ALTER TABLE `migrations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
->>>>>>> main
 
 --
 -- AUTO_INCREMENT for table `navigations`
@@ -41893,15 +41854,12 @@ ALTER TABLE `navigations`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
-<<<<<<< HEAD
-=======
 -- AUTO_INCREMENT for table `new_documents`
 --
 ALTER TABLE `new_documents`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
->>>>>>> main
 -- AUTO_INCREMENT for table `programdetail`
 --
 ALTER TABLE `programdetail`
@@ -41941,11 +41899,7 @@ ALTER TABLE `schemes`
 -- AUTO_INCREMENT for table `scheme_details`
 --
 ALTER TABLE `scheme_details`
-<<<<<<< HEAD
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-=======
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
->>>>>>> main
 
 --
 -- AUTO_INCREMENT for table `sections`
@@ -42007,8 +41961,6 @@ ALTER TABLE `facility_hierarchy`
   ADD CONSTRAINT `facility_hierarchy_state_id_foreign` FOREIGN KEY (`state_id`) REFERENCES `states` (`id`) ON DELETE SET NULL;
 
 --
-<<<<<<< HEAD
-=======
 -- Constraints for table `masters`
 --
 ALTER TABLE `masters`
@@ -42027,7 +41979,6 @@ ALTER TABLE `new_documents`
   ADD CONSTRAINT `new_documents_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
->>>>>>> main
 -- Constraints for table `programdetail`
 --
 ALTER TABLE `programdetail`

@@ -19,7 +19,7 @@
                 <!-- insert the contents Here start -->
 
                 <div class="card mb-0 mt-2">
-                    <div class="card-body">
+                    {{-- <div class="card-body">
                         <form>
                             <div class="row">
                                 <div class="col col-md-4">
@@ -36,7 +36,7 @@
                             </div> 
 
                         </form>
-                    </div>
+                    </div> --}}
                 </div>
 
 

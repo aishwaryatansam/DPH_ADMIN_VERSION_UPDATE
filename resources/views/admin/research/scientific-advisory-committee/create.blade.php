@@ -309,7 +309,7 @@
                                                             <td>{{ $member->name }}</td>
                                                             <td>{{ $member->qualification }}</td>
                                                             <td>{{ $member->institution }}</td>
-                                                            <td>{{ $member->designations }}</td>
+                                                            <td>{{ $member->designations->name ?? '' }}</td>
                                                             <td> {{ $member->affiliation == 1 ? 'Affiliated' : 'Not Affiliated' }}
                                                             </td>
                                                             <td class="text-center">
@@ -319,7 +319,7 @@
                                                                         class="btn btn-link btn-primary text-center"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#editMemberModal"
-                                                                        onclick="editMember('{{ $member->id }}', '{{ $member->order_no }}', '{{ $member->name }}', '{{ $member->qualification }}', '{{ $member->institution }}', '{{ $member->designations }}', '{{ $member->status }}', '{{ $member->affiliation }}')">
+                                                                        onclick="editMember('{{ $member->id }}', '{{ $member->order_no }}', '{{ $member->name }}', '{{ $member->qualification }}', '{{ $member->institution }}', '{{ $member->designations_id }}', '{{ $member->status }}', '{{ $member->affiliation }}')">
                                                                         <i class="fa fa-edit"></i>
                                                                     </button>
                                                                 </div>
@@ -387,16 +387,14 @@
                                             <!-- Designation Field -->
                                             <div class="mb-3">
                                                 <label for="memberDesignation" class="form-label">Designation</label>
-                                                <input type="text" class="form-control" id="addDesignationsId"
-                                                    placeholder="Enter Designation" name="designations">
-                                                {{-- <select name="designations_id" id="addDesignationsId"
+                                                <select name="designations_id" id="addDesignationsId"
                                                     class="form-control">
                                                     <option value="0">-- None -- </option>
                                                     @foreach ($designations as $key => $designation)
                                                         <option value="{{ $designation->id }}">{{ $designation->name }}
                                                         </option>
                                                     @endforeach
-                                                </select> --}}
+                                                </select>
                                             </div>
 
                                             <!-- Affiliation Toggle -->
@@ -484,16 +482,14 @@
                                             <!-- Designation Field -->
                                             <div class="mb-3">
                                                 <label for="editMemberDesignation" class="form-label">Designation</label>
-                                                <input type="text" class="form-control" id="editMemberDesignationsId"
-                                                    placeholder="Enter Designation" name="designations">
-                                                {{-- <select name="designations_id" id="editMemberDesignationsId"
+                                                <select name="designations_id" id="editMemberDesignationsId"
                                                     class="form-control">
                                                     <option value="0">-- None -- </option>
                                                     @foreach ($designations as $key => $designation)
                                                         <option value="{{ $designation->id }}">{{ $designation->name }}
                                                         </option>
                                                     @endforeach
-                                                </select> --}}
+                                                </select>
                                             </div>
 
                                             <!-- Affiliation Toggle -->
@@ -563,7 +559,7 @@
                                                         <th style="width: 17%;">Status</th>
                                                         <th style="width: 10%;" class="text-center">Actions</th>
                                                     </tr>
-
+                                                    
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($head_members as $member)
@@ -586,7 +582,7 @@
                                                                         class="btn btn-link btn-primary text-center"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#editHeadMemberModal"
-                                                                        onclick="editHeadMember('{{ $member->id }}', '{{ $member->order_no }}', '{{ $member->name }}', '{{ $member->qualification }}', '{{ $member->position }}', '{{ $member->designations }}', '{{ $member->status }}')">
+                                                                        onclick="editHeadMember('{{ $member->id }}', '{{ $member->order_no }}', '{{ $member->name }}', '{{ $member->qualification }}', '{{ $member->position }}', '{{ $member->designations_id }}', '{{ $member->status }}')">
                                                                         <i class="fa fa-edit"></i>
                                                                     </button>
                                                                 </div>
@@ -655,16 +651,14 @@
                                             <!-- Designation Field -->
                                             <div class="mb-3">
                                                 <label for="memberDesignation" class="form-label">Designation</label>
-                                                <input type="text" class="form-control" id="addDesignationsId"
-                                                    placeholder="Enter Designation" name="designations">
-                                                {{-- <select name="designations_id" id="addDesignationsId"
+                                                <select name="designations_id" id="addDesignationsId"
                                                     class="form-control">
                                                     <option value="0">-- None -- </option>
                                                     @foreach ($designations as $key => $designation)
                                                         <option value="{{ $designation->id }}">{{ $designation->name }}
                                                         </option>
                                                     @endforeach
-                                                </select> --}}
+                                                </select>
                                             </div>
 
                                             <!-- Status Toggle -->
@@ -740,16 +734,14 @@
                                             <!-- Designation Field -->
                                             <div class="mb-3">
                                                 <label for="editMemberDesignation" class="form-label">Designation</label>
-                                                <input type="text" class="form-control" id="editHeadMemberDesignationsId"
-                                                    placeholder="Enter Designation" name="designations">
-                                                {{-- <select name="designations_id" id="editHeadMemberDesignationsId"
+                                                <select name="designations_id" id="editHeadMemberDesignationsId"
                                                     class="form-control">
                                                     <option value="0">-- None -- </option>
                                                     @foreach ($designations as $key => $designation)
                                                         <option value="{{ $designation->id }}">{{ $designation->name }}
                                                         </option>
                                                     @endforeach
-                                                </select> --}}
+                                                </select>
                                             </div>
 
                                             <!-- Status Toggle -->
@@ -803,14 +795,14 @@
 
         }
 
-        function editMember(id, order_no, name, qualification, institution, designations, affiliation, Status) {
+        function editMember(id, order_no, name, qualification, institution, designations_id, affiliation, Status) {
             console.log(order_no);
             document.getElementById('ethicsMemberId').value = id; // Set the ID for the hidden input
             document.getElementById('editMemberOrderId').value = order_no; // Set the ID for the hidden input
             document.getElementById('editMemberName').value = name; // Set the name
             document.getElementById('editMemberQualification').value = qualification; // Set the image preview
             document.getElementById('editMemberInstitution').value = institution; // Set the image preview
-            document.getElementById('editMemberDesignationsId').value = designations; // Set the image preview
+            document.getElementById('editMemberDesignationsId').value = designations_id; // Set the image preview
             document.getElementById('editmemberStatus').checked = Status == 1; // Check if the status is active
             document.getElementById('editMemberStatusLabel').textContent = Status == 1 ? 'Active' : 'In-Active';
             document.getElementById('editmemberAffiliation').checked = affiliation == 1; // Check if the status is active
@@ -821,14 +813,14 @@
 
         }
 
-        function editHeadMember(id, order_no, name, qualification, position, designations, Status) {
+        function editHeadMember(id, order_no, name, qualification, position, designations_id, Status) {
             console.log(order_no);
             document.getElementById('ethicsHeadMemberId').value = id; // Set the ID for the hidden input
             document.getElementById('editHeadMemberOrderId').value = order_no; // Set the ID for the hidden input
             document.getElementById('editHeadMemberName').value = name; // Set the name
             document.getElementById('editHeadMemberQualification').value = qualification; // Set the image preview
             document.getElementById('editHeadMemberPosition').value = position; // Set the image preview
-            document.getElementById('editHeadMemberDesignationsId').value = designations; // Set the image preview
+            document.getElementById('editHeadMemberDesignationsId').value = designations_id; // Set the image preview
             document.getElementById('editHeadmemberStatus').checked = Status == 1; // Check if the status is active
             document.getElementById('editHeadMemberStatusLabel').textContent = Status == 1 ? 'Active' : 'In-Active';
 
