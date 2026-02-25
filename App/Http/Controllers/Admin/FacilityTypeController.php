@@ -53,7 +53,7 @@ class FacilityTypeController extends Controller
 
         $input = [
                 'name' => $request->name,           
-                'status' => $request->status ?? 0,
+             'status' => $request->has('status') ? 1 : 0,
                 'slug_key' => slugger($request->name, '_'),
             ];
         
@@ -113,7 +113,7 @@ class FacilityTypeController extends Controller
         $input = array();
         $input = [
                 'name' => $request->name,            
-                'status' => $request->status,
+                 'status'   => $request->has('status') ? 1 : 0,
                 'slug_key' => slugger($request->name, '_'),
             ];
 

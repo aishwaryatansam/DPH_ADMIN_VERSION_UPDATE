@@ -249,6 +249,8 @@
                                                     <label for="status" class="form-label">Status<span
                                                             style="color: red;">*</span></label>
                                                 </td>
+                                                       <input type="hidden" name="status" value="0">
+
                                                 <td>
                                                     <div class="form-check form-switch">
                                                         <input class="form-check-input" name="status" type="checkbox"

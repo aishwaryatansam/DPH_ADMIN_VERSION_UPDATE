@@ -121,12 +121,17 @@
                                 <!-- Action Buttons -->
                                 <div class="col d-flex justify-content-end align-items-center mt-2">
                                     <div class="form-group d-flex">
-                                        <button type="button" class="btn btn-primary btn-sm me-2" style="border-radius: 10px;">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                        <button type="reset" class="btn btn-secondary btn-sm resetSearch" style="border-radius: 10px;" onClick="resetSearch()">
-                                            <i class="fas fa-redo"></i>
-                                        </button>
+                                        <button type="submit"
+        class="btn btn-primary btn-sm me-2"
+        style="border-radius: 10px;">
+        <i class="fas fa-search"></i>
+    </button>
+
+    <a href="{{ url()->current() }}"
+        class="btn btn-secondary btn-sm"
+        style="border-radius: 10px;">
+        <i class="fas fa-redo"></i>
+    </a>
                                     </div>
                                 </div>
                             </form>
