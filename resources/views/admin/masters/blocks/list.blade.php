@@ -90,16 +90,25 @@ function resetSearch() {
 <div class="card-body">
 <form method="GET" action="{{ url('/blocks') }}" class="mb-3">
     <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
-                @foreach(getPageLenthArr() as $pageLength)
-                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
-                        {{ $pageLength }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+   <div class="col-auto d-flex align-items-center">
+
+    <label for="pageLength" class="me-2 mb-0">Show</label>
+
+    <select name="pageLength"
+            id="pageLength"
+            class="form-select form-select-sm w-auto me-2"
+            onchange="this.form.submit()">
+        @foreach(getPageLenthArr() as $pageLength)
+            <option value="{{ $pageLength }}"
+                {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                {{ $pageLength }}
+            </option>
+        @endforeach
+    </select>
+
+    <span class="mb-0">entries</span>
+
+</div>
         <div class="col-auto ms-auto">
             <label for="keyword">Search:</label>
             <input type="search" name="keyword" id="keyword" value="{{ request('keyword') }}">

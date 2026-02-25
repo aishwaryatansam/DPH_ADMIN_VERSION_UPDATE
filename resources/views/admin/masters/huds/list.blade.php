@@ -77,16 +77,25 @@
                             <div class="card-body">
                                 <form method="GET" action="{{ url('/huds') }}" class="mb-3">
     <div class="row align-items-center">
-        <div class="col-auto">
-            <label for="pageLength" class="me-2 mb-0">Show</label>
-            <select name="pageLength" id="pageLength" class="form-select w-auto" onchange="this.form.submit()">
-                @foreach(getPageLenthArr() as $pageLength)
-                    <option value="{{ $pageLength }}" {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
-                        {{ $pageLength }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+<div class="col-auto d-flex align-items-center gap-2">
+
+    <label for="pageLength" class="mb-0">Show</label>
+
+    <select name="pageLength"
+            id="pageLength"
+            class="form-select form-select-sm w-auto"
+            onchange="this.form.submit()">
+        @foreach(getPageLenthArr() as $pageLength)
+            <option value="{{ $pageLength }}"
+                {{ request('pageLength', 10) == $pageLength ? 'selected' : '' }}>
+                {{ $pageLength }}
+            </option>
+        @endforeach
+    </select>
+
+    <span class="mb-0">entries</span>
+
+</div>
         <div class="col-auto ms-auto">
             
              <input type="search" name="keyword"
