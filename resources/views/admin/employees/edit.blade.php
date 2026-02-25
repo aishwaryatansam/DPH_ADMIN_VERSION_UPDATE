@@ -44,7 +44,7 @@
                                                 <div>
                                                     <label for="designation" class="form-label text-secondary">User Type
                                                         <span style="color: red;">*</span></label>
-                                                    <select class="form-select" id="userType" name="user_type" disabled
+                                                    <select class="form-select" id="userType" name="user_type" 
                                                         required>
                                                         <option value="">Select User Type</option>
                                                         @foreach (getUserType() as $key => $type)

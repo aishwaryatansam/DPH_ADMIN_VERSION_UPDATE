@@ -25,26 +25,37 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label>Facility Level</label>
-                                        <select class="form-control searchable" name="facility_level_id" onchange="searchFun()">
-                                            <option value="">-- Select Level -- </option>
-                                            @foreach ($facility_levels as $facility_level)
-                                                <option value="{{ $facility_level->id }}" {{ SELECT($facility_level->id, request('facility_level_id')) }}>{{ $facility_level->name }}</option>
-                                            @endforeach
-                                        </select>
+                                       <select class="form-control" name="facility_level_id" onchange="this.form.submit()">
+    <option value="">-- Select Level --</option>
+    @foreach ($facility_levels as $facility_level)
+        <option value="{{ $facility_level->id }}"
+            {{ request('facility_level_id') == $facility_level->id ? 'selected' : '' }}>
+            {{ $facility_level->name }}
+        </option>
+    @endforeach
+</select>
                                     </div>
                                 </div>
 
                                 <!-- HUD ID Field -->
                                 <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label>HUD</label>
-                                        <select name="hud_id" class="form-control searchable" onchange="searchFun()">
-                                            <option value="">-- Select HUD -- </option>
-                                            @foreach($huds as $hud)
-                                                <option value="{{$hud->id}}" {{SELECT($hud->id,request('hud_id'))}}>{{$hud->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="form-group">
+    <label>HUD</label>
+
+    <select class="form-control" name="hud_id" onchange="this.form.submit()">
+        <option value="">-- Select HUD --</option>
+
+        @if(!empty($huds))
+            @foreach($huds as $hud)
+                <option value="{{ $hud->id }}"
+                    {{ request('hud_id') == $hud->id ? 'selected' : '' }}>
+                    {{ $hud->name }}
+                </option>
+            @endforeach
+        @endif
+
+    </select>
+</div>
                                 </div>
 
                                 <!-- Block ID Field -->
@@ -52,12 +63,17 @@
                                     <div class="col-sm-2">
                                         <div class="form-group">
                                             <label>Block</label>
-                                            <select name="block_id" class="form-control searchable" onchange="searchFun()">
-                                                <option value="">-- Select Block -- </option>
-                                                @foreach($blocks as $block)
-                                                    <option value="{{$block->id}}" {{SELECT($block->id,request('block_id'))}}>{{$block->name}}</option>
-                                                @endforeach
-                                            </select>
+                                          @if(request('hud_id') && !empty($blocks))
+<select class="form-control" name="block_id" onchange="this.form.submit()">
+    <option value="">-- Select Block --</option>
+    @foreach($blocks as $block)
+        <option value="{{ $block->id }}"
+            {{ request('block_id') == $block->id ? 'selected' : '' }}>
+            {{ $block->name }}
+        </option>
+    @endforeach
+</select>
+@endif
                                         </div>
                                     </div>
                                 @endif
@@ -67,12 +83,17 @@
                                     <div class="col-sm-2">
                                         <div class="form-group">
                                             <label>PHC</label>
-                                            <select name="phc_id" class="form-control searchable" onchange="searchFun()">
-                                                <option value="">-- Select PHC -- </option>
-                                                @foreach($phcs as $phc)
-                                                    <option value="{{$phc->id}}" {{SELECT($phc->id,request('phc_id'))}}>{{$phc->name}}</option>
-                                                @endforeach
-                                            </select>
+                                           @if(request('block_id') && !empty($phcs))
+<select class="form-control" name="phc_id" onchange="this.form.submit()">
+    <option value="">-- Select PHC --</option>
+    @foreach($phcs as $phc)
+        <option value="{{ $phc->id }}"
+            {{ request('phc_id') == $phc->id ? 'selected' : '' }}>
+            {{ $phc->name }}
+        </option>
+    @endforeach
+</select>
+@endif
                                         </div>
                                     </div>
                                 @endif
@@ -82,12 +103,17 @@
                                     <div class="col-sm-2">
                                         <div class="form-group">
                                             <label>HSC</label>
-                                            <select name="hsc_id" class="form-control searchable" onchange="searchFun()">
-                                                <option value="">-- Select HSC -- </option>
-                                                @foreach($hscs as $hsc)
-                                                    <option value="{{$hsc->id}}" {{SELECT($hsc->id,request('hsc_id'))}}>{{$hsc->name}}</option>
-                                                @endforeach
-                                            </select>
+                                         @if(request('phc_id') && !empty($hscs))
+<select class="form-control" name="hsc_id" onchange="this.form.submit()">
+    <option value="">-- Select HSC --</option>
+    @foreach($hscs as $hsc)
+        <option value="{{ $hsc->id }}"
+            {{ request('hsc_id') == $hsc->id ? 'selected' : '' }}>
+            {{ $hsc->name }}
+        </option>
+    @endforeach
+</select>
+@endif
                                         </div>
                                     </div>
                                 @endif
