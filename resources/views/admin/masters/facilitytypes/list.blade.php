@@ -109,37 +109,45 @@
     <!-- content end here -->
     <!-- main panel end -->
 </div>
+<!-- jQuery (must load first) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables Core -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- JSZip (REQUIRED for Excel) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<!-- Buttons -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script>
-   $(document).ready(function () {
+$(document).ready(function () {
+
     var table = $('#add-row').DataTable({
-        "paging": true,
-        "searching": true,
-        "lengthChange": true,
-        "pageLength": 10,
-        "info": true,
-        "autoWidth": false,
         dom: 'Bfrtip',
         buttons: [
             {
-                extend: 'excel',
-                className: 'buttons-excel',
-                init: function(api, node, config){
-                    $(node).hide();
+                extend: 'excelHtml5',
+                title: 'Facility_List',
+                exportOptions: {
+                    columns: [0,1] // Only Name & Status
                 }
             }
         ]
     });
 
     $('#btnExcel').on('click', function () {
-        table.button('.buttons-excel').trigger();
+        table.button(0).trigger();
     });
+
 });
 </script>
 
 
 <script type="text/javascript">
   $(document).ready(function(){
-    setPageUrl('/designations?');
+    setPageUrl('/facility_hierarchy?');
   });
 </script>
 @endsection

@@ -395,7 +395,7 @@ $(document).ready(function() {
                                             <!-- Add File Description -->
 
                                     
-                                            @if (!in_array(request('document_type'), [8, 9]))
+                                            {{-- @if (!in_array(request('document_type'), [8, 9]))
                                               <tr>
     <td class="col-12 col-md-3">
         <label class="form-label">
@@ -411,7 +411,7 @@ $(document).ready(function() {
                required>
     </td>
 </tr>
-                                            @endif
+                                            @endif --}}
 
                                             @if (!in_array(request('document_type'), [8, 9]))
                                                 <tr>
