@@ -1,6 +1,7 @@
 @extends('admin.layouts.layout')
 @section('title', 'List Facility Types')
 @section('content')
+
 <div class="container" style="margin-top: 90px;">
     <div class="container-fluid p-2" style="background-color: #f2f2f2;">
         <div class="d-flex justify-content-between align-items-center"
@@ -84,6 +85,7 @@
                                             <!-- Additional rows as needed -->
                                         </tbody>
                                     </table>
+                                  
                                 </div>
                             </div>
                         </div>
@@ -130,6 +132,7 @@ $(document).ready(function () {
             {
                 extend: 'excelHtml5',
                 title: 'Facility_List',
+                 className: 'd-none',
                 exportOptions: {
                     columns: [0,1] // Only Name & Status
                 }

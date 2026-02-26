@@ -115,7 +115,11 @@
                                                 <!-- Additional rows as needed -->
                                             </tbody>
                                         </table>
-                                                                                <div>
+                                                                               <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
         @if ($results->lastPage() > 1)
             {{ $results->links('pagination::bootstrap-4') }}
         @else
@@ -129,7 +133,7 @@
             </nav>
         @endif
     </div>
-</div>
+</div>                                
                                     </div>
                                 </div>
                             </div>

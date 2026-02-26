@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 @section('title', 'List Designations')
 @section('content')
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"/>
+
 <div class="container" style="margin-top: 90px;">
     <div class="container-fluid p-2" style="background-color: #f2f2f2;">
         <div class="d-flex justify-content-between align-items-center"
@@ -93,7 +93,7 @@
                 
                             <!-- Table Card -->
                             <div class="card-body">
-                                <div class="table-responsive">
+                                    <div class="table-responsive">
                                     <table id="add-row" class="display table table-striped table-hover" style="width:100%">
                                         <thead>
                                             <tr>
@@ -130,6 +130,25 @@
                                             <!-- Additional rows as needed -->
                                         </tbody>
                                     </table>
+                                                                             <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Showing {{ $results->firstItem() ?? 0 }} to {{ $results->lastItem() ?? 0 }} of {{ $results->total() }} entries
+    </div>
+    <div>
+        @if ($results->lastPage() > 1)
+            {{ $results->links('pagination::bootstrap-4') }}
+        @else
+            <!-- Always show pagination bar even for 1 page -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                </ul>
+            </nav>
+        @endif
+    </div>
+</div>  
                                 </div>
                             </div>
                         </div>
@@ -170,14 +189,26 @@
 <script>
 $(document).ready(function () {
 
+    // If already initialized, destroy first
+    if ($.fn.DataTable.isDataTable('#add-row')) {
+        $('#add-row').DataTable().destroy();
+    }
+
     var table = $('#add-row').DataTable({
+        paging: false,
+        searching: true,
+        lengthChange: true,
+        pageLength: 10,
+        info: false,
+        autoWidth: false,
         dom: 'Bfrtip',
         buttons: [
             {
                 extend: 'excelHtml5',
                 title: 'Designations',
+                className: 'd-none',
                 exportOptions: {
-                    columns: [0,1] // Only Name & Status
+                    columns: [0,1]
                 }
             }
         ]
