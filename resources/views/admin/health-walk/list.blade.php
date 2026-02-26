@@ -137,7 +137,7 @@
     </div>
     <div>
         @if ($results->lastPage() > 1)
-            {{ $results->links('pagination::bootstrap-5') }}
+          {{ $results->links() }}
         @else
             <!-- Always show pagination bar even for 1 page -->
             <nav>
