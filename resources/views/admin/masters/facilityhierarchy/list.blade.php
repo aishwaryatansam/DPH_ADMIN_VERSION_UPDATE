@@ -222,35 +222,68 @@
         <!-- content end here -->
         <!-- main panel end -->
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Download Button Event
-            $('#downloadBtn').on('click', function() {
-                var exportData = [];
-                @foreach($results as $result)
-                    exportData.push([
-                        '{{ $result->facility_name ?? "" }}',
-                        '{{ $result->facility_code ?? "--" }}',
-                        '{{ $result->facility_level->name ?? "--" }}',
-                        '{{ $result->district->name ?? "--" }}',
-                        '{{ $result->hud->name ?? "--" }}',
-                        '{{ $result->block->name ?? "--" }}',
-                        '{{ $result->phc->name ?? "--" }}',
-                        '{{ $result->hsc->name ?? "--" }}'
-                    ]);
-                @endforeach
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@php
+    $exportData = [];
+    foreach ($results as $result) {
+        $exportData[] = [
+            'Name' => $result->facility_name ?? "",
+            'Code' => $result->facility_code ?? "--",
+            'Level' => $result->facility_level->name ?? "--",
+            'Latitude' => $result->latitude ?? "--",
+            'Longitude' => $result->longitude ?? "--",
+            'District' => $result->district->name ?? "--",
+            'HUD' => $result->hud->name ?? "--",
+            'Block' => $result->block->name ?? "--",
+            'PHC' => $result->phc->name ?? "--",
+            'HSC' => $result->hsc->name ?? "--"
+        ];
+    }
+@endphp
+<script>
+$(document).ready(function() {
+    var exportData = {!! json_encode($exportData) !!};
 
-                var headers = ['Name', 'Code', 'Level', 'District', 'HUD', 'Block', 'PHC', 'HSC'];
-                var ws = XLSX.utils.aoa_to_sheet([headers].concat(exportData));
-                var wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'Facilities');
-                var filename = 'facilities-list-' + new Date().toLocaleDateString('en-GB').replace(/\//g, '-') + '.xlsx';
-                XLSX.writeFile(wb, filename);
-            });
+    var headers = ['Name', 'Code', 'Level', 'Latitude', 'Longitude', 'District', 'HUD', 'Block', 'PHC', 'HSC'];
+
+    $('#downloadBtn').click(function() {
+        if(exportData.length === 0) {
+            alert('No data to export!');
+            return;
+        }
+
+        var aoa = [headers]; // start with headers
+        exportData.forEach(function(row) {
+            aoa.push([
+                row.Name,
+                row.Code,
+                row.Level,
+                row.Latitude,
+                row.Longitude,
+                row.District,
+                row.HUD,
+                row.Block,
+                row.PHC,
+                row.HSC
+            ]);
         });
-    </script>
+
+        var ws = XLSX.utils.aoa_to_sheet(aoa);
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Facilities');
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        var filename = 'facilities-list-' + dd + '-' + mm + '-' + yyyy + '.xlsx';
+
+        XLSX.writeFile(wb, filename);
+    });
+});
+</script>
     <script type="text/javascript">
         $(document).ready(function() {
             setPageUrl('/facility_hierarchy?');
